@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "tsx --env-file=.env --watch src/server.ts"
+    "start": "node src/server.ts",
+    "start:dev": "tsx --env-file=.env --watch src/server.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
