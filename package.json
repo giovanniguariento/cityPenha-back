@@ -1,8 +1,11 @@
 {
   "scripts": {
-    "start": "node src/server.ts",
-    "start:dev": "tsx --env-file=.env --watch src/server.ts"
+    "start": "node dist/server.js",
+    "start:dev": "tsx --env-file=.env --watch src/server.ts",
+    "build": "pkgroll"
   },
+  "type": "module",
+  "main": "./dist/server.js",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.2.1"
@@ -10,6 +13,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "pkgroll": "^2.21.4",
     "tsx": "^4.21.0"
   }
 }
