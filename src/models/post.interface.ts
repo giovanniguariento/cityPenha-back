@@ -5,6 +5,8 @@ export interface IPost {
   title: {
     rendered: string
   };
+  type: ETypePost;
+  subtype: ETypePost;
   authors: {
     display_name: string,
     avatar_url: {
@@ -16,7 +18,16 @@ export interface IPost {
     reading_time: number
   };
   _embedded: {
-    'wp:featuredmedia': IFeaturedMedia[]
+    'wp:featuredmedia': IFeaturedMedia[],
+    author: {
+      name: string,
+      avatar_urls: {
+        "96": string
+      }
+    }[],
+    self: {
+      slug: string
+    }[]
   };
   categories: number[],
   excerpt: {
@@ -29,4 +40,9 @@ export interface IPost {
 
 export interface IFeaturedMedia {
   source_url: string;
+}
+
+export enum ETypePost {
+  POST = "post",
+  AD = "anuncio"
 }

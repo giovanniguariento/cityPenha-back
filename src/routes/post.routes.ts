@@ -6,6 +6,6 @@ const router = Router();
 const postController = new PostController(new WordpressService());
 
 // Definition of routes
-router.get('/:id', postController.get);
+router.get('/:slug', postController.get);
 
 export default router;
