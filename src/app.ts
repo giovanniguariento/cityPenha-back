@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import homeRoutes from './routes/home.routes';
 import postRoutes from './routes/post.routes'
+import userRoutes from './routes/user.routes'
 import cors from "cors";
 
 const app: Application = express();
@@ -12,6 +13,7 @@ app.use(cors())
 // 2. Routes
 app.use('/home', homeRoutes);
 app.use('/post', postRoutes);
+app.use('/user', userRoutes);
 
 // 3. Global Error Handler (Middleware)
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

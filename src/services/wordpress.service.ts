@@ -2,6 +2,8 @@ import { ICategory } from "../models/category.interface";
 import { IPost } from "../models/post.interface";
 import { ITag } from "../models/tag.interface";
 
+const credentials = Buffer.from(`${process.env.ENV_API_WORDPRESS_ADMIN_USER}:${process.env.ENV_API_WORDPRESS_ADMIN_PASSWORD}`).toString('base64');
+
 export class WordpressService {
   public async getAllPosts(): Promise<IPost[]> {
     const response = await fetch(`${process.env.ENV_API_WORDPRESS}/posts?_embed=wp:featuredmedia&per_page=100`);
@@ -79,6 +81,30 @@ export class WordpressService {
 
     if (!response.ok) {
       throw new Error(`Erro ao buscar anuncio: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  public async createUser(email: string): Promise<any> {
+    const newUser = {
+      username: email.split('@')[0] + '_' + Math.floor(Math.random() * 1000),
+      email,
+      password: Math.random().toString(36),
+      roles: ['author']
+    };
+
+    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${credentials}`
+      },
+      body: JSON.stringify(newUser)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro ao criar user: ${response.statusText}`);
     }
 
     return response.json();
