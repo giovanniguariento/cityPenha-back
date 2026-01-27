@@ -17,8 +17,13 @@ export class UserController {
       const { email, firebaseUid, name, photoUrl } = req.body
       if (!email || !firebaseUid || !name || !photoUrl) return;
 
+      const user = await this.userService.findByFirebaseUid(firebaseUid);
+      console.log(user)
+
+      if (user) res.status(200).json(user);
+
       const userWordpress = await this.wordpressService.createUser(email);
-      const userDatabase = await this.userService.createUser({
+      const userDatabase = await this.userService.create({
         email,
         firebaseUid,
         wordpressId: userWordpress.id,
