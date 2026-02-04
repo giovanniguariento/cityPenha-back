@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import { HomeController } from '../controllers/home.controller';
-import { WordpressService } from '../services/wordpress.service'
+import { wordpressService } from '../services';
 
 const router = Router();
-const homeController = new HomeController(new WordpressService());
+const homeController = new HomeController(wordpressService);
 
-// Definition of routes
 router.get('/', homeController.getAll);
 
 export default router;

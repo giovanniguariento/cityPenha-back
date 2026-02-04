@@ -1,20 +1,13 @@
-import { User } from "../generated/prisma/client";
-import { prisma } from "../lib/prisma";
+import type { UserUncheckedCreateInput } from '../generated/prisma/models/User';
+import type { User } from '../generated/prisma/client';
+import { prisma } from '../lib/prisma';
 
 export class UserService {
-  public async create(user: User) {
-    return await prisma.user.create({
-      data: user
-    });
+  async create(data: UserUncheckedCreateInput): Promise<User> {
+    return prisma.user.create({ data });
   }
 
-  public async findByFirebaseUid(firebaseUid: string) {
-    return await prisma.user.findUnique(
-      {
-        where: {
-          firebaseUid
-        }
-      }
-    )
+  async findByFirebaseUid(firebaseUid: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { firebaseUid } });
   }
 }

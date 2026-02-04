@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import { PostController } from '../controllers/post.controller';
-import { WordpressService } from '../services/wordpress.service'
+import { wordpressService } from '../services';
 
 const router = Router();
-const postController = new PostController(new WordpressService());
+const postController = new PostController(wordpressService);
 
-// Definition of routes
 router.get('/:slug', postController.get);
 
 export default router;

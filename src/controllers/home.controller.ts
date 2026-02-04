@@ -1,101 +1,71 @@
 import { Request, Response, NextFunction } from 'express';
-import { WordpressService } from '../services/wordpress.service'
-import { ETypePost, IPost } from '../models/post.interface';
-import { isSingleVideoContent } from '../helpers/content.helper';
+import { ETypePost, type IPost } from '../models/post.interface';
+import { WordpressService } from '../services/wordpress.service';
+import type { FeedItem } from '../types';
+import { toFeedItem } from '../helpers/post.helper';
+import { insertAdsIntoPosts } from '../helpers/ad.helper';
 
 export class HomeController {
-  private wordpressService: WordpressService;
+  constructor(private readonly wordpressService: WordpressService) { }
 
-  constructor(wordpressService: WordpressService) {
-    this.wordpressService = wordpressService;
-  }
-
-  public getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const [posts, categories, ads] = await Promise.all([
         this.wordpressService.getAllPosts(),
         this.wordpressService.getCategories(),
-        this.wordpressService.getAllAds()
+        this.wordpressService.getAllAds(),
       ]);
 
-      let feedFinal: IPost[] = [];
-      let adIndex = 0;
+      // Ad interval range: default 4..5 (one ad every 4 to 5 posts)
+      const intervalMin = Number(process.env.AD_INTERVAL_MIN) || 4;
+      const intervalMax = Number(process.env.AD_INTERVAL_MAX) || 5;
 
-      for (const [index, value] of posts.entries()) {
-        feedFinal.push(value)
+      // Prepare carousel: 11 most recent CONTENT posts, then insert ads into that slice.
+      const recentContentPosts = posts.filter((p) => p.type === ETypePost.POST).slice(0, 11);
+      const carouselWithAds: IPost[] = insertAdsIntoPosts(
+        recentContentPosts,
+        ads,
+        intervalMin,
+        intervalMax
+      );
+      const carousel: FeedItem[] = carouselWithAds.map((post) => toFeedItem(post));
 
-        if ((index + 1) % 4 === 0 && ads[adIndex]) {
-          feedFinal.push(ads[adIndex]);
-          adIndex = (adIndex + 1) % ads.length; // Rotaciona os ads se acabarem
-        }
+      // Ensure categoryName is set for carousel items
+      for (const item of carousel) {
+        const cat = categories.find((c) => item.categories.includes(c.id));
+        if (cat) item.categoryName = cat.name;
       }
 
-
-      // if (feedFinal.length < 5) {
-      //   feedFinal.push(ads[0]);
-      // }
-
-      const feed = feedFinal.map((post) => {
-        let author: { name: string; avatarUrl: string };
-        if (post.type === ETypePost.POST) {
-          author = {
-            name: post.authors[0].display_name,
-            avatarUrl: post.authors[0].avatar_url.url
-          };
-        } else {
-          author = {
-            name: "Patrocinado",
-            avatarUrl: "assets/logo-perfil.svg"
-          };
-        }
-
-        return {
-          slug: post.slug,
-          id: post.id,
-          title: post.title.rendered,
-          type: post.type,
-          author,
-          tags: post.tags,
-          readingTime: post.acf.reading_time,
-          image: post._embedded && post._embedded['wp:featuredmedia'] ? post._embedded['wp:featuredmedia'][0].source_url : "",
-          categories: post.categories,
-          categoryName: '',
-          onlyVideo: isSingleVideoContent(post.content.rendered)
-        }
-      })
-
+      // Prepare category-based tabs. For each category, take its content posts and insert ads
       const categoriesWithPosts = categories.map((category) => {
-        const relatedPosts = feed.filter((post, index, self) => {
-          if (post.type === ETypePost.AD) {
-            // console.log(self)
-            const repetido = self.find((postNovo) => postNovo.id === post.id);
-            // console.log(repetido, post, "ENTROUUUUUUUUUUUU")
-            // if (repetido) return false;
-          }
-          return post.categories.includes(category.id)
-        }
-
+        const relatedContentPosts = posts.filter(
+          (p) => p.type === ETypePost.POST && p.categories.includes(category.id)
         );
-
-        for (const post of relatedPosts) {
-          post.categoryName = category.name;
+        const listWithAds = insertAdsIntoPosts(
+          relatedContentPosts,
+          ads,
+          intervalMin,
+          intervalMax,
+          category.id // assign category id to cloned ads so frontend knows the tab context
+        );
+        const feedItems = listWithAds.map((p) => toFeedItem(p));
+        // set categoryName for all items in this list (ads will have categories set to [category.id])
+        for (const item of feedItems) {
+          const cat = categories.find((c) => item.categories.includes(c.id));
+          if (cat) item.categoryName = cat.name;
         }
-
-        return {
-          id: category.id,
-          name: category.name,
-          posts: relatedPosts
-        };
-      })
+        return { id: category.id, name: category.name, posts: feedItems };
+      });
 
       if (posts.length === 0 && categories.length === 0) {
         res.status(404).json({ success: false, message: 'Posts not found' });
         return;
       }
 
+      res.set('Cache-Control', 'public, max-age=60');
       res.status(200).json({
         categories: categoriesWithPosts,
-        posts: feed.slice(0, 11)
+        carousel,
       });
     } catch (error) {
       next(error);

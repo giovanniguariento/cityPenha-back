@@ -1,14 +1,16 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import compression from 'compression';
 import homeRoutes from './routes/home.routes';
-import postRoutes from './routes/post.routes'
-import userRoutes from './routes/user.routes'
-import cors from "cors";
+import postRoutes from './routes/post.routes';
+import userRoutes from './routes/user.routes';
 
 const app: Application = express();
 
-// 1. Global Middlewares
-app.use(express.json());
-app.use(cors())
+// 1. Global Middlewares — compression first so responses are gzipped
+app.use(compression());
+app.use(express.json({ limit: '512kb' }));
+app.use(cors());
 
 // 2. Routes
 app.use('/home', homeRoutes);

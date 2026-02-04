@@ -1,106 +1,153 @@
-import { ICategory } from "../models/category.interface";
-import { IPost } from "../models/post.interface";
-import { ITag } from "../models/tag.interface";
+import { createTtlCache, CACHE_TTL_MS } from '../helpers/cache.helper';
+import type { WordPressUserResponse } from '../types';
+import type { ICategory } from '../models/category.interface';
+import type { IPost } from '../models/post.interface';
+import type { ITag } from '../models/tag.interface';
 
-const credentials = Buffer.from(`${process.env.ENV_API_WORDPRESS_ADMIN_USER}:${process.env.ENV_API_WORDPRESS_ADMIN_PASSWORD}`).toString('base64');
+const credentials = Buffer.from(
+  `${process.env.ENV_API_WORDPRESS_ADMIN_USER}:${process.env.ENV_API_WORDPRESS_ADMIN_PASSWORD}`
+).toString('base64');
+
+import { fetchWithTimeout } from '../helpers/fetch.helper';
 
 export class WordpressService {
-  public async getAllPosts(): Promise<IPost[]> {
-    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/posts?_embed=wp:featuredmedia&per_page=100`);
+  private cache = {
+    posts: createTtlCache<IPost[]>(CACHE_TTL_MS.HOME),
+    categories: createTtlCache<ICategory[]>(CACHE_TTL_MS.CATEGORIES),
+    ads: createTtlCache<IPost[]>(CACHE_TTL_MS.ADS),
+    post: createTtlCache<IPost>(CACHE_TTL_MS.POST),
+    categoriesById: createTtlCache<ICategory[]>(CACHE_TTL_MS.POST),
+    tagsById: createTtlCache<ITag[]>(CACHE_TTL_MS.POST),
+    ad: createTtlCache<IPost>(CACHE_TTL_MS.POST),
+  };
 
+  private baseUrl(): string {
+    return process.env.ENV_API_WORDPRESS ?? '';
+  }
+
+  public async getAllPosts(): Promise<IPost[]> {
+    const cached = this.cache.posts.get('all');
+    if (cached) return cached;
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/posts?_embed=wp:featuredmedia&per_page=100`
+    );
     if (!response.ok) {
       throw new Error(`Erro ao buscar posts: ${response.statusText}`);
     }
-
-    return response.json();
+    const data = await response.json();
+    this.cache.posts.set('all', data);
+    return data;
   }
 
   public async getPost(id: number): Promise<IPost> {
-    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/posts/${id}?_embed=wp:featuredmedia`);
-
+    const key = `post:${id}`;
+    const cached = this.cache.post.get(key);
+    if (cached) return cached;
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/posts/${id}?_embed=wp:featuredmedia`
+    );
     if (!response.ok) {
       throw new Error(`Erro ao buscar post: ${response.statusText}`);
     }
-
-    return response.json();
+    const data = await response.json();
+    this.cache.post.set(key, data);
+    return data;
   }
 
   public async getTypePostBySearch(slug: string): Promise<IPost[]> {
-    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/search?search=${slug}&_embed`);
-
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/search?search=${encodeURIComponent(slug)}&_embed`
+    );
     if (!response.ok) {
       throw new Error(`Erro ao pesquisar post: ${response.statusText}`);
     }
-
     return response.json();
   }
 
-
   public async getCategories(): Promise<ICategory[]> {
-    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/categories`);
-
+    const cached = this.cache.categories.get('all');
+    if (cached) return cached;
+    const response = await fetchWithTimeout(`${this.baseUrl()}/categories`);
     if (!response.ok) {
       throw new Error(`Erro ao buscar categorias: ${response.statusText}`);
     }
-
-    return response.json();
+    const data = await response.json();
+    this.cache.categories.set('all', data);
+    return data;
   }
 
   public async getCategoriesById(ids: number[]): Promise<ICategory[]> {
-    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/categories?include=${ids.toString()}`);
-
+    const key = `cat:${ids.join(',')}`;
+    const cached = this.cache.categoriesById.get(key);
+    if (cached) return cached;
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/categories?include=${ids.join(',')}`
+    );
     if (!response.ok) {
       throw new Error(`Erro ao buscar categoria: ${response.statusText}`);
     }
-
-    return response.json();
+    const data = await response.json();
+    this.cache.categoriesById.set(key, data);
+    return data;
   }
 
   public async getTagsById(ids: number[]): Promise<ITag[]> {
-    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/tags?include=${ids.toString()}`);
-
+    const key = `tags:${ids.join(',')}`;
+    const cached = this.cache.tagsById.get(key);
+    if (cached) return cached;
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/tags?include=${ids.join(',')}`
+    );
     if (!response.ok) {
       throw new Error(`Erro ao buscar tags: ${response.statusText}`);
     }
-
-    return response.json();
+    const data = await response.json();
+    this.cache.tagsById.set(key, data);
+    return data;
   }
 
   public async getAllAds(): Promise<IPost[]> {
-    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/ads?_embed`);
-
+    const cached = this.cache.ads.get('all');
+    if (cached) return cached;
+    const response = await fetchWithTimeout(`${this.baseUrl()}/ads?_embed`);
     if (!response.ok) {
       throw new Error(`Erro ao buscar anuncios: ${response.statusText}`);
     }
-
-    return response.json();
+    const data = await response.json();
+    this.cache.ads.set('all', data);
+    return data;
   }
 
   public async getAd(id: number): Promise<IPost> {
-    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/ads/${id}?_embed&?per_page=100`);
-
+    const key = `ad:${id}`;
+    const cached = this.cache.ad.get(key);
+    if (cached) return cached;
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/ads/${id}?_embed`
+    );
     if (!response.ok) {
       throw new Error(`Erro ao buscar anuncio: ${response.statusText}`);
     }
-
-    return response.json();
+    const data = await response.json();
+    this.cache.ad.set(key, data);
+    return data;
   }
 
-  public async createUser(email: string): Promise<any> {
+  async createUser(email: string): Promise<WordPressUserResponse> {
     const newUser = {
       username: email.split('@')[0] + '_' + Math.floor(Math.random() * 1000),
       email,
       password: Math.random().toString(36),
-      roles: ['author']
+      roles: ['author'],
     };
 
-    const response = await fetch(`${process.env.ENV_API_WORDPRESS}/users`, {
+    const response = await fetchWithTimeout(`${this.baseUrl()}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Basic ${credentials}`
+        Authorization: `Basic ${credentials}`,
       },
-      body: JSON.stringify(newUser)
+      body: JSON.stringify(newUser),
     });
 
     if (!response.ok) {

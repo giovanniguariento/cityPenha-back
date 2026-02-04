@@ -1,37 +1,39 @@
 import { Request, Response, NextFunction } from 'express';
-import { WordpressService } from '../services/wordpress.service'
+import { WordpressService } from '../services/wordpress.service';
 import { UserService } from '../services/user.service';
-import { User } from '../generated/prisma/client';
+import type { CreateUserBody } from '../types';
 
 export class UserController {
-  private wordpressService: WordpressService;
-  private userService: UserService;
-
-  constructor(wordpressService: WordpressService, userService: UserService) {
-    this.wordpressService = wordpressService;
-    this.userService = userService;
-  }
+  constructor(
+    private readonly wordpressService: WordpressService,
+    private readonly userService: UserService
+  ) { }
 
   public create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { email, firebaseUid, name, photoUrl } = req.body
-      if (!email || !firebaseUid || !name || !photoUrl) return;
+      const body = req.body as Partial<CreateUserBody>;
+      const { email, firebaseUid, name, photoUrl } = body;
+      if (!email || !firebaseUid || !name || !photoUrl) {
+        res.status(400).json({ success: false, message: 'Missing required fields' });
+        return;
+      }
 
-      const user = await this.userService.findByFirebaseUid(firebaseUid);
-      console.log(user)
+      const existing = await this.userService.findByFirebaseUid(firebaseUid);
+      if (existing) {
+        res.status(200).json(existing);
+        return;
+      }
 
-      if (user) res.status(200).json(user);
-
-      const userWordpress = await this.wordpressService.createUser(email);
-      const userDatabase = await this.userService.create({
+      const wpUser = await this.wordpressService.createUser(email);
+      const user = await this.userService.create({
         email,
         firebaseUid,
-        wordpressId: userWordpress.id,
+        wordpressId: wpUser.id,
         name,
         photoUrl,
-      } as User)
+      });
 
-      res.status(200).json(userDatabase);
+      res.status(200).json(user);
     } catch (error) {
       next(error);
     }

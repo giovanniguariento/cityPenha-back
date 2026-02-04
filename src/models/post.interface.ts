@@ -1,41 +1,24 @@
 export interface IPost {
   id: number;
-  date: Date;
+  date: Date | string;
   slug: string;
-  title: {
-    rendered: string
-  };
+  title: { rendered: string };
   type: ETypePost;
   subtype: ETypePost;
   authors: {
-    display_name: string,
-    avatar_url: {
-      url: string
-    }
+    display_name: string;
+    avatar_url: { url: string };
   }[];
   tags: number[];
-  acf: {
-    reading_time: number
-  };
+  acf: { reading_time: number };
   _embedded: {
-    'wp:featuredmedia': IFeaturedMedia[],
-    author: {
-      name: string,
-      avatar_urls: {
-        "96": string
-      }
-    }[],
-    self: {
-      slug: string
-    }[]
+    'wp:featuredmedia'?: IFeaturedMedia[];
+    author?: { name: string; avatar_urls: { '96': string } }[];
+    self: { slug: string }[];
   };
-  categories: number[],
-  excerpt: {
-    rendered: string
-  },
-  content: {
-    rendered: string
-  }
+  categories: number[];
+  excerpt: { rendered: string };
+  content: { rendered: string };
 }
 
 export interface IFeaturedMedia {
