@@ -10,11 +10,14 @@ export class HomeController {
 
   getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const [posts, categories, ads] = await Promise.all([
-        this.wordpressService.getAllPosts(),
-        this.wordpressService.getCategories(),
+      const [posts, recentCatsResult, ads] = await Promise.all([
+        this.wordpressService.getRecentContentPosts(11),
+        this.wordpressService.getRecentPostsForTopCategories(5, 10),
         this.wordpressService.getAllAds(),
       ]);
+
+      const categories = recentCatsResult.categories;
+      const postsByCategory = recentCatsResult.postsByCategory;
 
       // Ad interval range: default 4..5 (one ad every 4 to 5 posts)
       const intervalMin = Number(process.env.AD_INTERVAL_MIN) || 4;
@@ -36,10 +39,10 @@ export class HomeController {
         if (cat) item.categoryName = cat.name;
       }
 
-      // Prepare category-based tabs. For each category, take its content posts and insert ads
+      // Prepare category-based tabs. Use the pre-fetched posts for the top categories.
       const categoriesWithPosts = categories.map((category) => {
-        const relatedContentPosts = posts.filter(
-          (p) => p.type === ETypePost.POST && p.categories.includes(category.id)
+        const relatedContentPosts = (postsByCategory[category.id] || []).filter(
+          (p) => p.type === ETypePost.POST
         );
         const listWithAds = insertAdsIntoPosts(
           relatedContentPosts,

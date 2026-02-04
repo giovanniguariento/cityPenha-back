@@ -39,6 +39,25 @@ export class WordpressService {
     return data;
   }
 
+  /**
+   * Fetch recent content posts limited by `limit`.
+   * Uses cache key `recent:<limit>` to avoid repeated heavy fetches.
+   */
+  public async getRecentContentPosts(limit = 11): Promise<IPost[]> {
+    const key = `recent:${limit}`;
+    const cached = this.cache.posts.get(key);
+    if (cached) return cached;
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/posts?_embed=wp:featuredmedia&per_page=${limit}`
+    );
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar posts recentes: ${response.statusText}`);
+    }
+    const data = await response.json();
+    this.cache.posts.set(key, data);
+    return data;
+  }
+
   public async getPost(id: number): Promise<IPost> {
     const key = `post:${id}`;
     const cached = this.cache.post.get(key);
@@ -74,6 +93,53 @@ export class WordpressService {
     const data = await response.json();
     this.cache.categories.set('all', data);
     return data;
+  }
+
+  /**
+   * Fetch the N most recent categories (by id desc) and for each category
+   * fetch the M most recent posts belonging to that category.
+   *
+   * Returns an object with `categories` (ICategory[]) and `postsByCategory`
+   * which maps category id -> IPost[] (up to postsPerCategory items).
+   */
+  public async getRecentPostsForTopCategories(
+    limitCategories = 5,
+    postsPerCategory = 10
+  ): Promise<{ categories: ICategory[]; postsByCategory: Record<number, IPost[]> }> {
+    // Get all categories (cached) then pick the most recent by id
+    const allCategories = await this.getCategories();
+    const topCategories = allCategories
+      .slice()
+      .sort((a, b) => b.id - a.id)
+      .slice(0, limitCategories);
+
+    // Fetch posts for each category in parallel, but reuse cached per-category responses
+    const fetches = topCategories.map(async (cat) => {
+      const catKey = `cat:${cat.id}:${postsPerCategory}`;
+      const catCached = this.cache.posts.get(catKey);
+      if (catCached) {
+        return { id: cat.id, posts: catCached as IPost[] };
+      }
+      const resp = await fetchWithTimeout(
+        `${this.baseUrl()}/posts?categories=${cat.id}&per_page=${postsPerCategory}&_embed=wp:featuredmedia`
+      );
+      if (!resp.ok) {
+        throw new Error(
+          `Erro ao buscar posts da categoria ${cat.id}: ${resp.statusText}`
+        );
+      }
+      const data = (await resp.json()) as IPost[];
+      this.cache.posts.set(catKey, data);
+      return { id: cat.id, posts: data };
+    });
+
+    const results = await Promise.all(fetches);
+    const postsByCategory: Record<number, IPost[]> = {};
+    for (const r of results) {
+      postsByCategory[r.id] = r.posts;
+    }
+
+    return { categories: topCategories, postsByCategory };
   }
 
   public async getCategoriesById(ids: number[]): Promise<ICategory[]> {
