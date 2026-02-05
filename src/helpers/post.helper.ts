@@ -51,6 +51,8 @@ export function toPostDetail(
     .filter((name): name is string => name != null);
 
   return {
+    id: post.id,
+    slug: post.slug,
     title: post.title.rendered,
     resume: post.excerpt.rendered,
     readingTime: post.acf.reading_time,

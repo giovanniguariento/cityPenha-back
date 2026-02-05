@@ -102,3 +102,18 @@ export type User = Prisma.UserModel
  * 
  */
 export type Favorite = Prisma.FavoriteModel
+/**
+ * Model ReadPost
+ * 
+ */
+export type ReadPost = Prisma.ReadPostModel
+/**
+ * Model Mission
+ * 
+ */
+export type Mission = Prisma.MissionModel
+/**
+ * Model UserMission
+ * 
+ */
+export type UserMission = Prisma.UserMissionModel

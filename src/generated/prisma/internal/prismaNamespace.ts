@@ -400,7 +400,10 @@ export const ModelName = {
   wp_usermeta: 'wp_usermeta',
   wp_users: 'wp_users',
   User: 'User',
-  Favorite: 'Favorite'
+  Favorite: 'Favorite',
+  ReadPost: 'ReadPost',
+  Mission: 'Mission',
+  UserMission: 'UserMission'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -416,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "favorite"
+    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "favorite" | "readPost" | "mission" | "userMission"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1542,6 +1545,204 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ReadPost: {
+      payload: Prisma.$ReadPostPayload<ExtArgs>
+      fields: Prisma.ReadPostFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReadPostFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReadPostPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReadPostFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReadPostPayload>
+        }
+        findFirst: {
+          args: Prisma.ReadPostFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReadPostPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReadPostFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReadPostPayload>
+        }
+        findMany: {
+          args: Prisma.ReadPostFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReadPostPayload>[]
+        }
+        create: {
+          args: Prisma.ReadPostCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReadPostPayload>
+        }
+        createMany: {
+          args: Prisma.ReadPostCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ReadPostDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReadPostPayload>
+        }
+        update: {
+          args: Prisma.ReadPostUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReadPostPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReadPostDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReadPostUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ReadPostUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReadPostPayload>
+        }
+        aggregate: {
+          args: Prisma.ReadPostAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReadPost>
+        }
+        groupBy: {
+          args: Prisma.ReadPostGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReadPostGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReadPostCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReadPostCountAggregateOutputType> | number
+        }
+      }
+    }
+    Mission: {
+      payload: Prisma.$MissionPayload<ExtArgs>
+      fields: Prisma.MissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MissionPayload>
+        }
+        findFirst: {
+          args: Prisma.MissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MissionPayload>
+        }
+        findMany: {
+          args: Prisma.MissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MissionPayload>[]
+        }
+        create: {
+          args: Prisma.MissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MissionPayload>
+        }
+        createMany: {
+          args: Prisma.MissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.MissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MissionPayload>
+        }
+        update: {
+          args: Prisma.MissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.MissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.MissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MissionPayload>
+        }
+        aggregate: {
+          args: Prisma.MissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMission>
+        }
+        groupBy: {
+          args: Prisma.MissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MissionCountAggregateOutputType> | number
+        }
+      }
+    }
+    UserMission: {
+      payload: Prisma.$UserMissionPayload<ExtArgs>
+      fields: Prisma.UserMissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserMissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserMissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserMissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserMissionPayload>
+        }
+        findFirst: {
+          args: Prisma.UserMissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserMissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserMissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserMissionPayload>
+        }
+        findMany: {
+          args: Prisma.UserMissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserMissionPayload>[]
+        }
+        create: {
+          args: Prisma.UserMissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserMissionPayload>
+        }
+        createMany: {
+          args: Prisma.UserMissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.UserMissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserMissionPayload>
+        }
+        update: {
+          args: Prisma.UserMissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserMissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserMissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserMissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.UserMissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserMissionPayload>
+        }
+        aggregate: {
+          args: Prisma.UserMissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserMission>
+        }
+        groupBy: {
+          args: Prisma.UserMissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserMissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserMissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserMissionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1790,6 +1991,8 @@ export const UserScalarFieldEnum = {
   photoUrl: 'photoUrl',
   firebaseUid: 'firebaseUid',
   wordpressId: 'wordpressId',
+  xp: 'xp',
+  coins: 'coins',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1805,6 +2008,42 @@ export const FavoriteScalarFieldEnum = {
 } as const
 
 export type FavoriteScalarFieldEnum = (typeof FavoriteScalarFieldEnum)[keyof typeof FavoriteScalarFieldEnum]
+
+
+export const ReadPostScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  wordpressPostId: 'wordpressPostId',
+  createdAt: 'createdAt'
+} as const
+
+export type ReadPostScalarFieldEnum = (typeof ReadPostScalarFieldEnum)[keyof typeof ReadPostScalarFieldEnum]
+
+
+export const MissionScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description',
+  target: 'target',
+  coinReward: 'coinReward',
+  xpReward: 'xpReward',
+  createdAt: 'createdAt'
+} as const
+
+export type MissionScalarFieldEnum = (typeof MissionScalarFieldEnum)[keyof typeof MissionScalarFieldEnum]
+
+
+export const UserMissionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  missionId: 'missionId',
+  progress: 'progress',
+  completed: 'completed',
+  completedAt: 'completedAt'
+} as const
+
+export type UserMissionScalarFieldEnum = (typeof UserMissionScalarFieldEnum)[keyof typeof UserMissionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1986,6 +2225,33 @@ export const FavoriteOrderByRelevanceFieldEnum = {
 export type FavoriteOrderByRelevanceFieldEnum = (typeof FavoriteOrderByRelevanceFieldEnum)[keyof typeof FavoriteOrderByRelevanceFieldEnum]
 
 
+export const ReadPostOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+} as const
+
+export type ReadPostOrderByRelevanceFieldEnum = (typeof ReadPostOrderByRelevanceFieldEnum)[keyof typeof ReadPostOrderByRelevanceFieldEnum]
+
+
+export const MissionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description'
+} as const
+
+export type MissionOrderByRelevanceFieldEnum = (typeof MissionOrderByRelevanceFieldEnum)[keyof typeof MissionOrderByRelevanceFieldEnum]
+
+
+export const UserMissionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  missionId: 'missionId'
+} as const
+
+export type UserMissionOrderByRelevanceFieldEnum = (typeof UserMissionOrderByRelevanceFieldEnum)[keyof typeof UserMissionOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -2017,6 +2283,13 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -2138,6 +2411,9 @@ export type GlobalOmitConfig = {
   wp_users?: Prisma.wp_usersOmit
   user?: Prisma.UserOmit
   favorite?: Prisma.FavoriteOmit
+  readPost?: Prisma.ReadPostOmit
+  mission?: Prisma.MissionOmit
+  userMission?: Prisma.UserMissionOmit
 }
 
 /* Types for Logging */

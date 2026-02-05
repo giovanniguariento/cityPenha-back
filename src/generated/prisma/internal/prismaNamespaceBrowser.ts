@@ -67,7 +67,10 @@ export const ModelName = {
   wp_usermeta: 'wp_usermeta',
   wp_users: 'wp_users',
   User: 'User',
-  Favorite: 'Favorite'
+  Favorite: 'Favorite',
+  ReadPost: 'ReadPost',
+  Mission: 'Mission',
+  UserMission: 'UserMission'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -295,6 +298,8 @@ export const UserScalarFieldEnum = {
   photoUrl: 'photoUrl',
   firebaseUid: 'firebaseUid',
   wordpressId: 'wordpressId',
+  xp: 'xp',
+  coins: 'coins',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -310,6 +315,42 @@ export const FavoriteScalarFieldEnum = {
 } as const
 
 export type FavoriteScalarFieldEnum = (typeof FavoriteScalarFieldEnum)[keyof typeof FavoriteScalarFieldEnum]
+
+
+export const ReadPostScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  wordpressPostId: 'wordpressPostId',
+  createdAt: 'createdAt'
+} as const
+
+export type ReadPostScalarFieldEnum = (typeof ReadPostScalarFieldEnum)[keyof typeof ReadPostScalarFieldEnum]
+
+
+export const MissionScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description',
+  target: 'target',
+  coinReward: 'coinReward',
+  xpReward: 'xpReward',
+  createdAt: 'createdAt'
+} as const
+
+export type MissionScalarFieldEnum = (typeof MissionScalarFieldEnum)[keyof typeof MissionScalarFieldEnum]
+
+
+export const UserMissionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  missionId: 'missionId',
+  progress: 'progress',
+  completed: 'completed',
+  completedAt: 'completedAt'
+} as const
+
+export type UserMissionScalarFieldEnum = (typeof UserMissionScalarFieldEnum)[keyof typeof UserMissionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -489,4 +530,31 @@ export const FavoriteOrderByRelevanceFieldEnum = {
 } as const
 
 export type FavoriteOrderByRelevanceFieldEnum = (typeof FavoriteOrderByRelevanceFieldEnum)[keyof typeof FavoriteOrderByRelevanceFieldEnum]
+
+
+export const ReadPostOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+} as const
+
+export type ReadPostOrderByRelevanceFieldEnum = (typeof ReadPostOrderByRelevanceFieldEnum)[keyof typeof ReadPostOrderByRelevanceFieldEnum]
+
+
+export const MissionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description'
+} as const
+
+export type MissionOrderByRelevanceFieldEnum = (typeof MissionOrderByRelevanceFieldEnum)[keyof typeof MissionOrderByRelevanceFieldEnum]
+
+
+export const UserMissionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  missionId: 'missionId'
+} as const
+
+export type UserMissionOrderByRelevanceFieldEnum = (typeof UserMissionOrderByRelevanceFieldEnum)[keyof typeof UserMissionOrderByRelevanceFieldEnum]
 

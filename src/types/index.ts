@@ -33,6 +33,8 @@ export interface FeedItem {
 
 /** Single post detail API response */
 export interface PostDetailResponse {
+  id: number;
+  slug: string;
   title: string;
   resume: string;
   readingTime: number;

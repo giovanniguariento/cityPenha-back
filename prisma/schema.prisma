@@ -218,36 +218,87 @@ model wp_users {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  name          String
-  photoUrl      String?  // Foto que vem do Firebase/Social Login
-  
+  id       String  @id @default(uuid())
+  email    String  @unique
+  name     String
+  photoUrl String? // Foto que vem do Firebase/Social Login
+
   // Conectores de Identidade
-  firebaseUid   String   @unique // O ID que vem do token do Google/Facebook
-  wordpressId   Int?     @unique // O ID do usuário criado dentro do WordPress
+  firebaseUid String @unique // O ID que vem do token do Google/Facebook
+  wordpressId Int?   @unique // O ID do usuário criado dentro do WordPress
 
   // Relacionamentos
-  favorites     Favorite[]
+  favorites Favorite[]
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  // Gamification
+  xp    Int @default(0)
+  coins Int @default(0)
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  readPosts    ReadPost[]
+  userMissions UserMission[]
 
   @@map("users")
 }
 
 model Favorite {
-  id              String   @id @default(uuid())
-  
-  userId          String
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   // AQUI ESTÁ O TRUQUE: Não temos tabela de Posts, apenas guardamos o ID do WP
-  wordpressPostId Int      
-  
-  createdAt       DateTime @default(now())
+  wordpressPostId Int
+
+  createdAt DateTime @default(now())
 
   // Garante que o usuário não favorita a mesma notícia 2 vezes
   @@unique([userId, wordpressPostId])
   @@map("favorites")
+}
+
+model ReadPost {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  wordpressPostId Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, wordpressPostId])
+  @@map("read_posts")
+}
+
+model Mission {
+  id           String        @id @default(uuid())
+  key          String        @unique
+  title        String
+  description  String?
+  target       Int
+  coinReward   Int           @default(0)
+  xpReward     Int           @default(0)
+  createdAt    DateTime      @default(now())
+  userMissions UserMission[]
+
+  @@map("missions")
+}
+
+model UserMission {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  missionId String
+  mission   Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  progress    Int       @default(0)
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  @@unique([userId, missionId])
+  @@map("user_missions")
 }

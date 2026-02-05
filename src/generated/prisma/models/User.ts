@@ -28,10 +28,14 @@ export type AggregateUser = {
 
 export type UserAvgAggregateOutputType = {
   wordpressId: number | null
+  xp: number | null
+  coins: number | null
 }
 
 export type UserSumAggregateOutputType = {
   wordpressId: number | null
+  xp: number | null
+  coins: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -41,6 +45,8 @@ export type UserMinAggregateOutputType = {
   photoUrl: string | null
   firebaseUid: string | null
   wordpressId: number | null
+  xp: number | null
+  coins: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +58,8 @@ export type UserMaxAggregateOutputType = {
   photoUrl: string | null
   firebaseUid: string | null
   wordpressId: number | null
+  xp: number | null
+  coins: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -63,6 +71,8 @@ export type UserCountAggregateOutputType = {
   photoUrl: number
   firebaseUid: number
   wordpressId: number
+  xp: number
+  coins: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -71,10 +81,14 @@ export type UserCountAggregateOutputType = {
 
 export type UserAvgAggregateInputType = {
   wordpressId?: true
+  xp?: true
+  coins?: true
 }
 
 export type UserSumAggregateInputType = {
   wordpressId?: true
+  xp?: true
+  coins?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -84,6 +98,8 @@ export type UserMinAggregateInputType = {
   photoUrl?: true
   firebaseUid?: true
   wordpressId?: true
+  xp?: true
+  coins?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -95,6 +111,8 @@ export type UserMaxAggregateInputType = {
   photoUrl?: true
   firebaseUid?: true
   wordpressId?: true
+  xp?: true
+  coins?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +124,8 @@ export type UserCountAggregateInputType = {
   photoUrl?: true
   firebaseUid?: true
   wordpressId?: true
+  xp?: true
+  coins?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -204,6 +224,8 @@ export type UserGroupByOutputType = {
   photoUrl: string | null
   firebaseUid: string
   wordpressId: number | null
+  xp: number
+  coins: number
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -238,9 +260,13 @@ export type UserWhereInput = {
   photoUrl?: Prisma.StringNullableFilter<"User"> | string | null
   firebaseUid?: Prisma.StringFilter<"User"> | string
   wordpressId?: Prisma.IntNullableFilter<"User"> | number | null
+  xp?: Prisma.IntFilter<"User"> | number
+  coins?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   favorites?: Prisma.FavoriteListRelationFilter
+  readPosts?: Prisma.ReadPostListRelationFilter
+  userMissions?: Prisma.UserMissionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -250,9 +276,13 @@ export type UserOrderByWithRelationInput = {
   photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrderInput | Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   favorites?: Prisma.FavoriteOrderByRelationAggregateInput
+  readPosts?: Prisma.ReadPostOrderByRelationAggregateInput
+  userMissions?: Prisma.UserMissionOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
 
@@ -266,9 +296,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringFilter<"User"> | string
   photoUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  xp?: Prisma.IntFilter<"User"> | number
+  coins?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   favorites?: Prisma.FavoriteListRelationFilter
+  readPosts?: Prisma.ReadPostListRelationFilter
+  userMissions?: Prisma.UserMissionListRelationFilter
 }, "id" | "email" | "firebaseUid" | "wordpressId">
 
 export type UserOrderByWithAggregationInput = {
@@ -278,6 +312,8 @@ export type UserOrderByWithAggregationInput = {
   photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrderInput | Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -297,6 +333,8 @@ export type UserScalarWhereWithAggregatesInput = {
   photoUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   firebaseUid?: Prisma.StringWithAggregatesFilter<"User"> | string
   wordpressId?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
+  xp?: Prisma.IntWithAggregatesFilter<"User"> | number
+  coins?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -308,9 +346,13 @@ export type UserCreateInput = {
   photoUrl?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  xp?: number
+  coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -320,9 +362,13 @@ export type UserUncheckedCreateInput = {
   photoUrl?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  xp?: number
+  coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -332,9 +378,13 @@ export type UserUpdateInput = {
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -344,9 +394,13 @@ export type UserUncheckedUpdateInput = {
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -356,6 +410,8 @@ export type UserCreateManyInput = {
   photoUrl?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  xp?: number
+  coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -367,6 +423,8 @@ export type UserUpdateManyMutationInput = {
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -378,6 +436,8 @@ export type UserUncheckedUpdateManyInput = {
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -395,12 +455,16 @@ export type UserCountOrderByAggregateInput = {
   photoUrl?: Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
   wordpressId?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  coins?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -410,6 +474,8 @@ export type UserMaxOrderByAggregateInput = {
   photoUrl?: Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -421,12 +487,16 @@ export type UserMinOrderByAggregateInput = {
   photoUrl?: Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
   wordpressId?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  coins?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -456,6 +526,34 @@ export type UserUpdateOneRequiredWithoutFavoritesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFavoritesInput, Prisma.UserUpdateWithoutFavoritesInput>, Prisma.UserUncheckedUpdateWithoutFavoritesInput>
 }
 
+export type UserCreateNestedOneWithoutReadPostsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReadPostsInput, Prisma.UserUncheckedCreateWithoutReadPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReadPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReadPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReadPostsInput, Prisma.UserUncheckedCreateWithoutReadPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReadPostsInput
+  upsert?: Prisma.UserUpsertWithoutReadPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReadPostsInput, Prisma.UserUpdateWithoutReadPostsInput>, Prisma.UserUncheckedUpdateWithoutReadPostsInput>
+}
+
+export type UserCreateNestedOneWithoutUserMissionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserMissionsInput, Prisma.UserUncheckedCreateWithoutUserMissionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserMissionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUserMissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserMissionsInput, Prisma.UserUncheckedCreateWithoutUserMissionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserMissionsInput
+  upsert?: Prisma.UserUpsertWithoutUserMissionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserMissionsInput, Prisma.UserUpdateWithoutUserMissionsInput>, Prisma.UserUncheckedUpdateWithoutUserMissionsInput>
+}
+
 export type UserCreateWithoutFavoritesInput = {
   id?: string
   email: string
@@ -463,8 +561,12 @@ export type UserCreateWithoutFavoritesInput = {
   photoUrl?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  xp?: number
+  coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFavoritesInput = {
@@ -474,8 +576,12 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   photoUrl?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  xp?: number
+  coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFavoritesInput = {
@@ -501,8 +607,12 @@ export type UserUpdateWithoutFavoritesInput = {
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFavoritesInput = {
@@ -512,8 +622,164 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutReadPostsInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReadPostsInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReadPostsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReadPostsInput, Prisma.UserUncheckedCreateWithoutReadPostsInput>
+}
+
+export type UserUpsertWithoutReadPostsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReadPostsInput, Prisma.UserUncheckedUpdateWithoutReadPostsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReadPostsInput, Prisma.UserUncheckedCreateWithoutReadPostsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReadPostsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReadPostsInput, Prisma.UserUncheckedUpdateWithoutReadPostsInput>
+}
+
+export type UserUpdateWithoutReadPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReadPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutUserMissionsInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutUserMissionsInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutUserMissionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserMissionsInput, Prisma.UserUncheckedCreateWithoutUserMissionsInput>
+}
+
+export type UserUpsertWithoutUserMissionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUserMissionsInput, Prisma.UserUncheckedUpdateWithoutUserMissionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserMissionsInput, Prisma.UserUncheckedCreateWithoutUserMissionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUserMissionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUserMissionsInput, Prisma.UserUncheckedUpdateWithoutUserMissionsInput>
+}
+
+export type UserUpdateWithoutUserMissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUserMissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -523,10 +789,14 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
 
 export type UserCountOutputType = {
   favorites: number
+  readPosts: number
+  userMissions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   favorites?: boolean | UserCountOutputTypeCountFavoritesArgs
+  readPosts?: boolean | UserCountOutputTypeCountReadPostsArgs
+  userMissions?: boolean | UserCountOutputTypeCountUserMissionsArgs
 }
 
 /**
@@ -546,6 +816,20 @@ export type UserCountOutputTypeCountFavoritesArgs<ExtArgs extends runtime.Types.
   where?: Prisma.FavoriteWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReadPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReadPostWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUserMissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserMissionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -554,9 +838,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   photoUrl?: boolean
   firebaseUid?: boolean
   wordpressId?: boolean
+  xp?: boolean
+  coins?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
+  readPosts?: boolean | Prisma.User$readPostsArgs<ExtArgs>
+  userMissions?: boolean | Prisma.User$userMissionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -569,13 +857,17 @@ export type UserSelectScalar = {
   photoUrl?: boolean
   firebaseUid?: boolean
   wordpressId?: boolean
+  xp?: boolean
+  coins?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "photoUrl" | "firebaseUid" | "wordpressId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "photoUrl" | "firebaseUid" | "wordpressId" | "xp" | "coins" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
+  readPosts?: boolean | Prisma.User$readPostsArgs<ExtArgs>
+  userMissions?: boolean | Prisma.User$userMissionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -583,6 +875,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     favorites: Prisma.$FavoritePayload<ExtArgs>[]
+    readPosts: Prisma.$ReadPostPayload<ExtArgs>[]
+    userMissions: Prisma.$UserMissionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -591,6 +885,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     photoUrl: string | null
     firebaseUid: string
     wordpressId: number | null
+    xp: number
+    coins: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -934,6 +1230,8 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   favorites<T extends Prisma.User$favoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  readPosts<T extends Prisma.User$readPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$readPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReadPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userMissions<T extends Prisma.User$userMissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userMissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserMissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -969,6 +1267,8 @@ export interface UserFieldRefs {
   readonly photoUrl: Prisma.FieldRef<"User", 'String'>
   readonly firebaseUid: Prisma.FieldRef<"User", 'String'>
   readonly wordpressId: Prisma.FieldRef<"User", 'Int'>
+  readonly xp: Prisma.FieldRef<"User", 'Int'>
+  readonly coins: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -1335,6 +1635,54 @@ export type User$favoritesArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.FavoriteScalarFieldEnum | Prisma.FavoriteScalarFieldEnum[]
+}
+
+/**
+ * User.readPosts
+ */
+export type User$readPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReadPost
+   */
+  select?: Prisma.ReadPostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReadPost
+   */
+  omit?: Prisma.ReadPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReadPostInclude<ExtArgs> | null
+  where?: Prisma.ReadPostWhereInput
+  orderBy?: Prisma.ReadPostOrderByWithRelationInput | Prisma.ReadPostOrderByWithRelationInput[]
+  cursor?: Prisma.ReadPostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReadPostScalarFieldEnum | Prisma.ReadPostScalarFieldEnum[]
+}
+
+/**
+ * User.userMissions
+ */
+export type User$userMissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserMission
+   */
+  select?: Prisma.UserMissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserMission
+   */
+  omit?: Prisma.UserMissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserMissionInclude<ExtArgs> | null
+  where?: Prisma.UserMissionWhereInput
+  orderBy?: Prisma.UserMissionOrderByWithRelationInput | Prisma.UserMissionOrderByWithRelationInput[]
+  cursor?: Prisma.UserMissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserMissionScalarFieldEnum | Prisma.UserMissionScalarFieldEnum[]
 }
 
 /**

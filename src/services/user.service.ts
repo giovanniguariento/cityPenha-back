@@ -10,4 +10,8 @@ export class UserService {
   async findByFirebaseUid(firebaseUid: string): Promise<User | null> {
     return prisma.user.findUnique({ where: { firebaseUid } });
   }
+
+  async findById(id: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { id } });
+  }
 }
