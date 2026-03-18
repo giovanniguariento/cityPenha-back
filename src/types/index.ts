@@ -29,6 +29,7 @@ export interface FeedItem {
   categories: number[];
   categoryName: string;
   onlyVideo: boolean;
+  viewed?: boolean;
 }
 
 /** Single post detail API response */
@@ -53,4 +54,34 @@ export interface WordPressUserResponse {
   name?: string;
   slug?: string;
   [key: string]: unknown;
+}
+
+/** Dates (YYYY-MM-DD) when the user read at least one post. Returned in GET /user/:id and after recording a read. */
+export type DaysWithReads = string[];
+
+/** Response of GET /user/:id/frequency */
+export interface UserFrequencyResponse {
+  daysWithReads: DaysWithReads;
+  today: string; // YYYY-MM-DD
+}
+
+/** Mission with user progress — usado na lista de missões (getInfo e recordRead). */
+export interface MissionWithProgress {
+  id: string;
+  key: string;
+  title: string;
+  description: string | null;
+  target: number;
+  coinReward: number;
+  xpReward: number;
+  progress: number;
+  completed: boolean;
+  completedAt: string | null; // ISO date
+}
+
+/** User level info returned in user endpoints. */
+export interface UserLevel {
+  levelNumber: number;
+  minXp: number;
+  minCompletedMissions: number;
 }

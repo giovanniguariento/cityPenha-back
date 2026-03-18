@@ -403,7 +403,8 @@ export const ModelName = {
   Favorite: 'Favorite',
   ReadPost: 'ReadPost',
   Mission: 'Mission',
-  UserMission: 'UserMission'
+  UserMission: 'UserMission',
+  Level: 'Level'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -419,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "favorite" | "readPost" | "mission" | "userMission"
+    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "favorite" | "readPost" | "mission" | "userMission" | "level"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1743,6 +1744,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Level: {
+      payload: Prisma.$LevelPayload<ExtArgs>
+      fields: Prisma.LevelFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LevelFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LevelFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelPayload>
+        }
+        findFirst: {
+          args: Prisma.LevelFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LevelFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelPayload>
+        }
+        findMany: {
+          args: Prisma.LevelFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelPayload>[]
+        }
+        create: {
+          args: Prisma.LevelCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelPayload>
+        }
+        createMany: {
+          args: Prisma.LevelCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.LevelDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelPayload>
+        }
+        update: {
+          args: Prisma.LevelUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelPayload>
+        }
+        deleteMany: {
+          args: Prisma.LevelDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LevelUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.LevelUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelPayload>
+        }
+        aggregate: {
+          args: Prisma.LevelAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLevel>
+        }
+        groupBy: {
+          args: Prisma.LevelGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LevelGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LevelCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LevelCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2046,6 +2113,17 @@ export const UserMissionScalarFieldEnum = {
 export type UserMissionScalarFieldEnum = (typeof UserMissionScalarFieldEnum)[keyof typeof UserMissionScalarFieldEnum]
 
 
+export const LevelScalarFieldEnum = {
+  id: 'id',
+  levelNumber: 'levelNumber',
+  minXp: 'minXp',
+  minCompletedMissions: 'minCompletedMissions',
+  createdAt: 'createdAt'
+} as const
+
+export type LevelScalarFieldEnum = (typeof LevelScalarFieldEnum)[keyof typeof LevelScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2252,6 +2330,13 @@ export const UserMissionOrderByRelevanceFieldEnum = {
 export type UserMissionOrderByRelevanceFieldEnum = (typeof UserMissionOrderByRelevanceFieldEnum)[keyof typeof UserMissionOrderByRelevanceFieldEnum]
 
 
+export const LevelOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type LevelOrderByRelevanceFieldEnum = (typeof LevelOrderByRelevanceFieldEnum)[keyof typeof LevelOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -2414,6 +2499,7 @@ export type GlobalOmitConfig = {
   readPost?: Prisma.ReadPostOmit
   mission?: Prisma.MissionOmit
   userMission?: Prisma.UserMissionOmit
+  level?: Prisma.LevelOmit
 }
 
 /* Types for Logging */

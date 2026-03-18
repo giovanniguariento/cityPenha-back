@@ -7,6 +7,7 @@ const userController = new UserController(wordpressService, userService);
 
 router.post('/signup', userController.create);
 router.post('/read/:postId', userController.recordRead);
+router.get('/:id/frequency', userController.getFrequency);
 router.get('/:id', userController.getInfo);
 
 export default router;

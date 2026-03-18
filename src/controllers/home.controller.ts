@@ -4,6 +4,7 @@ import { WordpressService } from '../services/wordpress.service';
 import type { FeedItem } from '../types';
 import { toFeedItem } from '../helpers/post.helper';
 import { insertAdsIntoPosts } from '../helpers/ad.helper';
+import { prisma } from '../lib/prisma';
 
 export class HomeController {
   constructor(private readonly wordpressService: WordpressService) { }
@@ -59,6 +60,40 @@ export class HomeController {
         }
         return { id: category.id, name: category.name, posts: feedItems };
       });
+
+      // If a userId is provided (query param `userId` or header `x-user-id`), fetch which posts
+      // were already read by that user and mark feed items accordingly.
+      const userId = (req.query.userId as string) || req.header('x-user-id') || undefined;
+      if (userId) {
+        const allIds = new Set<number>();
+        for (const item of carousel) allIds.add(item.id);
+        for (const cat of categoriesWithPosts) {
+          for (const item of cat.posts) allIds.add(item.id);
+        }
+
+        if (allIds.size > 0) {
+          const readRecords = await prisma.readPost.findMany({
+            where: { userId, wordpressPostId: { in: Array.from(allIds) } },
+            select: { wordpressPostId: true },
+          });
+          const readSet = new Set(readRecords.map((r) => r.wordpressPostId));
+
+          for (const item of carousel) {
+            item.viewed = readSet.has(item.id);
+          }
+          for (const cat of categoriesWithPosts) {
+            for (const item of cat.posts) {
+              item.viewed = readSet.has(item.id);
+            }
+          }
+        }
+      } else {
+        // default to false for all items when no user provided
+        for (const item of carousel) item.viewed = false;
+        for (const cat of categoriesWithPosts) {
+          for (const item of cat.posts) item.viewed = false;
+        }
+      }
 
       if (posts.length === 0 && categories.length === 0) {
         res.status(404).json({ success: false, message: 'Posts not found' });

@@ -53,9 +53,38 @@ export class UserController {
         res.status(404).json({ success: false, message: 'User not found' });
         return;
       }
-      const completedMissionsCount = await gamification.getCompletedMissionsCount(id);
+      const [completedMissionsCount, daysWithReads, missions, level] = await Promise.all([
+        gamification.getCompletedMissionsCount(id),
+        gamification.getDaysWithReads(id),
+        gamification.getMissionsWithUserProgress(id),
+        gamification.getUserLevel(id),
+      ]);
 
-      res.status(200).json({ success: true, data: { user, completedMissionsCount } });
+      res.status(200).json({ success: true, data: { user, completedMissionsCount, daysWithReads, missions, level } });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /** GET /user/:id/frequency — retorna dias em que leu notícia + data de hoje (YYYY-MM-DD). */
+  public getFrequency = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id } = req.params as { id?: string };
+      if (!id) {
+        res.status(400).json({ success: false, message: 'Missing user id' });
+        return;
+      }
+
+      const user = await this.userService.findById(id);
+      if (!user) {
+        res.status(404).json({ success: false, message: 'User not found' });
+        return;
+      }
+
+      const daysWithReads = await gamification.getDaysWithReads(id);
+      const today = new Date().toISOString().slice(0, 10);
+
+      res.status(200).json({ success: true, data: { daysWithReads, today } });
     } catch (error) {
       next(error);
     }
@@ -107,7 +136,12 @@ export class UserController {
       }
 
       const result = await gamification.recordReadPost(userId, wordpressPostId);
-      res.status(200).json({ success: true, data: result });
+      const daysWithReads = result.daysWithReads ?? (await gamification.getDaysWithReads(userId));
+      const missions = await gamification.getMissionsWithUserProgress(userId);
+      const data = 'user' in result
+        ? { user: result.user, completedMissionsCount: result.completedMissionsCount, daysWithReads, missions, level: result.level ?? null }
+        : { ...result, daysWithReads, missions };
+      res.status(200).json({ success: true, data });
     } catch (error) {
       next(error);
     }

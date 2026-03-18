@@ -117,3 +117,8 @@ export type Mission = Prisma.MissionModel
  * 
  */
 export type UserMission = Prisma.UserMissionModel
+/**
+ * Model Level
+ * 
+ */
+export type Level = Prisma.LevelModel

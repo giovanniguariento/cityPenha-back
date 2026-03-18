@@ -302,3 +302,13 @@ model UserMission {
   @@unique([userId, missionId])
   @@map("user_missions")
 }
+
+model Level {
+  id                   String   @id @default(uuid())
+  levelNumber          Int      @unique
+  minXp                Int      @default(0)
+  minCompletedMissions Int      @default(0)
+  createdAt            DateTime @default(now())
+
+  @@map("levels")
+}

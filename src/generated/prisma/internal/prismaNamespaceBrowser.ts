@@ -70,7 +70,8 @@ export const ModelName = {
   Favorite: 'Favorite',
   ReadPost: 'ReadPost',
   Mission: 'Mission',
-  UserMission: 'UserMission'
+  UserMission: 'UserMission',
+  Level: 'Level'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -353,6 +354,17 @@ export const UserMissionScalarFieldEnum = {
 export type UserMissionScalarFieldEnum = (typeof UserMissionScalarFieldEnum)[keyof typeof UserMissionScalarFieldEnum]
 
 
+export const LevelScalarFieldEnum = {
+  id: 'id',
+  levelNumber: 'levelNumber',
+  minXp: 'minXp',
+  minCompletedMissions: 'minCompletedMissions',
+  createdAt: 'createdAt'
+} as const
+
+export type LevelScalarFieldEnum = (typeof LevelScalarFieldEnum)[keyof typeof LevelScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -557,4 +569,11 @@ export const UserMissionOrderByRelevanceFieldEnum = {
 } as const
 
 export type UserMissionOrderByRelevanceFieldEnum = (typeof UserMissionOrderByRelevanceFieldEnum)[keyof typeof UserMissionOrderByRelevanceFieldEnum]
+
+
+export const LevelOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type LevelOrderByRelevanceFieldEnum = (typeof LevelOrderByRelevanceFieldEnum)[keyof typeof LevelOrderByRelevanceFieldEnum]
 

@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import compression from 'compression';
 import homeRoutes from './routes/home.routes';
+import missionRoutes from './routes/mission.routes';
 import postRoutes from './routes/post.routes';
 import userRoutes from './routes/user.routes';
 
@@ -14,6 +15,7 @@ app.use(cors());
 
 // 2. Routes
 app.use('/home', homeRoutes);
+app.use('/mission', missionRoutes);
 app.use('/post', postRoutes);
 app.use('/user', userRoutes);
 
