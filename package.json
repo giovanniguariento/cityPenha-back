@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "postinstall": "prisma generate && prisma db push",
+    "postinstall": "prisma generate",
     "start": "node dist/server.js",
     "start:dev": "tsx --env-file=.env --watch src/server.ts",
     "build": "pkgroll"

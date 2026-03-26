@@ -1,9 +1,10 @@
 import { ETypePost, type IPost } from '../models/post.interface';
 import type { Author } from '../types';
-import type { FeedItem, PostDetailResponse } from '../types';
+import type { FeedItem, PostDetailBase } from '../types';
 import type { ICategory } from '../models/category.interface';
 import type { ITag } from '../models/tag.interface';
 import { isSingleVideoContent } from './content.helper';
+import type { WordpressService } from '../services/wordpress.service';
 
 const SPONSORED_AUTHOR: Author = {
   name: 'Patrocinado',
@@ -45,7 +46,7 @@ export function toPostDetail(
   post: IPost,
   categories: ICategory[],
   tags: ITag[]
-): PostDetailResponse {
+): PostDetailBase {
   const tagNames = post.tags
     .map((tagId) => tags.find((t) => t.id === tagId)?.name)
     .filter((name): name is string => name != null);
@@ -64,5 +65,43 @@ export function toPostDetail(
     categoryName: categories[0]?.name ?? '',
     onlyVideo: isSingleVideoContent(post.content.rendered),
   };
+}
+
+/** Verifica se existe post ou anúncio no WordPress com esse ID. */
+export async function verifyWordpressPostExists(
+  wordpressService: WordpressService,
+  wordpressPostId: number
+): Promise<boolean> {
+  try {
+    await wordpressService.getPost(wordpressPostId);
+    return true;
+  } catch {
+    try {
+      await wordpressService.getAd(wordpressPostId);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
+
+/** Busca URL da imagem de destaque (post ou anúncio). */
+export async function fetchFeaturedImageUrl(
+  wordpressService: WordpressService,
+  wordpressPostId: number
+): Promise<string | null> {
+  try {
+    const post = await wordpressService.getPost(wordpressPostId);
+    const url = getFeaturedImageUrl(post);
+    return url || null;
+  } catch {
+    try {
+      const ad = await wordpressService.getAd(wordpressPostId);
+      const url = getFeaturedImageUrl(ad);
+      return url || null;
+    } catch {
+      return null;
+    }
+  }
 }
 

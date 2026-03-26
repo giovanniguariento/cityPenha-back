@@ -264,8 +264,9 @@ export type UserWhereInput = {
   coins?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  favorites?: Prisma.FavoriteListRelationFilter
+  postFolders?: Prisma.PostFolderListRelationFilter
   readPosts?: Prisma.ReadPostListRelationFilter
+  likedPosts?: Prisma.LikedPostListRelationFilter
   userMissions?: Prisma.UserMissionListRelationFilter
 }
 
@@ -280,8 +281,9 @@ export type UserOrderByWithRelationInput = {
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  favorites?: Prisma.FavoriteOrderByRelationAggregateInput
+  postFolders?: Prisma.PostFolderOrderByRelationAggregateInput
   readPosts?: Prisma.ReadPostOrderByRelationAggregateInput
+  likedPosts?: Prisma.LikedPostOrderByRelationAggregateInput
   userMissions?: Prisma.UserMissionOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
@@ -300,8 +302,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   coins?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  favorites?: Prisma.FavoriteListRelationFilter
+  postFolders?: Prisma.PostFolderListRelationFilter
   readPosts?: Prisma.ReadPostListRelationFilter
+  likedPosts?: Prisma.LikedPostListRelationFilter
   userMissions?: Prisma.UserMissionListRelationFilter
 }, "id" | "email" | "firebaseUid" | "wordpressId">
 
@@ -350,8 +353,9 @@ export type UserCreateInput = {
   coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
   readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
 }
 
@@ -366,8 +370,9 @@ export type UserUncheckedCreateInput = {
   coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
   readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -382,8 +387,9 @@ export type UserUpdateInput = {
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
   readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
 }
 
@@ -398,8 +404,9 @@ export type UserUncheckedUpdateInput = {
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
   readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -512,18 +519,18 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type UserCreateNestedOneWithoutFavoritesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFavoritesInput, Prisma.UserUncheckedCreateWithoutFavoritesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFavoritesInput
+export type UserCreateNestedOneWithoutPostFoldersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPostFoldersInput, Prisma.UserUncheckedCreateWithoutPostFoldersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostFoldersInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutFavoritesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFavoritesInput, Prisma.UserUncheckedCreateWithoutFavoritesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFavoritesInput
-  upsert?: Prisma.UserUpsertWithoutFavoritesInput
+export type UserUpdateOneRequiredWithoutPostFoldersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPostFoldersInput, Prisma.UserUncheckedCreateWithoutPostFoldersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostFoldersInput
+  upsert?: Prisma.UserUpsertWithoutPostFoldersInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFavoritesInput, Prisma.UserUpdateWithoutFavoritesInput>, Prisma.UserUncheckedUpdateWithoutFavoritesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPostFoldersInput, Prisma.UserUpdateWithoutPostFoldersInput>, Prisma.UserUncheckedUpdateWithoutPostFoldersInput>
 }
 
 export type UserCreateNestedOneWithoutReadPostsInput = {
@@ -540,6 +547,20 @@ export type UserUpdateOneRequiredWithoutReadPostsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReadPostsInput, Prisma.UserUpdateWithoutReadPostsInput>, Prisma.UserUncheckedUpdateWithoutReadPostsInput>
 }
 
+export type UserCreateNestedOneWithoutLikedPostsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLikedPostsInput, Prisma.UserUncheckedCreateWithoutLikedPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLikedPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLikedPostsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLikedPostsInput, Prisma.UserUncheckedCreateWithoutLikedPostsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLikedPostsInput
+  upsert?: Prisma.UserUpsertWithoutLikedPostsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLikedPostsInput, Prisma.UserUpdateWithoutLikedPostsInput>, Prisma.UserUncheckedUpdateWithoutLikedPostsInput>
+}
+
 export type UserCreateNestedOneWithoutUserMissionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutUserMissionsInput, Prisma.UserUncheckedCreateWithoutUserMissionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserMissionsInput
@@ -554,7 +575,7 @@ export type UserUpdateOneRequiredWithoutUserMissionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserMissionsInput, Prisma.UserUpdateWithoutUserMissionsInput>, Prisma.UserUncheckedUpdateWithoutUserMissionsInput>
 }
 
-export type UserCreateWithoutFavoritesInput = {
+export type UserCreateWithoutPostFoldersInput = {
   id?: string
   email: string
   name: string
@@ -566,10 +587,11 @@ export type UserCreateWithoutFavoritesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutFavoritesInput = {
+export type UserUncheckedCreateWithoutPostFoldersInput = {
   id?: string
   email: string
   name: string
@@ -581,26 +603,27 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutFavoritesInput = {
+export type UserCreateOrConnectWithoutPostFoldersInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutFavoritesInput, Prisma.UserUncheckedCreateWithoutFavoritesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPostFoldersInput, Prisma.UserUncheckedCreateWithoutPostFoldersInput>
 }
 
-export type UserUpsertWithoutFavoritesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutFavoritesInput, Prisma.UserUncheckedUpdateWithoutFavoritesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutFavoritesInput, Prisma.UserUncheckedCreateWithoutFavoritesInput>
+export type UserUpsertWithoutPostFoldersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPostFoldersInput, Prisma.UserUncheckedUpdateWithoutPostFoldersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPostFoldersInput, Prisma.UserUncheckedCreateWithoutPostFoldersInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutFavoritesInput = {
+export type UserUpdateToOneWithWhereWithoutPostFoldersInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutFavoritesInput, Prisma.UserUncheckedUpdateWithoutFavoritesInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPostFoldersInput, Prisma.UserUncheckedUpdateWithoutPostFoldersInput>
 }
 
-export type UserUpdateWithoutFavoritesInput = {
+export type UserUpdateWithoutPostFoldersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -612,10 +635,11 @@ export type UserUpdateWithoutFavoritesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutFavoritesInput = {
+export type UserUncheckedUpdateWithoutPostFoldersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -627,6 +651,7 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -641,7 +666,8 @@ export type UserCreateWithoutReadPostsInput = {
   coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
 }
 
@@ -656,7 +682,8 @@ export type UserUncheckedCreateWithoutReadPostsInput = {
   coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -687,7 +714,8 @@ export type UserUpdateWithoutReadPostsInput = {
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
 }
 
@@ -702,7 +730,88 @@ export type UserUncheckedUpdateWithoutReadPostsInput = {
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutLikedPostsInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLikedPostsInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutLikedPostsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLikedPostsInput, Prisma.UserUncheckedCreateWithoutLikedPostsInput>
+}
+
+export type UserUpsertWithoutLikedPostsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLikedPostsInput, Prisma.UserUncheckedUpdateWithoutLikedPostsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLikedPostsInput, Prisma.UserUncheckedCreateWithoutLikedPostsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLikedPostsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLikedPostsInput, Prisma.UserUncheckedUpdateWithoutLikedPostsInput>
+}
+
+export type UserUpdateWithoutLikedPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLikedPostsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -717,8 +826,9 @@ export type UserCreateWithoutUserMissionsInput = {
   coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  favorites?: Prisma.FavoriteCreateNestedManyWithoutUserInput
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
   readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserMissionsInput = {
@@ -732,8 +842,9 @@ export type UserUncheckedCreateWithoutUserMissionsInput = {
   coins?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutUserInput
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
   readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserMissionsInput = {
@@ -763,8 +874,9 @@ export type UserUpdateWithoutUserMissionsInput = {
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  favorites?: Prisma.FavoriteUpdateManyWithoutUserNestedInput
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
   readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserMissionsInput = {
@@ -778,8 +890,9 @@ export type UserUncheckedUpdateWithoutUserMissionsInput = {
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutUserNestedInput
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
   readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -788,14 +901,16 @@ export type UserUncheckedUpdateWithoutUserMissionsInput = {
  */
 
 export type UserCountOutputType = {
-  favorites: number
+  postFolders: number
   readPosts: number
+  likedPosts: number
   userMissions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  favorites?: boolean | UserCountOutputTypeCountFavoritesArgs
+  postFolders?: boolean | UserCountOutputTypeCountPostFoldersArgs
   readPosts?: boolean | UserCountOutputTypeCountReadPostsArgs
+  likedPosts?: boolean | UserCountOutputTypeCountLikedPostsArgs
   userMissions?: boolean | UserCountOutputTypeCountUserMissionsArgs
 }
 
@@ -812,8 +927,8 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountFavoritesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FavoriteWhereInput
+export type UserCountOutputTypeCountPostFoldersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PostFolderWhereInput
 }
 
 /**
@@ -821,6 +936,13 @@ export type UserCountOutputTypeCountFavoritesArgs<ExtArgs extends runtime.Types.
  */
 export type UserCountOutputTypeCountReadPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ReadPostWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLikedPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LikedPostWhereInput
 }
 
 /**
@@ -842,8 +964,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   coins?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
+  postFolders?: boolean | Prisma.User$postFoldersArgs<ExtArgs>
   readPosts?: boolean | Prisma.User$readPostsArgs<ExtArgs>
+  likedPosts?: boolean | Prisma.User$likedPostsArgs<ExtArgs>
   userMissions?: boolean | Prisma.User$userMissionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -865,8 +988,9 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "photoUrl" | "firebaseUid" | "wordpressId" | "xp" | "coins" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
+  postFolders?: boolean | Prisma.User$postFoldersArgs<ExtArgs>
   readPosts?: boolean | Prisma.User$readPostsArgs<ExtArgs>
+  likedPosts?: boolean | Prisma.User$likedPostsArgs<ExtArgs>
   userMissions?: boolean | Prisma.User$userMissionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -874,8 +998,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    favorites: Prisma.$FavoritePayload<ExtArgs>[]
+    postFolders: Prisma.$PostFolderPayload<ExtArgs>[]
     readPosts: Prisma.$ReadPostPayload<ExtArgs>[]
+    likedPosts: Prisma.$LikedPostPayload<ExtArgs>[]
     userMissions: Prisma.$UserMissionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1229,8 +1354,9 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  favorites<T extends Prisma.User$favoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  postFolders<T extends Prisma.User$postFoldersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$postFoldersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostFolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   readPosts<T extends Prisma.User$readPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$readPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReadPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  likedPosts<T extends Prisma.User$likedPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likedPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikedPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userMissions<T extends Prisma.User$userMissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userMissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserMissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1614,27 +1740,27 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.favorites
+ * User.postFolders
  */
-export type User$favoritesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$postFoldersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Favorite
+   * Select specific fields to fetch from the PostFolder
    */
-  select?: Prisma.FavoriteSelect<ExtArgs> | null
+  select?: Prisma.PostFolderSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Favorite
+   * Omit specific fields from the PostFolder
    */
-  omit?: Prisma.FavoriteOmit<ExtArgs> | null
+  omit?: Prisma.PostFolderOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.FavoriteInclude<ExtArgs> | null
-  where?: Prisma.FavoriteWhereInput
-  orderBy?: Prisma.FavoriteOrderByWithRelationInput | Prisma.FavoriteOrderByWithRelationInput[]
-  cursor?: Prisma.FavoriteWhereUniqueInput
+  include?: Prisma.PostFolderInclude<ExtArgs> | null
+  where?: Prisma.PostFolderWhereInput
+  orderBy?: Prisma.PostFolderOrderByWithRelationInput | Prisma.PostFolderOrderByWithRelationInput[]
+  cursor?: Prisma.PostFolderWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.FavoriteScalarFieldEnum | Prisma.FavoriteScalarFieldEnum[]
+  distinct?: Prisma.PostFolderScalarFieldEnum | Prisma.PostFolderScalarFieldEnum[]
 }
 
 /**
@@ -1659,6 +1785,30 @@ export type User$readPostsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.ReadPostScalarFieldEnum | Prisma.ReadPostScalarFieldEnum[]
+}
+
+/**
+ * User.likedPosts
+ */
+export type User$likedPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LikedPost
+   */
+  select?: Prisma.LikedPostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LikedPost
+   */
+  omit?: Prisma.LikedPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LikedPostInclude<ExtArgs> | null
+  where?: Prisma.LikedPostWhereInput
+  orderBy?: Prisma.LikedPostOrderByWithRelationInput | Prisma.LikedPostOrderByWithRelationInput[]
+  cursor?: Prisma.LikedPostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LikedPostScalarFieldEnum | Prisma.LikedPostScalarFieldEnum[]
 }
 
 /**

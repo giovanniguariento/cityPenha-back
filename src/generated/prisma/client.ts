@@ -120,8 +120,13 @@ export type wp_users = Prisma.wp_usersModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model PostFolder
+ * Pastas de salvos/curtidas por usuário. `internalKey` = "likes" | "default_saved" para pastas fixas; null = pasta customizada.
+ */
+export type PostFolder = Prisma.PostFolderModel
+/**
  * Model Favorite
- * 
+ * Item de post em uma pasta (salvos ou curtidas). Mesmo post pode existir em várias pastas (pastas diferentes).
  */
 export type Favorite = Prisma.FavoriteModel
 /**
@@ -129,6 +134,11 @@ export type Favorite = Prisma.FavoriteModel
  * 
  */
 export type ReadPost = Prisma.ReadPostModel
+/**
+ * Model LikedPost
+ * Primeira vez que o usuário curtiu cada post (pasta fixa curtidas). Não remove ao descurtir — usado na missão like_10_posts.
+ */
+export type LikedPost = Prisma.LikedPostModel
 /**
  * Model Mission
  * 

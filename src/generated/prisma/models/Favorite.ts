@@ -14,7 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace.ts"
 
 /**
  * Model Favorite
- * 
+ * Item de post em uma pasta (salvos ou curtidas). Mesmo post pode existir em várias pastas (pastas diferentes).
  */
 export type FavoriteModel = runtime.Types.Result.DefaultSelection<Prisma.$FavoritePayload>
 
@@ -36,21 +36,21 @@ export type FavoriteSumAggregateOutputType = {
 
 export type FavoriteMinAggregateOutputType = {
   id: string | null
-  userId: string | null
+  folderId: string | null
   wordpressPostId: number | null
   createdAt: Date | null
 }
 
 export type FavoriteMaxAggregateOutputType = {
   id: string | null
-  userId: string | null
+  folderId: string | null
   wordpressPostId: number | null
   createdAt: Date | null
 }
 
 export type FavoriteCountAggregateOutputType = {
   id: number
-  userId: number
+  folderId: number
   wordpressPostId: number
   createdAt: number
   _all: number
@@ -67,21 +67,21 @@ export type FavoriteSumAggregateInputType = {
 
 export type FavoriteMinAggregateInputType = {
   id?: true
-  userId?: true
+  folderId?: true
   wordpressPostId?: true
   createdAt?: true
 }
 
 export type FavoriteMaxAggregateInputType = {
   id?: true
-  userId?: true
+  folderId?: true
   wordpressPostId?: true
   createdAt?: true
 }
 
 export type FavoriteCountAggregateInputType = {
   id?: true
-  userId?: true
+  folderId?: true
   wordpressPostId?: true
   createdAt?: true
   _all?: true
@@ -175,7 +175,7 @@ export type FavoriteGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type FavoriteGroupByOutputType = {
   id: string
-  userId: string
+  folderId: string
   wordpressPostId: number
   createdAt: Date
   _count: FavoriteCountAggregateOutputType | null
@@ -205,36 +205,36 @@ export type FavoriteWhereInput = {
   OR?: Prisma.FavoriteWhereInput[]
   NOT?: Prisma.FavoriteWhereInput | Prisma.FavoriteWhereInput[]
   id?: Prisma.StringFilter<"Favorite"> | string
-  userId?: Prisma.StringFilter<"Favorite"> | string
+  folderId?: Prisma.StringFilter<"Favorite"> | string
   wordpressPostId?: Prisma.IntFilter<"Favorite"> | number
   createdAt?: Prisma.DateTimeFilter<"Favorite"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  folder?: Prisma.XOR<Prisma.PostFolderScalarRelationFilter, Prisma.PostFolderWhereInput>
 }
 
 export type FavoriteOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   wordpressPostId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
+  folder?: Prisma.PostFolderOrderByWithRelationInput
   _relevance?: Prisma.FavoriteOrderByRelevanceInput
 }
 
 export type FavoriteWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  userId_wordpressPostId?: Prisma.FavoriteUserIdWordpressPostIdCompoundUniqueInput
+  folderId_wordpressPostId?: Prisma.FavoriteFolderIdWordpressPostIdCompoundUniqueInput
   AND?: Prisma.FavoriteWhereInput | Prisma.FavoriteWhereInput[]
   OR?: Prisma.FavoriteWhereInput[]
   NOT?: Prisma.FavoriteWhereInput | Prisma.FavoriteWhereInput[]
-  userId?: Prisma.StringFilter<"Favorite"> | string
+  folderId?: Prisma.StringFilter<"Favorite"> | string
   wordpressPostId?: Prisma.IntFilter<"Favorite"> | number
   createdAt?: Prisma.DateTimeFilter<"Favorite"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "userId_wordpressPostId">
+  folder?: Prisma.XOR<Prisma.PostFolderScalarRelationFilter, Prisma.PostFolderWhereInput>
+}, "id" | "folderId_wordpressPostId">
 
 export type FavoriteOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   wordpressPostId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.FavoriteCountOrderByAggregateInput
@@ -249,7 +249,7 @@ export type FavoriteScalarWhereWithAggregatesInput = {
   OR?: Prisma.FavoriteScalarWhereWithAggregatesInput[]
   NOT?: Prisma.FavoriteScalarWhereWithAggregatesInput | Prisma.FavoriteScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Favorite"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"Favorite"> | string
+  folderId?: Prisma.StringWithAggregatesFilter<"Favorite"> | string
   wordpressPostId?: Prisma.IntWithAggregatesFilter<"Favorite"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Favorite"> | Date | string
 }
@@ -258,12 +258,12 @@ export type FavoriteCreateInput = {
   id?: string
   wordpressPostId: number
   createdAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutFavoritesInput
+  folder: Prisma.PostFolderCreateNestedOneWithoutFavoritesInput
 }
 
 export type FavoriteUncheckedCreateInput = {
   id?: string
-  userId: string
+  folderId: string
   wordpressPostId: number
   createdAt?: Date | string
 }
@@ -272,19 +272,19 @@ export type FavoriteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressPostId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutFavoritesNestedInput
+  folder?: Prisma.PostFolderUpdateOneRequiredWithoutFavoritesNestedInput
 }
 
 export type FavoriteUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  folderId?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressPostId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type FavoriteCreateManyInput = {
   id?: string
-  userId: string
+  folderId: string
   wordpressPostId: number
   createdAt?: Date | string
 }
@@ -297,7 +297,7 @@ export type FavoriteUpdateManyMutationInput = {
 
 export type FavoriteUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  folderId?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressPostId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -318,14 +318,14 @@ export type FavoriteOrderByRelevanceInput = {
   search: string
 }
 
-export type FavoriteUserIdWordpressPostIdCompoundUniqueInput = {
-  userId: string
+export type FavoriteFolderIdWordpressPostIdCompoundUniqueInput = {
+  folderId: string
   wordpressPostId: number
 }
 
 export type FavoriteCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   wordpressPostId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -336,14 +336,14 @@ export type FavoriteAvgOrderByAggregateInput = {
 
 export type FavoriteMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   wordpressPostId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type FavoriteMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   wordpressPostId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -352,84 +352,84 @@ export type FavoriteSumOrderByAggregateInput = {
   wordpressPostId?: Prisma.SortOrder
 }
 
-export type FavoriteCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.FavoriteCreateWithoutUserInput, Prisma.FavoriteUncheckedCreateWithoutUserInput> | Prisma.FavoriteCreateWithoutUserInput[] | Prisma.FavoriteUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.FavoriteCreateOrConnectWithoutUserInput | Prisma.FavoriteCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.FavoriteCreateManyUserInputEnvelope
+export type FavoriteCreateNestedManyWithoutFolderInput = {
+  create?: Prisma.XOR<Prisma.FavoriteCreateWithoutFolderInput, Prisma.FavoriteUncheckedCreateWithoutFolderInput> | Prisma.FavoriteCreateWithoutFolderInput[] | Prisma.FavoriteUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.FavoriteCreateOrConnectWithoutFolderInput | Prisma.FavoriteCreateOrConnectWithoutFolderInput[]
+  createMany?: Prisma.FavoriteCreateManyFolderInputEnvelope
   connect?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
 }
 
-export type FavoriteUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.FavoriteCreateWithoutUserInput, Prisma.FavoriteUncheckedCreateWithoutUserInput> | Prisma.FavoriteCreateWithoutUserInput[] | Prisma.FavoriteUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.FavoriteCreateOrConnectWithoutUserInput | Prisma.FavoriteCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.FavoriteCreateManyUserInputEnvelope
+export type FavoriteUncheckedCreateNestedManyWithoutFolderInput = {
+  create?: Prisma.XOR<Prisma.FavoriteCreateWithoutFolderInput, Prisma.FavoriteUncheckedCreateWithoutFolderInput> | Prisma.FavoriteCreateWithoutFolderInput[] | Prisma.FavoriteUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.FavoriteCreateOrConnectWithoutFolderInput | Prisma.FavoriteCreateOrConnectWithoutFolderInput[]
+  createMany?: Prisma.FavoriteCreateManyFolderInputEnvelope
   connect?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
 }
 
-export type FavoriteUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.FavoriteCreateWithoutUserInput, Prisma.FavoriteUncheckedCreateWithoutUserInput> | Prisma.FavoriteCreateWithoutUserInput[] | Prisma.FavoriteUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.FavoriteCreateOrConnectWithoutUserInput | Prisma.FavoriteCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.FavoriteUpsertWithWhereUniqueWithoutUserInput | Prisma.FavoriteUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.FavoriteCreateManyUserInputEnvelope
+export type FavoriteUpdateManyWithoutFolderNestedInput = {
+  create?: Prisma.XOR<Prisma.FavoriteCreateWithoutFolderInput, Prisma.FavoriteUncheckedCreateWithoutFolderInput> | Prisma.FavoriteCreateWithoutFolderInput[] | Prisma.FavoriteUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.FavoriteCreateOrConnectWithoutFolderInput | Prisma.FavoriteCreateOrConnectWithoutFolderInput[]
+  upsert?: Prisma.FavoriteUpsertWithWhereUniqueWithoutFolderInput | Prisma.FavoriteUpsertWithWhereUniqueWithoutFolderInput[]
+  createMany?: Prisma.FavoriteCreateManyFolderInputEnvelope
   set?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
   disconnect?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
   delete?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
   connect?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
-  update?: Prisma.FavoriteUpdateWithWhereUniqueWithoutUserInput | Prisma.FavoriteUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.FavoriteUpdateManyWithWhereWithoutUserInput | Prisma.FavoriteUpdateManyWithWhereWithoutUserInput[]
+  update?: Prisma.FavoriteUpdateWithWhereUniqueWithoutFolderInput | Prisma.FavoriteUpdateWithWhereUniqueWithoutFolderInput[]
+  updateMany?: Prisma.FavoriteUpdateManyWithWhereWithoutFolderInput | Prisma.FavoriteUpdateManyWithWhereWithoutFolderInput[]
   deleteMany?: Prisma.FavoriteScalarWhereInput | Prisma.FavoriteScalarWhereInput[]
 }
 
-export type FavoriteUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.FavoriteCreateWithoutUserInput, Prisma.FavoriteUncheckedCreateWithoutUserInput> | Prisma.FavoriteCreateWithoutUserInput[] | Prisma.FavoriteUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.FavoriteCreateOrConnectWithoutUserInput | Prisma.FavoriteCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.FavoriteUpsertWithWhereUniqueWithoutUserInput | Prisma.FavoriteUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.FavoriteCreateManyUserInputEnvelope
+export type FavoriteUncheckedUpdateManyWithoutFolderNestedInput = {
+  create?: Prisma.XOR<Prisma.FavoriteCreateWithoutFolderInput, Prisma.FavoriteUncheckedCreateWithoutFolderInput> | Prisma.FavoriteCreateWithoutFolderInput[] | Prisma.FavoriteUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.FavoriteCreateOrConnectWithoutFolderInput | Prisma.FavoriteCreateOrConnectWithoutFolderInput[]
+  upsert?: Prisma.FavoriteUpsertWithWhereUniqueWithoutFolderInput | Prisma.FavoriteUpsertWithWhereUniqueWithoutFolderInput[]
+  createMany?: Prisma.FavoriteCreateManyFolderInputEnvelope
   set?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
   disconnect?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
   delete?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
   connect?: Prisma.FavoriteWhereUniqueInput | Prisma.FavoriteWhereUniqueInput[]
-  update?: Prisma.FavoriteUpdateWithWhereUniqueWithoutUserInput | Prisma.FavoriteUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.FavoriteUpdateManyWithWhereWithoutUserInput | Prisma.FavoriteUpdateManyWithWhereWithoutUserInput[]
+  update?: Prisma.FavoriteUpdateWithWhereUniqueWithoutFolderInput | Prisma.FavoriteUpdateWithWhereUniqueWithoutFolderInput[]
+  updateMany?: Prisma.FavoriteUpdateManyWithWhereWithoutFolderInput | Prisma.FavoriteUpdateManyWithWhereWithoutFolderInput[]
   deleteMany?: Prisma.FavoriteScalarWhereInput | Prisma.FavoriteScalarWhereInput[]
 }
 
-export type FavoriteCreateWithoutUserInput = {
+export type FavoriteCreateWithoutFolderInput = {
   id?: string
   wordpressPostId: number
   createdAt?: Date | string
 }
 
-export type FavoriteUncheckedCreateWithoutUserInput = {
+export type FavoriteUncheckedCreateWithoutFolderInput = {
   id?: string
   wordpressPostId: number
   createdAt?: Date | string
 }
 
-export type FavoriteCreateOrConnectWithoutUserInput = {
+export type FavoriteCreateOrConnectWithoutFolderInput = {
   where: Prisma.FavoriteWhereUniqueInput
-  create: Prisma.XOR<Prisma.FavoriteCreateWithoutUserInput, Prisma.FavoriteUncheckedCreateWithoutUserInput>
+  create: Prisma.XOR<Prisma.FavoriteCreateWithoutFolderInput, Prisma.FavoriteUncheckedCreateWithoutFolderInput>
 }
 
-export type FavoriteCreateManyUserInputEnvelope = {
-  data: Prisma.FavoriteCreateManyUserInput | Prisma.FavoriteCreateManyUserInput[]
+export type FavoriteCreateManyFolderInputEnvelope = {
+  data: Prisma.FavoriteCreateManyFolderInput | Prisma.FavoriteCreateManyFolderInput[]
   skipDuplicates?: boolean
 }
 
-export type FavoriteUpsertWithWhereUniqueWithoutUserInput = {
+export type FavoriteUpsertWithWhereUniqueWithoutFolderInput = {
   where: Prisma.FavoriteWhereUniqueInput
-  update: Prisma.XOR<Prisma.FavoriteUpdateWithoutUserInput, Prisma.FavoriteUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.FavoriteCreateWithoutUserInput, Prisma.FavoriteUncheckedCreateWithoutUserInput>
+  update: Prisma.XOR<Prisma.FavoriteUpdateWithoutFolderInput, Prisma.FavoriteUncheckedUpdateWithoutFolderInput>
+  create: Prisma.XOR<Prisma.FavoriteCreateWithoutFolderInput, Prisma.FavoriteUncheckedCreateWithoutFolderInput>
 }
 
-export type FavoriteUpdateWithWhereUniqueWithoutUserInput = {
+export type FavoriteUpdateWithWhereUniqueWithoutFolderInput = {
   where: Prisma.FavoriteWhereUniqueInput
-  data: Prisma.XOR<Prisma.FavoriteUpdateWithoutUserInput, Prisma.FavoriteUncheckedUpdateWithoutUserInput>
+  data: Prisma.XOR<Prisma.FavoriteUpdateWithoutFolderInput, Prisma.FavoriteUncheckedUpdateWithoutFolderInput>
 }
 
-export type FavoriteUpdateManyWithWhereWithoutUserInput = {
+export type FavoriteUpdateManyWithWhereWithoutFolderInput = {
   where: Prisma.FavoriteScalarWhereInput
-  data: Prisma.XOR<Prisma.FavoriteUpdateManyMutationInput, Prisma.FavoriteUncheckedUpdateManyWithoutUserInput>
+  data: Prisma.XOR<Prisma.FavoriteUpdateManyMutationInput, Prisma.FavoriteUncheckedUpdateManyWithoutFolderInput>
 }
 
 export type FavoriteScalarWhereInput = {
@@ -437,30 +437,30 @@ export type FavoriteScalarWhereInput = {
   OR?: Prisma.FavoriteScalarWhereInput[]
   NOT?: Prisma.FavoriteScalarWhereInput | Prisma.FavoriteScalarWhereInput[]
   id?: Prisma.StringFilter<"Favorite"> | string
-  userId?: Prisma.StringFilter<"Favorite"> | string
+  folderId?: Prisma.StringFilter<"Favorite"> | string
   wordpressPostId?: Prisma.IntFilter<"Favorite"> | number
   createdAt?: Prisma.DateTimeFilter<"Favorite"> | Date | string
 }
 
-export type FavoriteCreateManyUserInput = {
+export type FavoriteCreateManyFolderInput = {
   id?: string
   wordpressPostId: number
   createdAt?: Date | string
 }
 
-export type FavoriteUpdateWithoutUserInput = {
+export type FavoriteUpdateWithoutFolderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressPostId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type FavoriteUncheckedUpdateWithoutUserInput = {
+export type FavoriteUncheckedUpdateWithoutFolderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressPostId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type FavoriteUncheckedUpdateManyWithoutUserInput = {
+export type FavoriteUncheckedUpdateManyWithoutFolderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressPostId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -470,34 +470,34 @@ export type FavoriteUncheckedUpdateManyWithoutUserInput = {
 
 export type FavoriteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
+  folderId?: boolean
   wordpressPostId?: boolean
   createdAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.PostFolderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["favorite"]>
 
 
 
 export type FavoriteSelectScalar = {
   id?: boolean
-  userId?: boolean
+  folderId?: boolean
   wordpressPostId?: boolean
   createdAt?: boolean
 }
 
-export type FavoriteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "wordpressPostId" | "createdAt", ExtArgs["result"]["favorite"]>
+export type FavoriteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "folderId" | "wordpressPostId" | "createdAt", ExtArgs["result"]["favorite"]>
 export type FavoriteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.PostFolderDefaultArgs<ExtArgs>
 }
 
 export type $FavoritePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Favorite"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
+    folder: Prisma.$PostFolderPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    userId: string
+    folderId: string
     wordpressPostId: number
     createdAt: Date
   }, ExtArgs["result"]["favorite"]>
@@ -840,7 +840,7 @@ readonly fields: FavoriteFieldRefs;
  */
 export interface Prisma__FavoriteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  folder<T extends Prisma.PostFolderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PostFolderDefaultArgs<ExtArgs>>): Prisma.Prisma__PostFolderClient<runtime.Types.Result.GetResult<Prisma.$PostFolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -871,7 +871,7 @@ export interface Prisma__FavoriteClient<T, Null = never, ExtArgs extends runtime
  */
 export interface FavoriteFieldRefs {
   readonly id: Prisma.FieldRef<"Favorite", 'String'>
-  readonly userId: Prisma.FieldRef<"Favorite", 'String'>
+  readonly folderId: Prisma.FieldRef<"Favorite", 'String'>
   readonly wordpressPostId: Prisma.FieldRef<"Favorite", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Favorite", 'DateTime'>
 }

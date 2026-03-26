@@ -400,8 +400,10 @@ export const ModelName = {
   wp_usermeta: 'wp_usermeta',
   wp_users: 'wp_users',
   User: 'User',
+  PostFolder: 'PostFolder',
   Favorite: 'Favorite',
   ReadPost: 'ReadPost',
+  LikedPost: 'LikedPost',
   Mission: 'Mission',
   UserMission: 'UserMission',
   Level: 'Level'
@@ -420,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "favorite" | "readPost" | "mission" | "userMission" | "level"
+    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "postFolder" | "favorite" | "readPost" | "likedPost" | "mission" | "userMission" | "level"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1480,6 +1482,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PostFolder: {
+      payload: Prisma.$PostFolderPayload<ExtArgs>
+      fields: Prisma.PostFolderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostFolderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostFolderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostFolderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostFolderPayload>
+        }
+        findFirst: {
+          args: Prisma.PostFolderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostFolderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostFolderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostFolderPayload>
+        }
+        findMany: {
+          args: Prisma.PostFolderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostFolderPayload>[]
+        }
+        create: {
+          args: Prisma.PostFolderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostFolderPayload>
+        }
+        createMany: {
+          args: Prisma.PostFolderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.PostFolderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostFolderPayload>
+        }
+        update: {
+          args: Prisma.PostFolderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostFolderPayload>
+        }
+        deleteMany: {
+          args: Prisma.PostFolderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostFolderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.PostFolderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostFolderPayload>
+        }
+        aggregate: {
+          args: Prisma.PostFolderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostFolder>
+        }
+        groupBy: {
+          args: Prisma.PostFolderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostFolderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostFolderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostFolderCountAggregateOutputType> | number
+        }
+      }
+    }
     Favorite: {
       payload: Prisma.$FavoritePayload<ExtArgs>
       fields: Prisma.FavoriteFieldRefs
@@ -1609,6 +1677,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ReadPostCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ReadPostCountAggregateOutputType> | number
+        }
+      }
+    }
+    LikedPost: {
+      payload: Prisma.$LikedPostPayload<ExtArgs>
+      fields: Prisma.LikedPostFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LikedPostFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikedPostPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LikedPostFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikedPostPayload>
+        }
+        findFirst: {
+          args: Prisma.LikedPostFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikedPostPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LikedPostFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikedPostPayload>
+        }
+        findMany: {
+          args: Prisma.LikedPostFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikedPostPayload>[]
+        }
+        create: {
+          args: Prisma.LikedPostCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikedPostPayload>
+        }
+        createMany: {
+          args: Prisma.LikedPostCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.LikedPostDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikedPostPayload>
+        }
+        update: {
+          args: Prisma.LikedPostUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikedPostPayload>
+        }
+        deleteMany: {
+          args: Prisma.LikedPostDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LikedPostUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.LikedPostUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikedPostPayload>
+        }
+        aggregate: {
+          args: Prisma.LikedPostAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLikedPost>
+        }
+        groupBy: {
+          args: Prisma.LikedPostGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LikedPostGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LikedPostCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LikedPostCountAggregateOutputType> | number
         }
       }
     }
@@ -2067,9 +2201,20 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const FavoriteScalarFieldEnum = {
+export const PostFolderScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  name: 'name',
+  internalKey: 'internalKey',
+  createdAt: 'createdAt'
+} as const
+
+export type PostFolderScalarFieldEnum = (typeof PostFolderScalarFieldEnum)[keyof typeof PostFolderScalarFieldEnum]
+
+
+export const FavoriteScalarFieldEnum = {
+  id: 'id',
+  folderId: 'folderId',
   wordpressPostId: 'wordpressPostId',
   createdAt: 'createdAt'
 } as const
@@ -2085,6 +2230,16 @@ export const ReadPostScalarFieldEnum = {
 } as const
 
 export type ReadPostScalarFieldEnum = (typeof ReadPostScalarFieldEnum)[keyof typeof ReadPostScalarFieldEnum]
+
+
+export const LikedPostScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  wordpressPostId: 'wordpressPostId',
+  createdAt: 'createdAt'
+} as const
+
+export type LikedPostScalarFieldEnum = (typeof LikedPostScalarFieldEnum)[keyof typeof LikedPostScalarFieldEnum]
 
 
 export const MissionScalarFieldEnum = {
@@ -2295,9 +2450,19 @@ export const UserOrderByRelevanceFieldEnum = {
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
 
 
+export const PostFolderOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  internalKey: 'internalKey'
+} as const
+
+export type PostFolderOrderByRelevanceFieldEnum = (typeof PostFolderOrderByRelevanceFieldEnum)[keyof typeof PostFolderOrderByRelevanceFieldEnum]
+
+
 export const FavoriteOrderByRelevanceFieldEnum = {
   id: 'id',
-  userId: 'userId'
+  folderId: 'folderId'
 } as const
 
 export type FavoriteOrderByRelevanceFieldEnum = (typeof FavoriteOrderByRelevanceFieldEnum)[keyof typeof FavoriteOrderByRelevanceFieldEnum]
@@ -2309,6 +2474,14 @@ export const ReadPostOrderByRelevanceFieldEnum = {
 } as const
 
 export type ReadPostOrderByRelevanceFieldEnum = (typeof ReadPostOrderByRelevanceFieldEnum)[keyof typeof ReadPostOrderByRelevanceFieldEnum]
+
+
+export const LikedPostOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+} as const
+
+export type LikedPostOrderByRelevanceFieldEnum = (typeof LikedPostOrderByRelevanceFieldEnum)[keyof typeof LikedPostOrderByRelevanceFieldEnum]
 
 
 export const MissionOrderByRelevanceFieldEnum = {
@@ -2495,8 +2668,10 @@ export type GlobalOmitConfig = {
   wp_usermeta?: Prisma.wp_usermetaOmit
   wp_users?: Prisma.wp_usersOmit
   user?: Prisma.UserOmit
+  postFolder?: Prisma.PostFolderOmit
   favorite?: Prisma.FavoriteOmit
   readPost?: Prisma.ReadPostOmit
+  likedPost?: Prisma.LikedPostOmit
   mission?: Prisma.MissionOmit
   userMission?: Prisma.UserMissionOmit
   level?: Prisma.LevelOmit

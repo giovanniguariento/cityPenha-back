@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prisma';
+import { SYSTEM_FOLDER_KEY_LIKES } from './postFolder.service';
 
 const XP_PER_READ = 10;
 
@@ -17,6 +18,14 @@ const DEFAULT_MISSIONS = [
     description: 'Entre no site e leia pelo menos uma notícia em 7 dias seguidos.',
     target: 7,
     coinReward: 30,
+    xpReward: 0,
+  },
+  {
+    key: 'like_10_posts',
+    title: 'Curtir 10 publicações',
+    description: 'Curta 10 publicações diferentes para completar esta missão.',
+    target: 10,
+    coinReward: 50,
     xpReward: 0,
   },
 ];
@@ -333,6 +342,106 @@ export class GamificationService {
     const level = await this.getUserLevel(userId);
 
     return { ...result, level };
+  }
+
+  /**
+   * Sincroniza a missão like_10_posts com o total atual de curtidas (pasta likes).
+   * Regra reversível:
+   * - cruza para >= target: conclui missão e concede recompensa
+   * - cai para < target: revoga conclusão e remove recompensa
+   */
+  async syncLikeMissionState(userId: string) {
+    if (!userId) {
+      throw new Error('Invalid parameters');
+    }
+
+    await Promise.all([this.ensureDefaultMissions(), this.ensureDefaultLevels()]);
+
+    const result = await prisma.$transaction(async (tx) => {
+      const missionLike10 = await tx.mission.findUnique({ where: { key: 'like_10_posts' } });
+      let missionUpdate = null;
+      if (missionLike10) {
+        const currentLikes = await tx.favorite.count({
+          where: {
+            folder: { userId, internalKey: SYSTEM_FOLDER_KEY_LIKES },
+          },
+        });
+        const nextProgress = Math.min(currentLikes, missionLike10.target);
+        const previous = await tx.userMission.findUnique({
+          where: { userId_missionId: { userId, missionId: missionLike10.id } },
+        });
+        const wasCompleted = previous?.completed ?? false;
+        const shouldBeCompleted = currentLikes >= missionLike10.target;
+        const completedAt = shouldBeCompleted ? (previous?.completedAt ?? new Date()) : null;
+
+        await tx.userMission.upsert({
+          where: { userId_missionId: { userId, missionId: missionLike10.id } },
+          create: {
+            userId,
+            missionId: missionLike10.id,
+            progress: nextProgress,
+            completed: shouldBeCompleted,
+            completedAt,
+          },
+          update: {
+            progress: nextProgress,
+            completed: shouldBeCompleted,
+            completedAt,
+          },
+        });
+
+        if (!wasCompleted && shouldBeCompleted) {
+          await tx.user.update({
+            where: { id: userId },
+            data: { coins: { increment: missionLike10.coinReward }, xp: { increment: missionLike10.xpReward } },
+          });
+
+          missionUpdate = {
+            missionId: missionLike10.id,
+            completed: true,
+            reward: { coins: missionLike10.coinReward, xp: missionLike10.xpReward },
+            progress: nextProgress,
+          };
+        } else if (wasCompleted && !shouldBeCompleted) {
+          await tx.user.update({
+            where: { id: userId },
+            data: { coins: { decrement: missionLike10.coinReward }, xp: { decrement: missionLike10.xpReward } },
+          });
+
+          missionUpdate = {
+            missionId: missionLike10.id,
+            completed: false,
+            revoked: { coins: missionLike10.coinReward, xp: missionLike10.xpReward },
+            progress: nextProgress,
+          };
+        } else {
+          missionUpdate = {
+            missionId: missionLike10.id,
+            completed: shouldBeCompleted,
+            progress: nextProgress,
+          };
+        }
+      }
+
+      const updatedUser = await tx.user.findUnique({ where: { id: userId } });
+
+      const completedCount = await tx.userMission.count({
+        where: { userId, completed: true },
+      });
+
+      return { user: updatedUser, mission: missionUpdate, completedMissionsCount: completedCount };
+    }, { timeout: 15_000 });
+
+    const level = await this.getUserLevel(userId);
+
+    return { ...result, level };
+  }
+
+  async recordLikePost(userId: string, wordpressPostId: number) {
+    if (!userId || !wordpressPostId) {
+      throw new Error('Invalid parameters');
+    }
+    return this.syncLikeMissionState(userId);
   }
 }
 

@@ -67,8 +67,10 @@ export const ModelName = {
   wp_usermeta: 'wp_usermeta',
   wp_users: 'wp_users',
   User: 'User',
+  PostFolder: 'PostFolder',
   Favorite: 'Favorite',
   ReadPost: 'ReadPost',
+  LikedPost: 'LikedPost',
   Mission: 'Mission',
   UserMission: 'UserMission',
   Level: 'Level'
@@ -308,9 +310,20 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const FavoriteScalarFieldEnum = {
+export const PostFolderScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  name: 'name',
+  internalKey: 'internalKey',
+  createdAt: 'createdAt'
+} as const
+
+export type PostFolderScalarFieldEnum = (typeof PostFolderScalarFieldEnum)[keyof typeof PostFolderScalarFieldEnum]
+
+
+export const FavoriteScalarFieldEnum = {
+  id: 'id',
+  folderId: 'folderId',
   wordpressPostId: 'wordpressPostId',
   createdAt: 'createdAt'
 } as const
@@ -326,6 +339,16 @@ export const ReadPostScalarFieldEnum = {
 } as const
 
 export type ReadPostScalarFieldEnum = (typeof ReadPostScalarFieldEnum)[keyof typeof ReadPostScalarFieldEnum]
+
+
+export const LikedPostScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  wordpressPostId: 'wordpressPostId',
+  createdAt: 'createdAt'
+} as const
+
+export type LikedPostScalarFieldEnum = (typeof LikedPostScalarFieldEnum)[keyof typeof LikedPostScalarFieldEnum]
 
 
 export const MissionScalarFieldEnum = {
@@ -536,9 +559,19 @@ export const UserOrderByRelevanceFieldEnum = {
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
 
 
+export const PostFolderOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  internalKey: 'internalKey'
+} as const
+
+export type PostFolderOrderByRelevanceFieldEnum = (typeof PostFolderOrderByRelevanceFieldEnum)[keyof typeof PostFolderOrderByRelevanceFieldEnum]
+
+
 export const FavoriteOrderByRelevanceFieldEnum = {
   id: 'id',
-  userId: 'userId'
+  folderId: 'folderId'
 } as const
 
 export type FavoriteOrderByRelevanceFieldEnum = (typeof FavoriteOrderByRelevanceFieldEnum)[keyof typeof FavoriteOrderByRelevanceFieldEnum]
@@ -550,6 +583,14 @@ export const ReadPostOrderByRelevanceFieldEnum = {
 } as const
 
 export type ReadPostOrderByRelevanceFieldEnum = (typeof ReadPostOrderByRelevanceFieldEnum)[keyof typeof ReadPostOrderByRelevanceFieldEnum]
+
+
+export const LikedPostOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+} as const
+
+export type LikedPostOrderByRelevanceFieldEnum = (typeof LikedPostOrderByRelevanceFieldEnum)[keyof typeof LikedPostOrderByRelevanceFieldEnum]
 
 
 export const MissionOrderByRelevanceFieldEnum = {

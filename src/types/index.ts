@@ -46,6 +46,30 @@ export interface PostDetailResponse {
   tags: string[];
   categoryName: string;
   onlyVideo: boolean;
+  /** Total de curtidas (pasta fixa `curtidas` de todos os usuários). */
+  likesCount: number;
+  /** Presente quando `?userId=` ou header `x-user-id` é enviado. */
+  liked?: boolean;
+  /** IDs das pastas do usuário em que o post está (inclui `curtidas` e `Salvos` se aplicável). */
+  savedFolderIds?: string[];
+}
+
+/** Campos do post vindos do WordPress (antes de likes/salvamentos). */
+export type PostDetailBase = Omit<PostDetailResponse, 'likesCount' | 'liked' | 'savedFolderIds'>;
+
+/** Item em GET /user/:id/folders — pasta + capa do último post (curtido/salvo) nessa pasta. */
+export interface PostFolderListItem {
+  id: string;
+  userId: string;
+  name: string;
+  internalKey: string | null;
+  createdAt: string | Date;
+  /** URL da imagem de destaque do item mais recente na pasta; `null` se vazia ou sem mídia. */
+  coverImageUrl: string | null;
+  /** ID WordPress do item mais recente (por `createdAt` em `favorites`). */
+  lastWordpressPostId: number | null;
+  /** Quantidade de posts salvos/curtidos nesta pasta. */
+  itemCount: number;
 }
 
 /** WordPress REST API user creation response */
