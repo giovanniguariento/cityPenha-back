@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma';
-import { SYSTEM_FOLDER_KEY_LIKES } from './postFolder.service';
+import { SYSTEM_FOLDER_KEY_DEFAULT_SAVED, SYSTEM_FOLDER_KEY_LIKES } from './postFolder.service';
 
 const XP_PER_READ = 10;
 
@@ -24,6 +24,14 @@ const DEFAULT_MISSIONS = [
     key: 'like_10_posts',
     title: 'Curtir 10 publicações',
     description: 'Curta 10 publicações diferentes para completar esta missão.',
+    target: 10,
+    coinReward: 50,
+    xpReward: 0,
+  },
+  {
+    key: 'save_10_posts',
+    title: 'Salvar 10 publicações',
+    description: 'Salve 10 publicações diferentes na pasta Salvos para completar esta missão.',
     target: 10,
     coinReward: 50,
     xpReward: 0,
@@ -417,6 +425,99 @@ export class GamificationService {
         } else {
           missionUpdate = {
             missionId: missionLike10.id,
+            completed: shouldBeCompleted,
+            progress: nextProgress,
+          };
+        }
+      }
+
+      const updatedUser = await tx.user.findUnique({ where: { id: userId } });
+
+      const completedCount = await tx.userMission.count({
+        where: { userId, completed: true },
+      });
+
+      return { user: updatedUser, mission: missionUpdate, completedMissionsCount: completedCount };
+    }, { timeout: 15_000 });
+
+    const level = await this.getUserLevel(userId);
+
+    return { ...result, level };
+  }
+
+  /**
+   * Sincroniza a missão save_10_posts com o total atual de salvos (pasta default_saved).
+   * Regra reversível:
+   * - cruza para >= target: conclui missão e concede recompensa
+   * - cai para < target: revoga conclusão e remove recompensa
+   */
+  async syncSaveMissionState(userId: string) {
+    if (!userId) {
+      throw new Error('Invalid parameters');
+    }
+
+    await Promise.all([this.ensureDefaultMissions(), this.ensureDefaultLevels()]);
+
+    const result = await prisma.$transaction(async (tx) => {
+      const missionSave10 = await tx.mission.findUnique({ where: { key: 'save_10_posts' } });
+      let missionUpdate = null;
+      if (missionSave10) {
+        const currentSaves = await tx.favorite.count({
+          where: {
+            folder: { userId, internalKey: SYSTEM_FOLDER_KEY_DEFAULT_SAVED },
+          },
+        });
+        const nextProgress = Math.min(currentSaves, missionSave10.target);
+        const previous = await tx.userMission.findUnique({
+          where: { userId_missionId: { userId, missionId: missionSave10.id } },
+        });
+        const wasCompleted = previous?.completed ?? false;
+        const shouldBeCompleted = currentSaves >= missionSave10.target;
+        const completedAt = shouldBeCompleted ? (previous?.completedAt ?? new Date()) : null;
+
+        await tx.userMission.upsert({
+          where: { userId_missionId: { userId, missionId: missionSave10.id } },
+          create: {
+            userId,
+            missionId: missionSave10.id,
+            progress: nextProgress,
+            completed: shouldBeCompleted,
+            completedAt,
+          },
+          update: {
+            progress: nextProgress,
+            completed: shouldBeCompleted,
+            completedAt,
+          },
+        });
+
+        if (!wasCompleted && shouldBeCompleted) {
+          await tx.user.update({
+            where: { id: userId },
+            data: { coins: { increment: missionSave10.coinReward }, xp: { increment: missionSave10.xpReward } },
+          });
+
+          missionUpdate = {
+            missionId: missionSave10.id,
+            completed: true,
+            reward: { coins: missionSave10.coinReward, xp: missionSave10.xpReward },
+            progress: nextProgress,
+          };
+        } else if (wasCompleted && !shouldBeCompleted) {
+          await tx.user.update({
+            where: { id: userId },
+            data: { coins: { decrement: missionSave10.coinReward }, xp: { decrement: missionSave10.xpReward } },
+          });
+
+          missionUpdate = {
+            missionId: missionSave10.id,
+            completed: false,
+            revoked: { coins: missionSave10.coinReward, xp: missionSave10.xpReward },
+            progress: nextProgress,
+          };
+        } else {
+          missionUpdate = {
+            missionId: missionSave10.id,
             completed: shouldBeCompleted,
             progress: nextProgress,
           };

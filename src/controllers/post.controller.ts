@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ETypePost, type IPost } from '../models/post.interface';
+import type { IPost } from '../models/post.interface';
 import { WordpressService } from '../services/wordpress.service';
 import { gamification } from '../services';
 import type { PostFolderService } from '../services/postFolder.service';
@@ -15,19 +15,16 @@ export class PostController {
   get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const slug = req.params.slug as string;
-      const searchQuery = slug.replaceAll('-', ' ').slice(0, 60);
-      const searchResults = await this.wordpressService.getTypePostBySearch(searchQuery);
-      const found = searchResults.find((p) => p._embedded.self[0].slug === slug);
-
-      if (!found) {
+      const resolved = await this.wordpressService.resolvePostBySlug(slug);
+      if (!resolved) {
         res.status(404).json({ success: false, message: 'Post not found' });
         return;
       }
 
       const post: IPost =
-        found.subtype === ETypePost.POST
-          ? await this.wordpressService.getPost(found.id)
-          : await this.wordpressService.getAd(found.id);
+        resolved.kind === 'post'
+          ? await this.wordpressService.getPost(resolved.id)
+          : await this.wordpressService.getAd(resolved.id);
 
       const [categories, tags, likesCount] = await Promise.all([
         this.wordpressService.getCategoriesById(post.categories),

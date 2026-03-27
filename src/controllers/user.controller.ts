@@ -3,10 +3,17 @@ import { WordpressService } from '../services/wordpress.service';
 import { UserService } from '../services/user.service';
 import { prisma } from '../lib/prisma';
 import type { PostFolderService } from '../services/postFolder.service';
-import { SYSTEM_FOLDER_KEY_LIKES } from '../services/postFolder.service';
+import { SYSTEM_FOLDER_KEY_DEFAULT_SAVED, SYSTEM_FOLDER_KEY_LIKES } from '../services/postFolder.service';
 import { gamification } from '../services';
 import type { CreateUserBody } from '../types';
-import { fetchFeaturedImageUrl, verifyWordpressPostExists } from '../helpers/post.helper';
+import type { ICategory } from '../models/category.interface';
+import type { IPost } from '../models/post.interface';
+import {
+  fetchFeaturedImageUrl,
+  fetchPostOrAd,
+  getFeaturedImageUrl,
+  verifyWordpressPostExists,
+} from '../helpers/post.helper';
 
 export class UserController {
   constructor(
@@ -106,19 +113,16 @@ export class UserController {
         return;
       }
       // Verify the post exists on WordPress before recording.
-      // Prefer searching by slug (handles AD and POST types). If caller provides `slug` in the body,
-      // use the same search/match strategy as `post.controller.get`. Otherwise fallback to fetching by id.
+      // If caller provides `slug`, resolve by slug and require it to match the same WordPress id.
       const { slug } = req.body as { slug?: string };
       let postExists = false;
 
       if (slug) {
-        const searchQuery = slug.replaceAll('-', ' ').slice(0, 60);
         try {
-          const searchResults = await this.wordpressService.getTypePostBySearch(searchQuery);
-          const found = (searchResults as any[]).find((p) => p._embedded?.self?.[0]?.slug === slug);
-          if (found) postExists = true;
-        } catch (err) {
-          // ignore and fallback to id-based checks below
+          const resolved = await this.wordpressService.resolvePostBySlug(slug);
+          if (resolved?.id === wordpressPostId) postExists = true;
+        } catch {
+          // fallback to id-based checks below
         }
       }
 
@@ -200,6 +204,57 @@ export class UserController {
         };
       });
       res.status(200).json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /** GET /user/:id/folders/:folderId/posts — posts WordPress completos + `categories` resolvidos (mais recentes primeiro). */
+  public listPostsInFolder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id, folderId } = req.params;
+      if (!id || !folderId) {
+        res.status(400).json({ success: false, message: 'Missing user id or folder id' });
+        return;
+      }
+      const user = await this.userService.findById(id);
+      if (!user) {
+        res.status(404).json({ success: false, message: 'User not found' });
+        return;
+      }
+      const result = await this.postFolderService.listWordpressPostIdsInFolder(id, folderId);
+      if (!result.ok) {
+        res.status(404).json({ success: false, message: 'Folder not found' });
+        return;
+      }
+      const orderedIds = result.wordpressPostIds;
+      const resolved = await Promise.all(
+        orderedIds.map(async (wordpressPostId) => {
+          const post = await fetchPostOrAd(this.wordpressService, wordpressPostId);
+          return post ? { wordpressPostId, post } : null;
+        })
+      );
+      const pairs = resolved.filter(
+        (x): x is { wordpressPostId: number; post: IPost } => x != null
+      );
+      const uniqueCatIds = [...new Set(pairs.flatMap((p) => p.post.categories))];
+      const categoryList =
+        uniqueCatIds.length > 0
+          ? await this.wordpressService.getCategoriesById(uniqueCatIds)
+          : [];
+      const catById = new Map(categoryList.map((c) => [c.id, c]));
+      const posts = pairs.map(({ wordpressPostId, post }) => ({
+        wordpressPostId,
+        post,
+        categories: post.categories
+          .map((cid) => catById.get(cid))
+          .filter((c): c is ICategory => c != null),
+        image: getFeaturedImageUrl(post),
+      }));
+      res.status(200).json({
+        success: true,
+        data: { folderId, posts },
+      });
     } catch (error) {
       next(error);
     }
@@ -312,6 +367,25 @@ export class UserController {
         res.status(200).json({ success: true, data: base });
         return;
       }
+      if (folder?.internalKey === SYSTEM_FOLDER_KEY_DEFAULT_SAVED) {
+        const saveResult = await gamification.syncSaveMissionState(id);
+        const missions = await gamification.getMissionsWithUserProgress(id);
+        const level = await gamification.getUserLevel(id);
+        const base = { folderId, wordpressPostId, missions, level };
+        if ('user' in saveResult && saveResult.user) {
+          res.status(200).json({
+            success: true,
+            data: {
+              ...base,
+              user: saveResult.user,
+              completedMissionsCount: saveResult.completedMissionsCount,
+            },
+          });
+          return;
+        }
+        res.status(200).json({ success: true, data: base });
+        return;
+      }
 
       res.status(200).json({ success: true, data: { folderId, wordpressPostId } });
     } catch (error) {
@@ -354,6 +428,25 @@ export class UserController {
               ...base,
               user: likeResult.user,
               completedMissionsCount: likeResult.completedMissionsCount,
+            },
+          });
+          return;
+        }
+        res.status(200).json({ success: true, data: base });
+        return;
+      }
+      if (folder?.internalKey === SYSTEM_FOLDER_KEY_DEFAULT_SAVED) {
+        const saveResult = await gamification.syncSaveMissionState(id);
+        const missions = await gamification.getMissionsWithUserProgress(id);
+        const level = await gamification.getUserLevel(id);
+        const base = { folderId, wordpressPostId, missions, level };
+        if ('user' in saveResult && saveResult.user) {
+          res.status(200).json({
+            success: true,
+            data: {
+              ...base,
+              user: saveResult.user,
+              completedMissionsCount: saveResult.completedMissionsCount,
             },
           });
           return;

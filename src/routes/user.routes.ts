@@ -9,6 +9,7 @@ router.post('/signup', userController.create);
 router.post('/read/:postId', userController.recordRead);
 
 router.get('/:id/folders', userController.listFolders);
+router.get('/:id/folders/:folderId/posts', userController.listPostsInFolder);
 router.post('/:id/folders', userController.createFolder);
 router.delete('/:id/folders/:folderId', userController.deleteFolder);
 router.post('/:id/folders/:folderId/posts/:wordpressPostId', userController.addPostToFolder);

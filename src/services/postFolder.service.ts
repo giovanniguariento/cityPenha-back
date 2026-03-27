@@ -100,6 +100,28 @@ export class PostFolderService {
   }
 
   /**
+   * IDs WordPress dos itens da pasta, do mais recente ao mais antigo (`Favorite.createdAt` desc).
+   */
+  async listWordpressPostIdsInFolder(
+    userId: string,
+    folderId: string
+  ): Promise<{ ok: true; wordpressPostIds: number[] } | { ok: false; reason: 'folder_not_found' }> {
+    await this.ensureSystemFoldersForUser(userId);
+    const folder = await prisma.postFolder.findFirst({
+      where: { id: folderId, userId },
+    });
+    if (!folder) {
+      return { ok: false, reason: 'folder_not_found' };
+    }
+    const rows = await prisma.favorite.findMany({
+      where: { folderId },
+      orderBy: { createdAt: 'desc' },
+      select: { wordpressPostId: true },
+    });
+    return { ok: true, wordpressPostIds: rows.map((r) => r.wordpressPostId) };
+  }
+
+  /**
    * Cria pasta customizada. Não permite nome igual às pastas do sistema.
    */
   async createCustomFolder(userId: string, name: string) {

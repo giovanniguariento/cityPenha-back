@@ -10,6 +10,8 @@ const credentials = Buffer.from(
 
 import { fetchWithTimeout } from '../helpers/fetch.helper';
 
+export type ResolvedPostBySlug = { id: number; kind: 'post' | 'ad' };
+
 export class WordpressService {
   private cache = {
     posts: createTtlCache<IPost[]>(CACHE_TTL_MS.HOME),
@@ -73,14 +75,33 @@ export class WordpressService {
     return data;
   }
 
-  public async getTypePostBySearch(slug: string): Promise<IPost[]> {
-    const response = await fetchWithTimeout(
-      `${this.baseUrl()}/search?search=${encodeURIComponent(slug)}&_embed`
-    );
-    if (!response.ok) {
-      throw new Error(`Erro ao pesquisar post: ${response.statusText}`);
+  /**
+   * Resolve a WordPress post or ad by exact slug (posts first, then ads).
+   * Does not use the global /search endpoint.
+   */
+  public async resolvePostBySlug(slug: string): Promise<ResolvedPostBySlug | null> {
+    const q = encodeURIComponent(slug);
+    const postsUrl = `${this.baseUrl()}/posts?slug=${q}&_embed=wp:featuredmedia&per_page=1`;
+    const postsResp = await fetchWithTimeout(postsUrl);
+    if (!postsResp.ok) {
+      throw new Error(`Erro ao buscar post por slug: ${postsResp.statusText}`);
     }
-    return response.json();
+    const postsJson = (await postsResp.json()) as { id: number }[];
+    if (postsJson.length > 0) {
+      return { id: postsJson[0].id, kind: 'post' };
+    }
+
+    const adsUrl = `${this.baseUrl()}/ads?slug=${q}&_embed&per_page=1`;
+    const adsResp = await fetchWithTimeout(adsUrl);
+    if (!adsResp.ok) {
+      throw new Error(`Erro ao buscar anúncio por slug: ${adsResp.statusText}`);
+    }
+    const adsJson = (await adsResp.json()) as { id: number }[];
+    if (adsJson.length > 0) {
+      return { id: adsJson[0].id, kind: 'ad' };
+    }
+
+    return null;
   }
 
   public async getCategories(): Promise<ICategory[]> {

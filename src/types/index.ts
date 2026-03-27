@@ -2,6 +2,9 @@
  * Shared types for API requests, responses, and view models.
  */
 
+import type { IPost } from '../models/post.interface';
+import type { ICategory } from '../models/category.interface';
+
 /** Author display info used in feed and post responses */
 export interface Author {
   name: string;
@@ -70,6 +73,17 @@ export interface PostFolderListItem {
   lastWordpressPostId: number | null;
   /** Quantidade de posts salvos/curtidos nesta pasta. */
   itemCount: number;
+}
+
+/** Item em GET /user/:id/folders/:folderId/posts — payload WordPress + categorias resolvidas. */
+export interface FolderSavedPostItem {
+  wordpressPostId: number;
+  /** Objeto bruto do REST (`/posts` ou `/ads`), inclui `categories` como IDs. */
+  post: IPost;
+  /** Objetos de categoria na ordem dos IDs em `post.categories`. */
+  categories: ICategory[];
+  /** URL da imagem de destaque (`_embedded`), igual `FeedItem.image` na home. */
+  image: string;
 }
 
 /** WordPress REST API user creation response */

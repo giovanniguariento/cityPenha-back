@@ -67,6 +67,22 @@ export function toPostDetail(
   };
 }
 
+/** Busca post de conteúdo ou anúncio por ID; `null` se não existir. */
+export async function fetchPostOrAd(
+  wordpressService: WordpressService,
+  wordpressPostId: number
+): Promise<IPost | null> {
+  try {
+    return await wordpressService.getPost(wordpressPostId);
+  } catch {
+    try {
+      return await wordpressService.getAd(wordpressPostId);
+    } catch {
+      return null;
+    }
+  }
+}
+
 /** Verifica se existe post ou anúncio no WordPress com esse ID. */
 export async function verifyWordpressPostExists(
   wordpressService: WordpressService,
