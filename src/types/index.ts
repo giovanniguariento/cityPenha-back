@@ -33,6 +33,8 @@ export interface FeedItem {
   categoryName: string;
   onlyVideo: boolean;
   viewed?: boolean;
+  /** Present on GET /discovery `trendingTopics` — post publish time, PT-BR relative (e.g. "2 horas atrás"). */
+  publishedAtRelative?: string;
 }
 
 /** Single post detail API response */
@@ -122,6 +124,34 @@ export interface UserLevel {
   levelNumber: number;
   minXp: number;
   minCompletedMissions: number;
+}
+
+/** Item in GET /discovery — `topics` (WordPress categories + post count). */
+export interface DiscoveryTopicCategory {
+  id: number;
+  name: string;
+  slug: string;
+  newsCount: number;
+  /** Featured image URL of the most recently published post in this category (empty if none). */
+  latestPostImageUrl: string;
+}
+
+/** Item in GET /discovery — `popularAuthors`. */
+export interface DiscoveryPopularAuthor {
+  wordpressUserId: number;
+  name: string;
+  avatarUrl: string | null;
+  totalLikes: number;
+}
+
+/** Payload of GET /discovery `data`. */
+export interface DiscoveryResponse {
+  newExperiences: unknown[];
+  editorsChoice: unknown[];
+  topics: DiscoveryTopicCategory[];
+  worldNews: FeedItem[];
+  trendingTopics: FeedItem[];
+  popularAuthors: DiscoveryPopularAuthor[];
 }
 
 export type { ApiSuccessBody, ApiErrorBody, ApiErrorCode } from './api';

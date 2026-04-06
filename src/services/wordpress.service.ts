@@ -1,8 +1,9 @@
 import { createTtlCache, CACHE_TTL_MS } from '../helpers/cache.helper';
 import type { WordPressUserResponse } from '../types';
 import type { ICategory } from '../models/category.interface';
-import type { IPost } from '../models/post.interface';
+import { ETypePost, type IPost } from '../models/post.interface';
 import type { ITag } from '../models/tag.interface';
+import { getFeaturedImageUrl } from '../helpers/post.helper';
 
 const credentials = Buffer.from(
   `${process.env.ENV_API_WORDPRESS_ADMIN_USER}:${process.env.ENV_API_WORDPRESS_ADMIN_PASSWORD}`
@@ -12,15 +13,28 @@ import { fetchWithTimeout } from '../helpers/fetch.helper';
 
 export type ResolvedPostBySlug = { id: number; kind: 'post' | 'ad' };
 
+/** Shape of WordPress REST `GET /categories` items (fields used by Discovery). */
+export interface WordpressCategoryRest {
+  id: number;
+  name: string;
+  slug: string;
+  count: number;
+}
+
 export class WordpressService {
   private cache = {
     posts: createTtlCache<IPost[]>(CACHE_TTL_MS.HOME),
     categories: createTtlCache<ICategory[]>(CACHE_TTL_MS.CATEGORIES),
+    /** Full category list with `count` / `slug` for GET /discovery — separate key from `categories`. */
+    categoriesDiscovery: createTtlCache<WordpressCategoryRest[]>(CACHE_TTL_MS.CATEGORIES),
     ads: createTtlCache<IPost[]>(CACHE_TTL_MS.ADS),
     post: createTtlCache<IPost>(CACHE_TTL_MS.POST),
     categoriesById: createTtlCache<ICategory[]>(CACHE_TTL_MS.POST),
     tagsById: createTtlCache<ITag[]>(CACHE_TTL_MS.POST),
     ad: createTtlCache<IPost>(CACHE_TTL_MS.POST),
+    categoryBySlug: createTtlCache<number | null>(CACHE_TTL_MS.CATEGORIES),
+    /** `latestImg:${categoryId}` → featured media URL of newest post in that category */
+    categoryLatestImage: createTtlCache<string | null>(CACHE_TTL_MS.CATEGORIES),
   };
 
   private baseUrl(): string {
@@ -114,6 +128,111 @@ export class WordpressService {
     const data = await response.json();
     this.cache.categories.set('all', data);
     return data;
+  }
+
+  /**
+   * All categories with REST `count` (posts in term) and `slug`.
+   * Paginates `per_page=100` until no further pages (WordPress default page size is too small for “all”).
+   */
+  public async getCategoriesForDiscovery(): Promise<WordpressCategoryRest[]> {
+    const cacheKey = 'all';
+    const cached = this.cache.categoriesDiscovery.get(cacheKey);
+    if (cached) return cached;
+    const perPage = 100;
+    const all: WordpressCategoryRest[] = [];
+    let page = 1;
+    for (;;) {
+      const url = `${this.baseUrl()}/categories?per_page=${perPage}&page=${page}`;
+      const response = await fetchWithTimeout(url);
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar categorias (discovery): ${response.statusText}`);
+      }
+      const batch = (await response.json()) as WordpressCategoryRest[];
+      if (batch.length === 0) break;
+      for (const row of batch) {
+        all.push({
+          id: row.id,
+          name: row.name,
+          slug: row.slug,
+          count: row.count ?? 0,
+        });
+      }
+      if (batch.length < perPage) break;
+      page += 1;
+    }
+    this.cache.categoriesDiscovery.set(cacheKey, all);
+    return all;
+  }
+
+  /**
+   * Posts in any of the given category IDs (WordPress OR semantics on `categories` param).
+   */
+  public async getPostsByCategoryIds(
+    categoryIds: number[],
+    limit: number
+  ): Promise<IPost[]> {
+    if (categoryIds.length === 0 || limit <= 0) return [];
+    const key = `worldNews:${categoryIds.sort((a, b) => a - b).join(',')}:${limit}`;
+    const cached = this.cache.posts.get(key);
+    if (cached) return cached as IPost[];
+    const ids = categoryIds.join(',');
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/posts?categories=${ids}&per_page=${limit}&_embed=wp:featuredmedia`
+    );
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar posts por categorias: ${response.statusText}`);
+    }
+    const data = (await response.json()) as IPost[];
+    this.cache.posts.set(key, data);
+    return data;
+  }
+
+  /**
+   * Featured image URL of the most recent post in a category (REST: newest first, `per_page=1`).
+   */
+  public async getLatestPostFeaturedImageUrlForCategory(
+    categoryId: number
+  ): Promise<string | null> {
+    const key = `latestImg:${categoryId}`;
+    const cached = this.cache.categoryLatestImage.get(key);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/posts?categories=${categoryId}&per_page=1&orderby=date&order=desc&_embed=wp:featuredmedia`
+    );
+    if (!response.ok) {
+      this.cache.categoryLatestImage.set(key, null);
+      return null;
+    }
+    const data = (await response.json()) as IPost[];
+    if (data.length === 0) {
+      this.cache.categoryLatestImage.set(key, null);
+      return null;
+    }
+    const post = data.find((p) => p.type === ETypePost.POST) ?? data[0];
+    const url = getFeaturedImageUrl(post);
+    const result = url || null;
+    this.cache.categoryLatestImage.set(key, result);
+    return result;
+  }
+
+  /** Resolves WordPress category term id from slug, or `null` if missing. */
+  public async getCategoryIdBySlug(slug: string): Promise<number | null> {
+    const trimmed = slug.trim();
+    if (!trimmed) return null;
+    const cached = this.cache.categoryBySlug.get(trimmed);
+    if (cached !== undefined) return cached;
+    const q = encodeURIComponent(trimmed);
+    const response = await fetchWithTimeout(`${this.baseUrl()}/categories?slug=${q}&per_page=1`);
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar categoria por slug: ${response.statusText}`);
+    }
+    const rows = (await response.json()) as { id: number }[];
+    const id = rows.length > 0 ? rows[0].id : null;
+    this.cache.categoryBySlug.set(trimmed, id);
+    return id;
   }
 
   /**
@@ -245,3 +364,6 @@ export class WordpressService {
     return response.json();
   }
 }
+
+/** Shared instance — same cache as all routes (see `services/index.ts`). */
+export const wordpressService = new WordpressService();
