@@ -1,112 +1,106 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response } from 'express';
 import { ETypePost, type IPost } from '../models/post.interface';
 import { WordpressService } from '../services/wordpress.service';
 import type { FeedItem } from '../types';
 import { toFeedItem } from '../helpers/post.helper';
 import { insertAdsIntoPosts } from '../helpers/ad.helper';
 import { prisma } from '../lib/prisma';
+import { sendJsonSuccess } from '../lib/apiResponse';
+import { notFound } from '../lib/httpErrors';
 
 export class HomeController {
-  constructor(private readonly wordpressService: WordpressService) { }
+  constructor(private readonly wordpressService: WordpressService) {}
 
-  getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const [posts, recentCatsResult, ads] = await Promise.all([
-        this.wordpressService.getRecentContentPosts(11),
-        this.wordpressService.getRecentPostsForTopCategories(5, 10),
-        this.wordpressService.getAllAds(),
-      ]);
+  getAll = async (req: Request, res: Response): Promise<void> => {
+    const [posts, allCategories, ads] = await Promise.all([
+      this.wordpressService.getRecentContentPosts(11),
+      this.wordpressService.getCategories(),
+      this.wordpressService.getAllAds(),
+    ]);
 
-      const categories = recentCatsResult.categories;
-      const postsByCategory = recentCatsResult.postsByCategory;
+    const recentCatsResult =
+      await this.wordpressService.getRecentPostsForTopCategories(5, 10, allCategories);
 
-      // Ad interval range: default 4..5 (one ad every 4 to 5 posts)
-      const intervalMin = Number(process.env.AD_INTERVAL_MIN) || 4;
-      const intervalMax = Number(process.env.AD_INTERVAL_MAX) || 5;
+    const categories = recentCatsResult.categories;
+    const postsByCategory = recentCatsResult.postsByCategory;
+    const categoryNameById = new Map(allCategories.map((c) => [c.id, c.name]));
 
-      // Prepare carousel: 11 most recent CONTENT posts, then insert ads into that slice.
-      const recentContentPosts = posts.filter((p) => p.type === ETypePost.POST).slice(0, 11);
-      const carouselWithAds: IPost[] = insertAdsIntoPosts(
-        recentContentPosts,
+    const intervalMin = Number(process.env.AD_INTERVAL_MIN) || 4;
+    const intervalMax = Number(process.env.AD_INTERVAL_MAX) || 5;
+
+    const recentContentPosts = posts.filter((p) => p.type === ETypePost.POST).slice(0, 11);
+    const carouselWithAds: IPost[] = insertAdsIntoPosts(
+      recentContentPosts,
+      ads,
+      intervalMin,
+      intervalMax
+    );
+    const carousel: FeedItem[] = carouselWithAds.map((post) => toFeedItem(post));
+
+    for (const item of carousel) {
+      for (const id of item.categories) {
+        const name = categoryNameById.get(id);
+        if (name) {
+          item.categoryName = name;
+          break;
+        }
+      }
+    }
+
+    const categoriesWithPosts = categories.map((category) => {
+      const relatedContentPosts = (postsByCategory[category.id] || []).filter(
+        (p) => p.type === ETypePost.POST
+      );
+      const listWithAds = insertAdsIntoPosts(
+        relatedContentPosts,
         ads,
         intervalMin,
-        intervalMax
+        intervalMax,
+        category.id
       );
-      const carousel: FeedItem[] = carouselWithAds.map((post) => toFeedItem(post));
+      const feedItems = listWithAds.map((p) => toFeedItem(p));
+      for (const item of feedItems) {
+        item.categoryName = category.name;
+      }
+      return { id: category.id, name: category.name, posts: feedItems };
+    });
 
-      // Ensure categoryName is set for carousel items
-      for (const item of carousel) {
-        const cat = categories.find((c) => item.categories.includes(c.id));
-        if (cat) item.categoryName = cat.name;
+    const userId = req.appUser?.id;
+    if (userId) {
+      const allIds = new Set<number>();
+      for (const item of carousel) allIds.add(item.id);
+      for (const cat of categoriesWithPosts) {
+        for (const item of cat.posts) allIds.add(item.id);
       }
 
-      // Prepare category-based tabs. Use the pre-fetched posts for the top categories.
-      const categoriesWithPosts = categories.map((category) => {
-        const relatedContentPosts = (postsByCategory[category.id] || []).filter(
-          (p) => p.type === ETypePost.POST
-        );
-        const listWithAds = insertAdsIntoPosts(
-          relatedContentPosts,
-          ads,
-          intervalMin,
-          intervalMax,
-          category.id // assign category id to cloned ads so frontend knows the tab context
-        );
-        const feedItems = listWithAds.map((p) => toFeedItem(p));
-        // set categoryName for all items in this list (ads will have categories set to [category.id])
-        for (const item of feedItems) {
-          const cat = categories.find((c) => item.categories.includes(c.id));
-          if (cat) item.categoryName = cat.name;
-        }
-        return { id: category.id, name: category.name, posts: feedItems };
-      });
+      if (allIds.size > 0) {
+        const readRecords = await prisma.readPost.findMany({
+          where: { userId, wordpressPostId: { in: Array.from(allIds) } },
+          select: { wordpressPostId: true },
+        });
+        const readSet = new Set(readRecords.map((r) => r.wordpressPostId));
 
-      // If a userId is provided (query param `userId` or header `x-user-id`), fetch which posts
-      // were already read by that user and mark feed items accordingly.
-      const userId = (req.query.userId as string) || req.header('x-user-id') || undefined;
-      if (userId) {
-        const allIds = new Set<number>();
-        for (const item of carousel) allIds.add(item.id);
+        for (const item of carousel) {
+          item.viewed = readSet.has(item.id);
+        }
         for (const cat of categoriesWithPosts) {
-          for (const item of cat.posts) allIds.add(item.id);
-        }
-
-        if (allIds.size > 0) {
-          const readRecords = await prisma.readPost.findMany({
-            where: { userId, wordpressPostId: { in: Array.from(allIds) } },
-            select: { wordpressPostId: true },
-          });
-          const readSet = new Set(readRecords.map((r) => r.wordpressPostId));
-
-          for (const item of carousel) {
+          for (const item of cat.posts) {
             item.viewed = readSet.has(item.id);
           }
-          for (const cat of categoriesWithPosts) {
-            for (const item of cat.posts) {
-              item.viewed = readSet.has(item.id);
-            }
-          }
-        }
-      } else {
-        // default to false for all items when no user provided
-        for (const item of carousel) item.viewed = false;
-        for (const cat of categoriesWithPosts) {
-          for (const item of cat.posts) item.viewed = false;
         }
       }
-
-      if (posts.length === 0 && categories.length === 0) {
-        res.status(404).json({ success: false, message: 'Posts not found' });
-        return;
+    } else {
+      for (const item of carousel) item.viewed = false;
+      for (const cat of categoriesWithPosts) {
+        for (const item of cat.posts) item.viewed = false;
       }
-
-      res.set('Cache-Control', 'public, max-age=60');
-      res.status(200).json({
-        categories: categoriesWithPosts,
-        carousel,
-      });
-    } catch (error) {
-      next(error);
     }
+
+    if (posts.length === 0 && categories.length === 0) {
+      throw notFound('Posts not found');
+    }
+
+    res.set('Cache-Control', 'public, max-age=60');
+    sendJsonSuccess(res, { categories: categoriesWithPosts, carousel });
   };
 }

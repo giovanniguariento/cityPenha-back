@@ -11,7 +11,7 @@ export interface Author {
   avatarUrl: string;
 }
 
-/** Request body for POST /user/signup */
+/** Request body for POST /user/signup (requires Authorization: Bearer Firebase ID token). */
 export interface CreateUserBody {
   email: string;
   firebaseUid: string;
@@ -51,7 +51,7 @@ export interface PostDetailResponse {
   onlyVideo: boolean;
   /** Total de curtidas (pasta fixa `curtidas` de todos os usuários). */
   likesCount: number;
-  /** Presente quando `?userId=` ou header `x-user-id` é enviado. */
+  /** Presente quando o cliente envia Bearer token de usuário registrado. */
   liked?: boolean;
   /** IDs das pastas do usuário em que o post está (inclui `curtidas` e `Salvos` se aplicável). */
   savedFolderIds?: string[];
@@ -60,7 +60,7 @@ export interface PostDetailResponse {
 /** Campos do post vindos do WordPress (antes de likes/salvamentos). */
 export type PostDetailBase = Omit<PostDetailResponse, 'likesCount' | 'liked' | 'savedFolderIds'>;
 
-/** Item em GET /user/:id/folders — pasta + capa do último post (curtido/salvo) nessa pasta. */
+/** Item em GET /user/me/folders — pasta + capa do último post (curtido/salvo) nessa pasta. */
 export interface PostFolderListItem {
   id: string;
   userId: string;
@@ -75,7 +75,7 @@ export interface PostFolderListItem {
   itemCount: number;
 }
 
-/** Item em GET /user/:id/folders/:folderId/posts — payload WordPress + categorias resolvidas. */
+/** Item em GET /user/me/folders/:folderId/posts — payload WordPress + categorias resolvidas. */
 export interface FolderSavedPostItem {
   wordpressPostId: number;
   /** Objeto bruto do REST (`/posts` ou `/ads`), inclui `categories` como IDs. */
@@ -123,3 +123,5 @@ export interface UserLevel {
   minXp: number;
   minCompletedMissions: number;
 }
+
+export type { ApiSuccessBody, ApiErrorBody, ApiErrorCode } from './api';

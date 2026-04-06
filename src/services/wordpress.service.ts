@@ -125,11 +125,12 @@ export class WordpressService {
    */
   public async getRecentPostsForTopCategories(
     limitCategories = 5,
-    postsPerCategory = 10
+    postsPerCategory = 10,
+    /** When set (e.g. from a single `getCategories()` on the caller), avoids a duplicate fetch. */
+    allCategories?: ICategory[]
   ): Promise<{ categories: ICategory[]; postsByCategory: Record<number, IPost[]> }> {
-    // Get all categories (cached) then pick the most recent by id
-    const allCategories = await this.getCategories();
-    const topCategories = allCategories
+    const resolved = allCategories ?? (await this.getCategories());
+    const topCategories = resolved
       .slice()
       .sort((a, b) => b.id - a.id)
       .slice(0, limitCategories);

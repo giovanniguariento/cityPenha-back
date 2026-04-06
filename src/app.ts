@@ -1,10 +1,12 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import compression from 'compression';
 import homeRoutes from './routes/home.routes';
 import missionRoutes from './routes/mission.routes';
 import postRoutes from './routes/post.routes';
 import userRoutes from './routes/user.routes';
+import { notFoundHandler } from './middleware/notFound';
+import { errorHandler } from './middleware/errorHandler';
 
 const app: Application = express();
 
@@ -19,13 +21,8 @@ app.use('/mission', missionRoutes);
 app.use('/post', postRoutes);
 app.use('/user', userRoutes);
 
-// 3. Global Error Handler (Middleware)
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: err.message || 'Internal Server Error',
-  });
-});
+// 3. 404 + global error handler
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

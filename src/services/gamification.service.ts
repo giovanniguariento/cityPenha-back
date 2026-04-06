@@ -1,3 +1,4 @@
+import { toBrazilYyyyMmDd } from '../lib/brTime';
 import { prisma } from '../lib/prisma';
 import { SYSTEM_FOLDER_KEY_DEFAULT_SAVED, SYSTEM_FOLDER_KEY_LIKES } from './postFolder.service';
 
@@ -148,7 +149,7 @@ export class GamificationService {
       where: { userId },
       select: { createdAt: true },
     });
-    const days = [...new Set(reads.map((r) => r.createdAt.toISOString().slice(0, 10)))].sort();
+    const days = [...new Set(reads.map((r) => toBrazilYyyyMmDd(r.createdAt)))].sort();
     return days;
   }
 
@@ -312,7 +313,7 @@ export class GamificationService {
         where: { userId },
         select: { createdAt: true },
       });
-      const daysWithReadsSorted = [...new Set(readPostsForUser.map((r) => r.createdAt.toISOString().slice(0, 10)))].sort();
+      const daysWithReadsSorted = [...new Set(readPostsForUser.map((r) => toBrazilYyyyMmDd(r.createdAt)))].sort();
       const consecutiveStreak = this.getLongestConsecutiveStreak(daysWithReadsSorted);
       const missionFreq = await tx.mission.findUnique({ where: { key: 'read_7_days' } });
       if (missionFreq) {
