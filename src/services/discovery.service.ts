@@ -126,7 +126,8 @@ export class DiscoveryService {
    * Prisma `groupBy` cannot `orderBy` aggregate `_count._all` for this model (see `ReadPostOrderByWithAggregationInput`), so we use `$queryRaw`.
    *
    * 1) Today (Brazil): `createdAt` in `[start, endExclusive)` from `brazilDayUtcBounds(brazilTodayYyyyMmDd())`.
-   * 2) If no rows: same without date filter (all-time).
+   * 2) If no rows today: all-time only (same query without date filter).
+   * 3) If there are rows today but fewer than the limit: append top all-time posts (excluding IDs already chosen) until the limit.
    */
   private async loadTrendingFeedItems(): Promise<FeedItem[]> {
     const limit = DISCOVERY_LIMIT_TRENDING;
@@ -162,6 +163,22 @@ export class DiscoveryService {
           LIMIT ${limit}
         `
       );
+    } else if (rows.length < limit) {
+      const excludeIds = rows.map((r) => r.wordpressPostId);
+      const need = limit - rows.length;
+      const more = await prisma.$queryRaw<Array<{ wordpressPostId: number }>>(
+        Prisma.sql`
+          SELECT rp.wordpressPostId AS wordpressPostId
+          FROM read_posts rp
+          WHERE rp.wordpressPostId NOT IN (${Prisma.join(
+            excludeIds.map((id) => Prisma.sql`${id}`)
+          )})
+          GROUP BY rp.wordpressPostId
+          ORDER BY COUNT(*) DESC
+          LIMIT ${need}
+        `
+      );
+      rows = [...rows, ...more];
     }
 
     const ids = rows.map((r) => r.wordpressPostId);
