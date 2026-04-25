@@ -14,4 +14,11 @@ export class UserService {
   async findById(id: string): Promise<User | null> {
     return prisma.user.findUnique({ where: { id } });
   }
+
+  async updateProfile(
+    id: string,
+    data: { name?: string; nickname?: string | null; about?: string | null }
+  ): Promise<User> {
+    return prisma.user.update({ where: { id }, data });
+  }
 }

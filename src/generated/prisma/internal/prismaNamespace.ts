@@ -16,10 +16,10 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "../models.ts"
-import { type PrismaClient } from "./class.ts"
+import type * as Prisma from "../models.js"
+import { type PrismaClient } from "./class.js"
 
-export type * from '../models.ts'
+export type * from '../models.js'
 
 export type DMMF = typeof runtime.DMMF
 
@@ -2190,6 +2190,8 @@ export const UserScalarFieldEnum = {
   email: 'email',
   name: 'name',
   photoUrl: 'photoUrl',
+  nickname: 'nickname',
+  about: 'about',
   firebaseUid: 'firebaseUid',
   wordpressId: 'wordpressId',
   xp: 'xp',
@@ -2444,6 +2446,8 @@ export const UserOrderByRelevanceFieldEnum = {
   email: 'email',
   name: 'name',
   photoUrl: 'photoUrl',
+  nickname: 'nickname',
+  about: 'about',
   firebaseUid: 'firebaseUid'
 } as const
 

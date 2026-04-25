@@ -1,4 +1,4 @@
-import { toBrazilYyyyMmDd } from '../lib/brTime';
+import { brazilTodayYyyyMmDd, toBrazilYyyyMmDd } from '../lib/brTime';
 import { prisma } from '../lib/prisma';
 import { SYSTEM_FOLDER_KEY_DEFAULT_SAVED, SYSTEM_FOLDER_KEY_LIKES } from './postFolder.service';
 
@@ -73,6 +73,20 @@ let ensuredDefaults = {
 };
 
 export class GamificationService {
+  private clampPercent(value: number): number {
+    if (!Number.isFinite(value)) {
+      return 0;
+    }
+    return Math.min(100, Math.max(0, value));
+  }
+
+  private getProgressToTarget(currentValue: number, targetValue: number): number {
+    if (targetValue <= 0) {
+      return 100;
+    }
+    return this.clampPercent((currentValue / targetValue) * 100);
+  }
+
   private async ensureDefaultMissionsInternal() {
     for (const m of DEFAULT_MISSIONS) {
       await prisma.mission.upsert({
@@ -153,32 +167,50 @@ export class GamificationService {
     return days;
   }
 
-  /**
-   * Given sorted array of date strings (YYYY-MM-DD), returns the length of the
-   * longest run of consecutive calendar days.
-   */
-  getLongestConsecutiveStreak(days: string[]): number {
-    if (days.length === 0) return 0;
-    let maxStreak = 1;
-    let currentStreak = 1;
-    const oneDayMs = 24 * 60 * 60 * 1000;
-    for (let i = 1; i < days.length; i++) {
-      const prev = new Date(days[i - 1]).getTime();
-      const curr = new Date(days[i]).getTime();
-      const diffDays = Math.round((curr - prev) / oneDayMs);
-      if (diffDays === 1) {
-        currentStreak++;
-        maxStreak = Math.max(maxStreak, currentStreak);
-      } else {
-        currentStreak = 1;
-      }
+  private shiftYyyyMmDd(ymd: string, dayDelta: number): string {
+    const [y, m, d] = ymd.split('-').map((part) => Number(part.trim()));
+    if (![y, m, d].every((n) => Number.isFinite(n))) {
+      throw new Error(`Invalid date string: ${ymd}`);
     }
-    return maxStreak;
+
+    const dt = new Date(Date.UTC(y, m - 1, d));
+    dt.setUTCDate(dt.getUTCDate() + dayDelta);
+    return dt.toISOString().slice(0, 10);
+  }
+
+  /**
+   * Returns the current consecutive streak with a 1-day grace period.
+   * - If user read today, streak is anchored on today.
+   * - If user did not read today but read yesterday, streak is preserved (anchored on yesterday).
+   * - If the last read is older than yesterday, streak is 0.
+   */
+  getCurrentConsecutiveStreak(days: string[], todayYmd: string = brazilTodayYyyyMmDd()): number {
+    if (days.length === 0) return 0;
+    const daysSet = new Set(days);
+    const yesterdayYmd = this.shiftYyyyMmDd(todayYmd, -1);
+    const anchorDay = daysSet.has(todayYmd)
+      ? todayYmd
+      : (daysSet.has(yesterdayYmd) ? yesterdayYmd : null);
+    if (!anchorDay) {
+      return 0;
+    }
+
+    let streak = 1;
+    let cursor = anchorDay;
+    while (true) {
+      const previousDay = this.shiftYyyyMmDd(cursor, -1);
+      if (!daysSet.has(previousDay)) {
+        break;
+      }
+      streak++;
+      cursor = previousDay;
+    }
+    return streak;
   }
 
   /**
    * Returns all missions with the user's progress and completed status.
-   * Frequency mission (read_7_days): progress = longest streak of consecutive days with reads.
+   * Frequency mission (read_7_days): progress = current streak with 1-day grace (Brazil calendar).
    */
   async getMissionsWithUserProgress(userId: string) {
     await this.ensureDefaultMissions();
@@ -190,13 +222,13 @@ export class GamificationService {
     ]);
 
     const userMissionByMissionId = new Map(userMissions.map((um) => [um.missionId, um]));
-    const consecutiveStreak = this.getLongestConsecutiveStreak(daysWithReads);
+    const currentConsecutiveStreak = this.getCurrentConsecutiveStreak(daysWithReads);
 
     return missions.map((m) => {
       const um = userMissionByMissionId.get(m.id);
       const isFrequencyMission = m.key === 'read_7_days';
       const progress = isFrequencyMission
-        ? Math.min(consecutiveStreak, m.target)
+        ? Math.min(currentConsecutiveStreak, m.target)
         : (um?.progress ?? 0);
       const completed = um?.completed ?? false;
       const completedAt = um?.completedAt?.toISOString() ?? null;
@@ -244,6 +276,71 @@ export class GamificationService {
       levelNumber: currentLevel.levelNumber,
       minXp: currentLevel.minXp,
       minCompletedMissions: currentLevel.minCompletedMissions,
+    };
+  }
+
+  async getUserLevelProgress(userId: string) {
+    await this.ensureDefaultLevels();
+
+    const [user, completedMissionsCount, levels] = await Promise.all([
+      prisma.user.findUnique({ where: { id: userId } }),
+      this.getCompletedMissionsCount(userId),
+      prisma.level.findMany({ orderBy: { levelNumber: 'asc' } }),
+    ]);
+
+    if (!user || levels.length === 0) {
+      return null;
+    }
+
+    let currentLevel = levels[0];
+    for (const level of levels) {
+      const meetsXp = user.xp >= level.minXp;
+      const meetsMissions = completedMissionsCount >= level.minCompletedMissions;
+      if (meetsXp && meetsMissions) {
+        currentLevel = level;
+      } else {
+        break;
+      }
+    }
+
+    const currentLevelIdx = levels.findIndex((l) => l.levelNumber === currentLevel.levelNumber);
+    const nextLevel = currentLevelIdx >= 0 ? levels[currentLevelIdx + 1] ?? null : null;
+
+    if (!nextLevel) {
+      return {
+        percentage: 100,
+        currentLevel: currentLevel.levelNumber,
+        nextLevel: null,
+        xp: {
+          current: user.xp,
+          requiredForNext: null,
+        },
+        missions: {
+          current: completedMissionsCount,
+          requiredForNext: null,
+        },
+      };
+    }
+
+    const xpProgress = this.getProgressToTarget(user.xp, nextLevel.minXp);
+    const missionsProgress = this.getProgressToTarget(
+      completedMissionsCount,
+      nextLevel.minCompletedMissions
+    );
+    const percentage = this.clampPercent((xpProgress + missionsProgress) / 2);
+
+    return {
+      percentage: Number(percentage.toFixed(2)),
+      currentLevel: currentLevel.levelNumber,
+      nextLevel: nextLevel.levelNumber,
+      xp: {
+        current: user.xp,
+        requiredForNext: nextLevel.minXp,
+      },
+      missions: {
+        current: completedMissionsCount,
+        requiredForNext: nextLevel.minCompletedMissions,
+      },
     };
   }
 
@@ -308,16 +405,16 @@ export class GamificationService {
         }
       }
 
-      // handle frequency mission (read_7_days): progress = longest streak of consecutive days with reads
+      // handle frequency mission (read_7_days): progress = current streak with 1-day grace (Brazil calendar)
       const readPostsForUser = await tx.readPost.findMany({
         where: { userId },
         select: { createdAt: true },
       });
       const daysWithReadsSorted = [...new Set(readPostsForUser.map((r) => toBrazilYyyyMmDd(r.createdAt)))].sort();
-      const consecutiveStreak = this.getLongestConsecutiveStreak(daysWithReadsSorted);
+      const currentConsecutiveStreak = this.getCurrentConsecutiveStreak(daysWithReadsSorted);
       const missionFreq = await tx.mission.findUnique({ where: { key: 'read_7_days' } });
       if (missionFreq) {
-        const progress = Math.min(consecutiveStreak, missionFreq.target);
+        const progress = Math.min(currentConsecutiveStreak, missionFreq.target);
         const userMissionFreq = await tx.userMission.upsert({
           where: { userId_missionId: { userId, missionId: missionFreq.id } },
           create: { userId, missionId: missionFreq.id, progress },

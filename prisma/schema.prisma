@@ -222,6 +222,8 @@ model User {
   email    String  @unique
   name     String
   photoUrl String? // Foto que vem do Firebase/Social Login
+  nickname String? // Apelido de exibição (não único)
+  about    String? @db.Text // Bio / sobre o usuário
 
   // Conectores de Identidade
   firebaseUid String @unique // O ID que vem do token do Google/Facebook

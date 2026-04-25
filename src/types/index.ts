@@ -19,6 +19,13 @@ export interface CreateUserBody {
   photoUrl: string;
 }
 
+/** Request body for PATCH /user/me — omit a key to leave unchanged; `null` clears nickname/about. */
+export interface UpdateUserProfileBody {
+  name?: string;
+  nickname?: string | null;
+  about?: string | null;
+}
+
 /** Single item in the home feed (post or ad) */
 export interface FeedItem {
   slug: string;
@@ -124,6 +131,21 @@ export interface UserLevel {
   levelNumber: number;
   minXp: number;
   minCompletedMissions: number;
+}
+
+/** Progress snapshot from current level to next level (for UI progress bar). */
+export interface UserLevelProgress {
+  percentage: number;
+  currentLevel: number;
+  nextLevel: number | null;
+  xp: {
+    current: number;
+    requiredForNext: number | null;
+  };
+  missions: {
+    current: number;
+    requiredForNext: number | null;
+  };
 }
 
 /** Item in GET /discovery — `topics` (WordPress categories + post count). */

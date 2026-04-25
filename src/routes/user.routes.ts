@@ -14,6 +14,7 @@ router.post('/signup', authenticateFirebaseToken, asyncHandler(userController.cr
 router.post('/read/:postId', requireAuth, asyncHandler(userController.recordRead));
 
 router.get('/me', requireAuth, asyncHandler(userController.getInfo));
+router.patch('/me', requireAuth, asyncHandler(userController.updateProfile));
 router.get('/me/frequency', requireAuth, asyncHandler(userController.getFrequency));
 router.get('/me/folders', requireAuth, asyncHandler(userController.listFolders));
 router.get('/me/folders/:folderId/posts', requireAuth, asyncHandler(userController.listPostsInFolder));

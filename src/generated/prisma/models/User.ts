@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.ts"
-import type * as Prisma from "../internal/prismaNamespace.ts"
+import type * as $Enums from "../enums.js"
+import type * as Prisma from "../internal/prismaNamespace.js"
 
 /**
  * Model User
@@ -43,6 +43,8 @@ export type UserMinAggregateOutputType = {
   email: string | null
   name: string | null
   photoUrl: string | null
+  nickname: string | null
+  about: string | null
   firebaseUid: string | null
   wordpressId: number | null
   xp: number | null
@@ -56,6 +58,8 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   name: string | null
   photoUrl: string | null
+  nickname: string | null
+  about: string | null
   firebaseUid: string | null
   wordpressId: number | null
   xp: number | null
@@ -69,6 +73,8 @@ export type UserCountAggregateOutputType = {
   email: number
   name: number
   photoUrl: number
+  nickname: number
+  about: number
   firebaseUid: number
   wordpressId: number
   xp: number
@@ -96,6 +102,8 @@ export type UserMinAggregateInputType = {
   email?: true
   name?: true
   photoUrl?: true
+  nickname?: true
+  about?: true
   firebaseUid?: true
   wordpressId?: true
   xp?: true
@@ -109,6 +117,8 @@ export type UserMaxAggregateInputType = {
   email?: true
   name?: true
   photoUrl?: true
+  nickname?: true
+  about?: true
   firebaseUid?: true
   wordpressId?: true
   xp?: true
@@ -122,6 +132,8 @@ export type UserCountAggregateInputType = {
   email?: true
   name?: true
   photoUrl?: true
+  nickname?: true
+  about?: true
   firebaseUid?: true
   wordpressId?: true
   xp?: true
@@ -222,6 +234,8 @@ export type UserGroupByOutputType = {
   email: string
   name: string
   photoUrl: string | null
+  nickname: string | null
+  about: string | null
   firebaseUid: string
   wordpressId: number | null
   xp: number
@@ -258,6 +272,8 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringFilter<"User"> | string
   photoUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  nickname?: Prisma.StringNullableFilter<"User"> | string | null
+  about?: Prisma.StringNullableFilter<"User"> | string | null
   firebaseUid?: Prisma.StringFilter<"User"> | string
   wordpressId?: Prisma.IntNullableFilter<"User"> | number | null
   xp?: Prisma.IntFilter<"User"> | number
@@ -275,6 +291,8 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  nickname?: Prisma.SortOrderInput | Prisma.SortOrder
+  about?: Prisma.SortOrderInput | Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrderInput | Prisma.SortOrder
   xp?: Prisma.SortOrder
@@ -298,6 +316,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringFilter<"User"> | string
   photoUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  nickname?: Prisma.StringNullableFilter<"User"> | string | null
+  about?: Prisma.StringNullableFilter<"User"> | string | null
   xp?: Prisma.IntFilter<"User"> | number
   coins?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -313,6 +333,8 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  nickname?: Prisma.SortOrderInput | Prisma.SortOrder
+  about?: Prisma.SortOrderInput | Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrderInput | Prisma.SortOrder
   xp?: Prisma.SortOrder
@@ -334,6 +356,8 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringWithAggregatesFilter<"User"> | string
   photoUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  nickname?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  about?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   firebaseUid?: Prisma.StringWithAggregatesFilter<"User"> | string
   wordpressId?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
   xp?: Prisma.IntWithAggregatesFilter<"User"> | number
@@ -347,6 +371,8 @@ export type UserCreateInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -364,6 +390,8 @@ export type UserUncheckedCreateInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -381,6 +409,8 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -398,6 +428,8 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -415,6 +447,8 @@ export type UserCreateManyInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -428,6 +462,8 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -441,6 +477,8 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -460,6 +498,8 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   photoUrl?: Prisma.SortOrder
+  nickname?: Prisma.SortOrder
+  about?: Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrder
   xp?: Prisma.SortOrder
@@ -479,6 +519,8 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   photoUrl?: Prisma.SortOrder
+  nickname?: Prisma.SortOrder
+  about?: Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrder
   xp?: Prisma.SortOrder
@@ -492,6 +534,8 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   photoUrl?: Prisma.SortOrder
+  nickname?: Prisma.SortOrder
+  about?: Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrder
   xp?: Prisma.SortOrder
@@ -580,6 +624,8 @@ export type UserCreateWithoutPostFoldersInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -596,6 +642,8 @@ export type UserUncheckedCreateWithoutPostFoldersInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -628,6 +676,8 @@ export type UserUpdateWithoutPostFoldersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -644,6 +694,8 @@ export type UserUncheckedUpdateWithoutPostFoldersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -660,6 +712,8 @@ export type UserCreateWithoutReadPostsInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -676,6 +730,8 @@ export type UserUncheckedCreateWithoutReadPostsInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -708,6 +764,8 @@ export type UserUpdateWithoutReadPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -724,6 +782,8 @@ export type UserUncheckedUpdateWithoutReadPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -740,6 +800,8 @@ export type UserCreateWithoutLikedPostsInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -756,6 +818,8 @@ export type UserUncheckedCreateWithoutLikedPostsInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -788,6 +852,8 @@ export type UserUpdateWithoutLikedPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -804,6 +870,8 @@ export type UserUncheckedUpdateWithoutLikedPostsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -820,6 +888,8 @@ export type UserCreateWithoutUserMissionsInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -836,6 +906,8 @@ export type UserUncheckedCreateWithoutUserMissionsInput = {
   email: string
   name: string
   photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
   firebaseUid: string
   wordpressId?: number | null
   xp?: number
@@ -868,6 +940,8 @@ export type UserUpdateWithoutUserMissionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -884,6 +958,8 @@ export type UserUncheckedUpdateWithoutUserMissionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
@@ -958,6 +1034,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   name?: boolean
   photoUrl?: boolean
+  nickname?: boolean
+  about?: boolean
   firebaseUid?: boolean
   wordpressId?: boolean
   xp?: boolean
@@ -978,6 +1056,8 @@ export type UserSelectScalar = {
   email?: boolean
   name?: boolean
   photoUrl?: boolean
+  nickname?: boolean
+  about?: boolean
   firebaseUid?: boolean
   wordpressId?: boolean
   xp?: boolean
@@ -986,7 +1066,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "photoUrl" | "firebaseUid" | "wordpressId" | "xp" | "coins" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "photoUrl" | "nickname" | "about" | "firebaseUid" | "wordpressId" | "xp" | "coins" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   postFolders?: boolean | Prisma.User$postFoldersArgs<ExtArgs>
   readPosts?: boolean | Prisma.User$readPostsArgs<ExtArgs>
@@ -1008,6 +1088,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     name: string
     photoUrl: string | null
+    nickname: string | null
+    about: string | null
     firebaseUid: string
     wordpressId: number | null
     xp: number
@@ -1391,6 +1473,8 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly photoUrl: Prisma.FieldRef<"User", 'String'>
+  readonly nickname: Prisma.FieldRef<"User", 'String'>
+  readonly about: Prisma.FieldRef<"User", 'String'>
   readonly firebaseUid: Prisma.FieldRef<"User", 'String'>
   readonly wordpressId: Prisma.FieldRef<"User", 'Int'>
   readonly xp: Prisma.FieldRef<"User", 'Int'>

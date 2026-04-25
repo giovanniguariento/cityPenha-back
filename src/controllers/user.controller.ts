@@ -5,7 +5,7 @@ import { prisma } from '../lib/prisma';
 import type { PostFolderService } from '../services/postFolder.service';
 import { SYSTEM_FOLDER_KEY_DEFAULT_SAVED, SYSTEM_FOLDER_KEY_LIKES } from '../services/postFolder.service';
 import { gamification } from '../services';
-import type { CreateUserBody } from '../types';
+import type { CreateUserBody, UpdateUserProfileBody } from '../types';
 import type { ICategory } from '../models/category.interface';
 import type { IPost } from '../models/post.interface';
 import {
@@ -77,14 +77,83 @@ export class UserController {
       throw unauthorized('Unauthorized');
     }
     const id = user.id;
-    const [completedMissionsCount, daysWithReads, missions, level] = await Promise.all([
+    const [completedMissionsCount, daysWithReads, missions, level, levelProgress] = await Promise.all([
       gamification.getCompletedMissionsCount(id),
       gamification.getDaysWithReads(id),
       gamification.getMissionsWithUserProgress(id),
       gamification.getUserLevel(id),
+      gamification.getUserLevelProgress(id),
     ]);
 
-    sendJsonSuccess(res, { user, completedMissionsCount, daysWithReads, missions, level });
+    sendJsonSuccess(res, { user, completedMissionsCount, daysWithReads, missions, level, levelProgress });
+  };
+
+  /** PATCH /user/me — atualiza name, nickname e/ou about. */
+  public updateProfile = async (req: Request, res: Response): Promise<void> => {
+    const user = req.appUser;
+    if (!user) {
+      throw unauthorized('Unauthorized');
+    }
+
+    const body = req.body as Partial<UpdateUserProfileBody>;
+    const hasName = Object.prototype.hasOwnProperty.call(body, 'name');
+    const hasNickname = Object.prototype.hasOwnProperty.call(body, 'nickname');
+    const hasAbout = Object.prototype.hasOwnProperty.call(body, 'about');
+
+    if (!hasName && !hasNickname && !hasAbout) {
+      throw validationError('No fields to update');
+    }
+
+    const data: { name?: string; nickname?: string | null; about?: string | null } = {};
+
+    if (hasName) {
+      if (typeof body.name !== 'string') {
+        throw validationError('name must be a string');
+      }
+      const trimmed = body.name.trim();
+      if (trimmed.length === 0) {
+        throw validationError('name cannot be empty');
+      }
+      if (trimmed.length > 120) {
+        throw validationError('name must be at most 120 characters');
+      }
+      data.name = trimmed;
+    }
+
+    if (hasNickname) {
+      if (body.nickname === null) {
+        data.nickname = null;
+      } else if (typeof body.nickname === 'string') {
+        const t = body.nickname.trim();
+        if (t.length === 0) {
+          data.nickname = null;
+        } else if (t.length < 2) {
+          throw validationError('nickname must be at least 2 characters when set');
+        } else if (t.length > 40) {
+          throw validationError('nickname must be at most 40 characters');
+        } else {
+          data.nickname = t;
+        }
+      } else {
+        throw validationError('nickname must be a string or null');
+      }
+    }
+
+    if (hasAbout) {
+      if (body.about === null) {
+        data.about = null;
+      } else if (typeof body.about === 'string') {
+        if (body.about.length > 2000) {
+          throw validationError('about must be at most 2000 characters');
+        }
+        data.about = body.about;
+      } else {
+        throw validationError('about must be a string or null');
+      }
+    }
+
+    const updated = await this.userService.updateProfile(user.id, data);
+    sendJsonSuccess(res, updated);
   };
 
   /** GET /user/me/frequency — retorna dias em que leu notícia + data de hoje (YYYY-MM-DD). */
