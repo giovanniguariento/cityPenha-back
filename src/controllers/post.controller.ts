@@ -69,18 +69,20 @@ export class PostController {
     const { liked } = await this.postFolderService.toggleLike(userId, wordpressPostId);
     const likesCount = await this.postFolderService.countLikesForPost(wordpressPostId);
 
-    const likeMission = await gamification.syncLikeMissionState(userId);
-    const missions = await gamification.getMissionsWithUserProgress(userId);
-    const level = await gamification.getUserLevel(userId);
-    const base = { liked, likesCount, missions, level };
-    if ('user' in likeMission && likeMission.user) {
-      sendJsonSuccess(res, {
-        ...base,
-        user: likeMission.user,
-        completedMissionsCount: likeMission.completedMissionsCount,
-      });
-    } else {
-      sendJsonSuccess(res, base);
-    }
+    const snapshot = await gamification.notify(liked ? 'like.added' : 'like.removed', {
+      userId,
+      wordpressPostId,
+    });
+
+    sendJsonSuccess(res, {
+      liked,
+      likesCount,
+      missions: snapshot.missions,
+      badges: snapshot.badges,
+      level: snapshot.level,
+      user: snapshot.user,
+      completedMissionsCount: snapshot.completedMissionsCount,
+      rewards: snapshot.rewards,
+    });
   };
 }

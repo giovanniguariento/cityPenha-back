@@ -236,11 +236,13 @@ model User {
   xp    Int @default(0)
   coins Int @default(0)
 
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  readPosts    ReadPost[]
-  likedPosts   LikedPost[]
-  userMissions UserMission[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  readPosts     ReadPost[]
+  likedPosts    LikedPost[]
+  userMissions  UserMission[]
+  userBadges    UserBadge[]
+  rewardLedger  RewardLedger[]
 
   @@map("users")
 }
@@ -308,17 +310,65 @@ model LikedPost {
 }
 
 model Mission {
-  id           String        @id @default(uuid())
-  key          String        @unique
-  title        String
-  description  String?
-  target       Int
-  coinReward   Int           @default(0)
+  id            String        @id @default(uuid())
+  key           String        @unique
+  title         String
+  description   String?
+  iconUrl       String?
+  category      String? // "daily" | "weekly" | "achievement" | custom
+  isActive      Boolean       @default(true)
+  startsAt      DateTime?
+  endsAt        DateTime?
+  /// Métrica primária usada para a barra de progresso na UI.
+  metricKey     String
+  /// Parâmetros opcionais que a métrica primária aceita (ex.: { categoryId: 5 }).
+  metricParams  Json?
+  /// Valor alvo da métrica primária para concluir a missão.
+  target        Int
+  /// Árvore opcional de critérios composta { all|any|metric }. Se omitida, conclusão = (metricKey >= target).
+  criteria      Json?
+  coinReward    Int           @default(0)
   xpReward     Int           @default(0)
-  createdAt    DateTime      @default(now())
-  userMissions UserMission[]
+  /// Se true, ao cair abaixo do alvo a missão é revogada e a recompensa estornada.
+  isReversible  Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  userMissions  UserMission[]
 
   @@map("missions")
+}
+
+model Badge {
+  id           String      @id @default(uuid())
+  key          String      @unique
+  title        String
+  description  String?
+  iconUrl      String?
+  /// Métrica primária (opcional) — usada quando o critério é simples (metric >= threshold).
+  metricKey    String?
+  metricParams Json?
+  threshold    Int?
+  /// Árvore opcional de critérios composta. Se ambos `criteria` e `metricKey` existirem, `criteria` ganha precedência.
+  criteria     Json?
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  userBadges   UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id       String   @id @default(uuid())
+  userId   String
+  badgeId  String
+  earnedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@map("user_badges")
 }
 
 model UserMission {
@@ -343,7 +393,28 @@ model Level {
   levelNumber          Int      @unique
   minXp                Int      @default(0)
   minCompletedMissions Int      @default(0)
+  title                String?
+  iconUrl              String?
+  rewardCoins          Int      @default(0)
+  rewardXp             Int      @default(0)
   createdAt            DateTime @default(now())
 
   @@map("levels")
+}
+
+/// Registro imutável de toda concessão/estorno de XP, coins e marcações de badge para auditoria.
+model RewardLedger {
+  id         String   @id @default(uuid())
+  userId     String
+  source     String /// "MISSION:<id>" | "BADGE:<id>" | "LEVEL_UP:<n>" | "READ_XP"
+  reason     String /// "granted" | "revoked"
+  coinsDelta Int      @default(0)
+  xpDelta    Int      @default(0)
+  meta       Json?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("reward_ledger")
 }

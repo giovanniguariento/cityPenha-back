@@ -43,10 +43,18 @@ export type MissionMinAggregateOutputType = {
   key: string | null
   title: string | null
   description: string | null
+  iconUrl: string | null
+  category: string | null
+  isActive: boolean | null
+  startsAt: Date | null
+  endsAt: Date | null
+  metricKey: string | null
   target: number | null
   coinReward: number | null
   xpReward: number | null
+  isReversible: boolean | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type MissionMaxAggregateOutputType = {
@@ -54,10 +62,18 @@ export type MissionMaxAggregateOutputType = {
   key: string | null
   title: string | null
   description: string | null
+  iconUrl: string | null
+  category: string | null
+  isActive: boolean | null
+  startsAt: Date | null
+  endsAt: Date | null
+  metricKey: string | null
   target: number | null
   coinReward: number | null
   xpReward: number | null
+  isReversible: boolean | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type MissionCountAggregateOutputType = {
@@ -65,10 +81,20 @@ export type MissionCountAggregateOutputType = {
   key: number
   title: number
   description: number
+  iconUrl: number
+  category: number
+  isActive: number
+  startsAt: number
+  endsAt: number
+  metricKey: number
+  metricParams: number
   target: number
+  criteria: number
   coinReward: number
   xpReward: number
+  isReversible: number
   createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -90,10 +116,18 @@ export type MissionMinAggregateInputType = {
   key?: true
   title?: true
   description?: true
+  iconUrl?: true
+  category?: true
+  isActive?: true
+  startsAt?: true
+  endsAt?: true
+  metricKey?: true
   target?: true
   coinReward?: true
   xpReward?: true
+  isReversible?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type MissionMaxAggregateInputType = {
@@ -101,10 +135,18 @@ export type MissionMaxAggregateInputType = {
   key?: true
   title?: true
   description?: true
+  iconUrl?: true
+  category?: true
+  isActive?: true
+  startsAt?: true
+  endsAt?: true
+  metricKey?: true
   target?: true
   coinReward?: true
   xpReward?: true
+  isReversible?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type MissionCountAggregateInputType = {
@@ -112,10 +154,20 @@ export type MissionCountAggregateInputType = {
   key?: true
   title?: true
   description?: true
+  iconUrl?: true
+  category?: true
+  isActive?: true
+  startsAt?: true
+  endsAt?: true
+  metricKey?: true
+  metricParams?: true
   target?: true
+  criteria?: true
   coinReward?: true
   xpReward?: true
+  isReversible?: true
   createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -210,10 +262,20 @@ export type MissionGroupByOutputType = {
   key: string
   title: string
   description: string | null
+  iconUrl: string | null
+  category: string | null
+  isActive: boolean
+  startsAt: Date | null
+  endsAt: Date | null
+  metricKey: string
+  metricParams: runtime.JsonValue | null
   target: number
+  criteria: runtime.JsonValue | null
   coinReward: number
   xpReward: number
+  isReversible: boolean
   createdAt: Date
+  updatedAt: Date
   _count: MissionCountAggregateOutputType | null
   _avg: MissionAvgAggregateOutputType | null
   _sum: MissionSumAggregateOutputType | null
@@ -244,10 +306,20 @@ export type MissionWhereInput = {
   key?: Prisma.StringFilter<"Mission"> | string
   title?: Prisma.StringFilter<"Mission"> | string
   description?: Prisma.StringNullableFilter<"Mission"> | string | null
+  iconUrl?: Prisma.StringNullableFilter<"Mission"> | string | null
+  category?: Prisma.StringNullableFilter<"Mission"> | string | null
+  isActive?: Prisma.BoolFilter<"Mission"> | boolean
+  startsAt?: Prisma.DateTimeNullableFilter<"Mission"> | Date | string | null
+  endsAt?: Prisma.DateTimeNullableFilter<"Mission"> | Date | string | null
+  metricKey?: Prisma.StringFilter<"Mission"> | string
+  metricParams?: Prisma.JsonNullableFilter<"Mission">
   target?: Prisma.IntFilter<"Mission"> | number
+  criteria?: Prisma.JsonNullableFilter<"Mission">
   coinReward?: Prisma.IntFilter<"Mission"> | number
   xpReward?: Prisma.IntFilter<"Mission"> | number
+  isReversible?: Prisma.BoolFilter<"Mission"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Mission"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Mission"> | Date | string
   userMissions?: Prisma.UserMissionListRelationFilter
 }
 
@@ -256,10 +328,20 @@ export type MissionOrderByWithRelationInput = {
   key?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  iconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  endsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  metricKey?: Prisma.SortOrder
+  metricParams?: Prisma.SortOrderInput | Prisma.SortOrder
   target?: Prisma.SortOrder
+  criteria?: Prisma.SortOrderInput | Prisma.SortOrder
   coinReward?: Prisma.SortOrder
   xpReward?: Prisma.SortOrder
+  isReversible?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   userMissions?: Prisma.UserMissionOrderByRelationAggregateInput
   _relevance?: Prisma.MissionOrderByRelevanceInput
 }
@@ -272,10 +354,20 @@ export type MissionWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.MissionWhereInput | Prisma.MissionWhereInput[]
   title?: Prisma.StringFilter<"Mission"> | string
   description?: Prisma.StringNullableFilter<"Mission"> | string | null
+  iconUrl?: Prisma.StringNullableFilter<"Mission"> | string | null
+  category?: Prisma.StringNullableFilter<"Mission"> | string | null
+  isActive?: Prisma.BoolFilter<"Mission"> | boolean
+  startsAt?: Prisma.DateTimeNullableFilter<"Mission"> | Date | string | null
+  endsAt?: Prisma.DateTimeNullableFilter<"Mission"> | Date | string | null
+  metricKey?: Prisma.StringFilter<"Mission"> | string
+  metricParams?: Prisma.JsonNullableFilter<"Mission">
   target?: Prisma.IntFilter<"Mission"> | number
+  criteria?: Prisma.JsonNullableFilter<"Mission">
   coinReward?: Prisma.IntFilter<"Mission"> | number
   xpReward?: Prisma.IntFilter<"Mission"> | number
+  isReversible?: Prisma.BoolFilter<"Mission"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Mission"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Mission"> | Date | string
   userMissions?: Prisma.UserMissionListRelationFilter
 }, "id" | "key">
 
@@ -284,10 +376,20 @@ export type MissionOrderByWithAggregationInput = {
   key?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  iconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  endsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  metricKey?: Prisma.SortOrder
+  metricParams?: Prisma.SortOrderInput | Prisma.SortOrder
   target?: Prisma.SortOrder
+  criteria?: Prisma.SortOrderInput | Prisma.SortOrder
   coinReward?: Prisma.SortOrder
   xpReward?: Prisma.SortOrder
+  isReversible?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.MissionCountOrderByAggregateInput
   _avg?: Prisma.MissionAvgOrderByAggregateInput
   _max?: Prisma.MissionMaxOrderByAggregateInput
@@ -303,10 +405,20 @@ export type MissionScalarWhereWithAggregatesInput = {
   key?: Prisma.StringWithAggregatesFilter<"Mission"> | string
   title?: Prisma.StringWithAggregatesFilter<"Mission"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Mission"> | string | null
+  iconUrl?: Prisma.StringNullableWithAggregatesFilter<"Mission"> | string | null
+  category?: Prisma.StringNullableWithAggregatesFilter<"Mission"> | string | null
+  isActive?: Prisma.BoolWithAggregatesFilter<"Mission"> | boolean
+  startsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Mission"> | Date | string | null
+  endsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Mission"> | Date | string | null
+  metricKey?: Prisma.StringWithAggregatesFilter<"Mission"> | string
+  metricParams?: Prisma.JsonNullableWithAggregatesFilter<"Mission">
   target?: Prisma.IntWithAggregatesFilter<"Mission"> | number
+  criteria?: Prisma.JsonNullableWithAggregatesFilter<"Mission">
   coinReward?: Prisma.IntWithAggregatesFilter<"Mission"> | number
   xpReward?: Prisma.IntWithAggregatesFilter<"Mission"> | number
+  isReversible?: Prisma.BoolWithAggregatesFilter<"Mission"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Mission"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Mission"> | Date | string
 }
 
 export type MissionCreateInput = {
@@ -314,10 +426,20 @@ export type MissionCreateInput = {
   key: string
   title: string
   description?: string | null
+  iconUrl?: string | null
+  category?: string | null
+  isActive?: boolean
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  metricKey: string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target: number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: number
   xpReward?: number
+  isReversible?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
   userMissions?: Prisma.UserMissionCreateNestedManyWithoutMissionInput
 }
 
@@ -326,10 +448,20 @@ export type MissionUncheckedCreateInput = {
   key: string
   title: string
   description?: string | null
+  iconUrl?: string | null
+  category?: string | null
+  isActive?: boolean
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  metricKey: string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target: number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: number
   xpReward?: number
+  isReversible?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
   userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutMissionInput
 }
 
@@ -338,10 +470,20 @@ export type MissionUpdateInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metricKey?: Prisma.StringFieldUpdateOperationsInput | string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target?: Prisma.IntFieldUpdateOperationsInput | number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: Prisma.IntFieldUpdateOperationsInput | number
   xpReward?: Prisma.IntFieldUpdateOperationsInput | number
+  isReversible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userMissions?: Prisma.UserMissionUpdateManyWithoutMissionNestedInput
 }
 
@@ -350,10 +492,20 @@ export type MissionUncheckedUpdateInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metricKey?: Prisma.StringFieldUpdateOperationsInput | string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target?: Prisma.IntFieldUpdateOperationsInput | number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: Prisma.IntFieldUpdateOperationsInput | number
   xpReward?: Prisma.IntFieldUpdateOperationsInput | number
+  isReversible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutMissionNestedInput
 }
 
@@ -362,10 +514,20 @@ export type MissionCreateManyInput = {
   key: string
   title: string
   description?: string | null
+  iconUrl?: string | null
+  category?: string | null
+  isActive?: boolean
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  metricKey: string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target: number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: number
   xpReward?: number
+  isReversible?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type MissionUpdateManyMutationInput = {
@@ -373,10 +535,20 @@ export type MissionUpdateManyMutationInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metricKey?: Prisma.StringFieldUpdateOperationsInput | string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target?: Prisma.IntFieldUpdateOperationsInput | number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: Prisma.IntFieldUpdateOperationsInput | number
   xpReward?: Prisma.IntFieldUpdateOperationsInput | number
+  isReversible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MissionUncheckedUpdateManyInput = {
@@ -384,10 +556,20 @@ export type MissionUncheckedUpdateManyInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metricKey?: Prisma.StringFieldUpdateOperationsInput | string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target?: Prisma.IntFieldUpdateOperationsInput | number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: Prisma.IntFieldUpdateOperationsInput | number
   xpReward?: Prisma.IntFieldUpdateOperationsInput | number
+  isReversible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MissionOrderByRelevanceInput = {
@@ -401,10 +583,20 @@ export type MissionCountOrderByAggregateInput = {
   key?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  iconUrl?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  startsAt?: Prisma.SortOrder
+  endsAt?: Prisma.SortOrder
+  metricKey?: Prisma.SortOrder
+  metricParams?: Prisma.SortOrder
   target?: Prisma.SortOrder
+  criteria?: Prisma.SortOrder
   coinReward?: Prisma.SortOrder
   xpReward?: Prisma.SortOrder
+  isReversible?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type MissionAvgOrderByAggregateInput = {
@@ -418,10 +610,18 @@ export type MissionMaxOrderByAggregateInput = {
   key?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  iconUrl?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  startsAt?: Prisma.SortOrder
+  endsAt?: Prisma.SortOrder
+  metricKey?: Prisma.SortOrder
   target?: Prisma.SortOrder
   coinReward?: Prisma.SortOrder
   xpReward?: Prisma.SortOrder
+  isReversible?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type MissionMinOrderByAggregateInput = {
@@ -429,10 +629,18 @@ export type MissionMinOrderByAggregateInput = {
   key?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  iconUrl?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  startsAt?: Prisma.SortOrder
+  endsAt?: Prisma.SortOrder
+  metricKey?: Prisma.SortOrder
   target?: Prisma.SortOrder
   coinReward?: Prisma.SortOrder
   xpReward?: Prisma.SortOrder
+  isReversible?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type MissionSumOrderByAggregateInput = {
@@ -444,6 +652,14 @@ export type MissionSumOrderByAggregateInput = {
 export type MissionScalarRelationFilter = {
   is?: Prisma.MissionWhereInput
   isNot?: Prisma.MissionWhereInput
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type MissionCreateNestedOneWithoutUserMissionsInput = {
@@ -465,10 +681,20 @@ export type MissionCreateWithoutUserMissionsInput = {
   key: string
   title: string
   description?: string | null
+  iconUrl?: string | null
+  category?: string | null
+  isActive?: boolean
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  metricKey: string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target: number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: number
   xpReward?: number
+  isReversible?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type MissionUncheckedCreateWithoutUserMissionsInput = {
@@ -476,10 +702,20 @@ export type MissionUncheckedCreateWithoutUserMissionsInput = {
   key: string
   title: string
   description?: string | null
+  iconUrl?: string | null
+  category?: string | null
+  isActive?: boolean
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  metricKey: string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target: number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: number
   xpReward?: number
+  isReversible?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type MissionCreateOrConnectWithoutUserMissionsInput = {
@@ -503,10 +739,20 @@ export type MissionUpdateWithoutUserMissionsInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metricKey?: Prisma.StringFieldUpdateOperationsInput | string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target?: Prisma.IntFieldUpdateOperationsInput | number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: Prisma.IntFieldUpdateOperationsInput | number
   xpReward?: Prisma.IntFieldUpdateOperationsInput | number
+  isReversible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MissionUncheckedUpdateWithoutUserMissionsInput = {
@@ -514,10 +760,20 @@ export type MissionUncheckedUpdateWithoutUserMissionsInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metricKey?: Prisma.StringFieldUpdateOperationsInput | string
+  metricParams?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   target?: Prisma.IntFieldUpdateOperationsInput | number
+  criteria?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coinReward?: Prisma.IntFieldUpdateOperationsInput | number
   xpReward?: Prisma.IntFieldUpdateOperationsInput | number
+  isReversible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -556,10 +812,20 @@ export type MissionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   key?: boolean
   title?: boolean
   description?: boolean
+  iconUrl?: boolean
+  category?: boolean
+  isActive?: boolean
+  startsAt?: boolean
+  endsAt?: boolean
+  metricKey?: boolean
+  metricParams?: boolean
   target?: boolean
+  criteria?: boolean
   coinReward?: boolean
   xpReward?: boolean
+  isReversible?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   userMissions?: boolean | Prisma.Mission$userMissionsArgs<ExtArgs>
   _count?: boolean | Prisma.MissionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["mission"]>
@@ -571,13 +837,23 @@ export type MissionSelectScalar = {
   key?: boolean
   title?: boolean
   description?: boolean
+  iconUrl?: boolean
+  category?: boolean
+  isActive?: boolean
+  startsAt?: boolean
+  endsAt?: boolean
+  metricKey?: boolean
+  metricParams?: boolean
   target?: boolean
+  criteria?: boolean
   coinReward?: boolean
   xpReward?: boolean
+  isReversible?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type MissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "title" | "description" | "target" | "coinReward" | "xpReward" | "createdAt", ExtArgs["result"]["mission"]>
+export type MissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "title" | "description" | "iconUrl" | "category" | "isActive" | "startsAt" | "endsAt" | "metricKey" | "metricParams" | "target" | "criteria" | "coinReward" | "xpReward" | "isReversible" | "createdAt" | "updatedAt", ExtArgs["result"]["mission"]>
 export type MissionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userMissions?: boolean | Prisma.Mission$userMissionsArgs<ExtArgs>
   _count?: boolean | Prisma.MissionCountOutputTypeDefaultArgs<ExtArgs>
@@ -593,10 +869,35 @@ export type $MissionPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     key: string
     title: string
     description: string | null
+    iconUrl: string | null
+    category: string | null
+    isActive: boolean
+    startsAt: Date | null
+    endsAt: Date | null
+    /**
+     * Métrica primária usada para a barra de progresso na UI.
+     */
+    metricKey: string
+    /**
+     * Parâmetros opcionais que a métrica primária aceita (ex.: { categoryId: 5 }).
+     */
+    metricParams: runtime.JsonValue | null
+    /**
+     * Valor alvo da métrica primária para concluir a missão.
+     */
     target: number
+    /**
+     * Árvore opcional de critérios composta { all|any|metric }. Se omitida, conclusão = (metricKey >= target).
+     */
+    criteria: runtime.JsonValue | null
     coinReward: number
     xpReward: number
+    /**
+     * Se true, ao cair abaixo do alvo a missão é revogada e a recompensa estornada.
+     */
+    isReversible: boolean
     createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["mission"]>
   composites: {}
 }
@@ -971,10 +1272,20 @@ export interface MissionFieldRefs {
   readonly key: Prisma.FieldRef<"Mission", 'String'>
   readonly title: Prisma.FieldRef<"Mission", 'String'>
   readonly description: Prisma.FieldRef<"Mission", 'String'>
+  readonly iconUrl: Prisma.FieldRef<"Mission", 'String'>
+  readonly category: Prisma.FieldRef<"Mission", 'String'>
+  readonly isActive: Prisma.FieldRef<"Mission", 'Boolean'>
+  readonly startsAt: Prisma.FieldRef<"Mission", 'DateTime'>
+  readonly endsAt: Prisma.FieldRef<"Mission", 'DateTime'>
+  readonly metricKey: Prisma.FieldRef<"Mission", 'String'>
+  readonly metricParams: Prisma.FieldRef<"Mission", 'Json'>
   readonly target: Prisma.FieldRef<"Mission", 'Int'>
+  readonly criteria: Prisma.FieldRef<"Mission", 'Json'>
   readonly coinReward: Prisma.FieldRef<"Mission", 'Int'>
   readonly xpReward: Prisma.FieldRef<"Mission", 'Int'>
+  readonly isReversible: Prisma.FieldRef<"Mission", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Mission", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Mission", 'DateTime'>
 }
     
 

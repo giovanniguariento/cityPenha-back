@@ -1,9 +1,15 @@
 {
   "scripts": {
     "postinstall": "prisma generate",
-    "start": "node dist/server.js",
+    "start": "node --env-file=.env dist/server.js ",
     "start:dev": "tsx --env-file=.env --watch src/server.ts",
-    "build": "pkgroll"
+    "build": "pkgroll",
+    "db:dev": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:status": "prisma migrate status",
+    "db:resolve": "prisma migrate resolve",
+    "db:baseline": "tsx --env-file=.env scripts/baseline-migrations.ts",
+    "db:new": "tsx --env-file=.env scripts/new-migration.ts"
   },
   "type": "module",
   "main": "./dist/server.js",
@@ -15,7 +21,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "firebase-admin": "^13.6.0"
+    "firebase-admin": "^13.6.0",
+    "zod": "^4.4.2"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",
@@ -24,6 +31,7 @@
     "@types/node": "^25.0.9",
     "pkgroll": "^2.21.4",
     "prisma": "^7.2.0",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }

@@ -284,6 +284,8 @@ export type UserWhereInput = {
   readPosts?: Prisma.ReadPostListRelationFilter
   likedPosts?: Prisma.LikedPostListRelationFilter
   userMissions?: Prisma.UserMissionListRelationFilter
+  userBadges?: Prisma.UserBadgeListRelationFilter
+  rewardLedger?: Prisma.RewardLedgerListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -303,6 +305,8 @@ export type UserOrderByWithRelationInput = {
   readPosts?: Prisma.ReadPostOrderByRelationAggregateInput
   likedPosts?: Prisma.LikedPostOrderByRelationAggregateInput
   userMissions?: Prisma.UserMissionOrderByRelationAggregateInput
+  userBadges?: Prisma.UserBadgeOrderByRelationAggregateInput
+  rewardLedger?: Prisma.RewardLedgerOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
 
@@ -326,6 +330,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   readPosts?: Prisma.ReadPostListRelationFilter
   likedPosts?: Prisma.LikedPostListRelationFilter
   userMissions?: Prisma.UserMissionListRelationFilter
+  userBadges?: Prisma.UserBadgeListRelationFilter
+  rewardLedger?: Prisma.RewardLedgerListRelationFilter
 }, "id" | "email" | "firebaseUid" | "wordpressId">
 
 export type UserOrderByWithAggregationInput = {
@@ -383,6 +389,8 @@ export type UserCreateInput = {
   readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
   likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -402,6 +410,8 @@ export type UserUncheckedCreateInput = {
   readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
   likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -421,6 +431,8 @@ export type UserUpdateInput = {
   readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
   likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -440,6 +452,8 @@ export type UserUncheckedUpdateInput = {
   readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
   likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -605,6 +619,20 @@ export type UserUpdateOneRequiredWithoutLikedPostsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLikedPostsInput, Prisma.UserUpdateWithoutLikedPostsInput>, Prisma.UserUncheckedUpdateWithoutLikedPostsInput>
 }
 
+export type UserCreateNestedOneWithoutUserBadgesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserBadgesInput, Prisma.UserUncheckedCreateWithoutUserBadgesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserBadgesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUserBadgesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserBadgesInput, Prisma.UserUncheckedCreateWithoutUserBadgesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserBadgesInput
+  upsert?: Prisma.UserUpsertWithoutUserBadgesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserBadgesInput, Prisma.UserUpdateWithoutUserBadgesInput>, Prisma.UserUncheckedUpdateWithoutUserBadgesInput>
+}
+
 export type UserCreateNestedOneWithoutUserMissionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutUserMissionsInput, Prisma.UserUncheckedCreateWithoutUserMissionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserMissionsInput
@@ -617,6 +645,20 @@ export type UserUpdateOneRequiredWithoutUserMissionsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutUserMissionsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserMissionsInput, Prisma.UserUpdateWithoutUserMissionsInput>, Prisma.UserUncheckedUpdateWithoutUserMissionsInput>
+}
+
+export type UserCreateNestedOneWithoutRewardLedgerInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRewardLedgerInput, Prisma.UserUncheckedCreateWithoutRewardLedgerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRewardLedgerInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRewardLedgerNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRewardLedgerInput, Prisma.UserUncheckedCreateWithoutRewardLedgerInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRewardLedgerInput
+  upsert?: Prisma.UserUpsertWithoutRewardLedgerInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRewardLedgerInput, Prisma.UserUpdateWithoutRewardLedgerInput>, Prisma.UserUncheckedUpdateWithoutRewardLedgerInput>
 }
 
 export type UserCreateWithoutPostFoldersInput = {
@@ -635,6 +677,8 @@ export type UserCreateWithoutPostFoldersInput = {
   readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
   likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPostFoldersInput = {
@@ -653,6 +697,8 @@ export type UserUncheckedCreateWithoutPostFoldersInput = {
   readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
   likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPostFoldersInput = {
@@ -687,6 +733,8 @@ export type UserUpdateWithoutPostFoldersInput = {
   readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
   likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostFoldersInput = {
@@ -705,6 +753,8 @@ export type UserUncheckedUpdateWithoutPostFoldersInput = {
   readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
   likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReadPostsInput = {
@@ -723,6 +773,8 @@ export type UserCreateWithoutReadPostsInput = {
   postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
   likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReadPostsInput = {
@@ -741,6 +793,8 @@ export type UserUncheckedCreateWithoutReadPostsInput = {
   postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
   likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReadPostsInput = {
@@ -775,6 +829,8 @@ export type UserUpdateWithoutReadPostsInput = {
   postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
   likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReadPostsInput = {
@@ -793,6 +849,8 @@ export type UserUncheckedUpdateWithoutReadPostsInput = {
   postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
   likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLikedPostsInput = {
@@ -811,6 +869,8 @@ export type UserCreateWithoutLikedPostsInput = {
   postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
   readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLikedPostsInput = {
@@ -829,6 +889,8 @@ export type UserUncheckedCreateWithoutLikedPostsInput = {
   postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
   readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
   userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLikedPostsInput = {
@@ -863,6 +925,8 @@ export type UserUpdateWithoutLikedPostsInput = {
   postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
   readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLikedPostsInput = {
@@ -881,6 +945,104 @@ export type UserUncheckedUpdateWithoutLikedPostsInput = {
   postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
   readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
   userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutUserBadgesInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutUserBadgesInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutUserBadgesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserBadgesInput, Prisma.UserUncheckedCreateWithoutUserBadgesInput>
+}
+
+export type UserUpsertWithoutUserBadgesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUserBadgesInput, Prisma.UserUncheckedUpdateWithoutUserBadgesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserBadgesInput, Prisma.UserUncheckedCreateWithoutUserBadgesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUserBadgesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUserBadgesInput, Prisma.UserUncheckedUpdateWithoutUserBadgesInput>
+}
+
+export type UserUpdateWithoutUserBadgesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUserBadgesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUserMissionsInput = {
@@ -899,6 +1061,8 @@ export type UserCreateWithoutUserMissionsInput = {
   postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
   readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
   likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserMissionsInput = {
@@ -917,6 +1081,8 @@ export type UserUncheckedCreateWithoutUserMissionsInput = {
   postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
   readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
   likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserMissionsInput = {
@@ -951,6 +1117,8 @@ export type UserUpdateWithoutUserMissionsInput = {
   postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
   readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
   likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserMissionsInput = {
@@ -969,6 +1137,104 @@ export type UserUncheckedUpdateWithoutUserMissionsInput = {
   postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
   readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
   likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutRewardLedgerInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRewardLedgerInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRewardLedgerInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRewardLedgerInput, Prisma.UserUncheckedCreateWithoutRewardLedgerInput>
+}
+
+export type UserUpsertWithoutRewardLedgerInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRewardLedgerInput, Prisma.UserUncheckedUpdateWithoutRewardLedgerInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRewardLedgerInput, Prisma.UserUncheckedCreateWithoutRewardLedgerInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRewardLedgerInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRewardLedgerInput, Prisma.UserUncheckedUpdateWithoutRewardLedgerInput>
+}
+
+export type UserUpdateWithoutRewardLedgerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRewardLedgerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -981,6 +1247,8 @@ export type UserCountOutputType = {
   readPosts: number
   likedPosts: number
   userMissions: number
+  userBadges: number
+  rewardLedger: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -988,6 +1256,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   readPosts?: boolean | UserCountOutputTypeCountReadPostsArgs
   likedPosts?: boolean | UserCountOutputTypeCountLikedPostsArgs
   userMissions?: boolean | UserCountOutputTypeCountUserMissionsArgs
+  userBadges?: boolean | UserCountOutputTypeCountUserBadgesArgs
+  rewardLedger?: boolean | UserCountOutputTypeCountRewardLedgerArgs
 }
 
 /**
@@ -1028,6 +1298,20 @@ export type UserCountOutputTypeCountUserMissionsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.UserMissionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUserBadgesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserBadgeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRewardLedgerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RewardLedgerWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1046,6 +1330,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   readPosts?: boolean | Prisma.User$readPostsArgs<ExtArgs>
   likedPosts?: boolean | Prisma.User$likedPostsArgs<ExtArgs>
   userMissions?: boolean | Prisma.User$userMissionsArgs<ExtArgs>
+  userBadges?: boolean | Prisma.User$userBadgesArgs<ExtArgs>
+  rewardLedger?: boolean | Prisma.User$rewardLedgerArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1072,6 +1358,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   readPosts?: boolean | Prisma.User$readPostsArgs<ExtArgs>
   likedPosts?: boolean | Prisma.User$likedPostsArgs<ExtArgs>
   userMissions?: boolean | Prisma.User$userMissionsArgs<ExtArgs>
+  userBadges?: boolean | Prisma.User$userBadgesArgs<ExtArgs>
+  rewardLedger?: boolean | Prisma.User$rewardLedgerArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1082,6 +1370,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     readPosts: Prisma.$ReadPostPayload<ExtArgs>[]
     likedPosts: Prisma.$LikedPostPayload<ExtArgs>[]
     userMissions: Prisma.$UserMissionPayload<ExtArgs>[]
+    userBadges: Prisma.$UserBadgePayload<ExtArgs>[]
+    rewardLedger: Prisma.$RewardLedgerPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1440,6 +1730,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readPosts<T extends Prisma.User$readPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$readPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReadPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   likedPosts<T extends Prisma.User$likedPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likedPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikedPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userMissions<T extends Prisma.User$userMissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userMissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserMissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userBadges<T extends Prisma.User$userBadgesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userBadgesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  rewardLedger<T extends Prisma.User$rewardLedgerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rewardLedgerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RewardLedgerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1917,6 +2209,54 @@ export type User$userMissionsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.UserMissionScalarFieldEnum | Prisma.UserMissionScalarFieldEnum[]
+}
+
+/**
+ * User.userBadges
+ */
+export type User$userBadgesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserBadge
+   */
+  select?: Prisma.UserBadgeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserBadge
+   */
+  omit?: Prisma.UserBadgeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserBadgeInclude<ExtArgs> | null
+  where?: Prisma.UserBadgeWhereInput
+  orderBy?: Prisma.UserBadgeOrderByWithRelationInput | Prisma.UserBadgeOrderByWithRelationInput[]
+  cursor?: Prisma.UserBadgeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserBadgeScalarFieldEnum | Prisma.UserBadgeScalarFieldEnum[]
+}
+
+/**
+ * User.rewardLedger
+ */
+export type User$rewardLedgerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RewardLedger
+   */
+  select?: Prisma.RewardLedgerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RewardLedger
+   */
+  omit?: Prisma.RewardLedgerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RewardLedgerInclude<ExtArgs> | null
+  where?: Prisma.RewardLedgerWhereInput
+  orderBy?: Prisma.RewardLedgerOrderByWithRelationInput | Prisma.RewardLedgerOrderByWithRelationInput[]
+  cursor?: Prisma.RewardLedgerWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RewardLedgerScalarFieldEnum | Prisma.RewardLedgerScalarFieldEnum[]
 }
 
 /**

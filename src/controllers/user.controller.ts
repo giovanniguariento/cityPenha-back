@@ -77,15 +77,17 @@ export class UserController {
       throw unauthorized('Unauthorized');
     }
     const id = user.id;
-    const [completedMissionsCount, daysWithReads, missions, level, levelProgress] = await Promise.all([
-      gamification.getCompletedMissionsCount(id),
-      gamification.getDaysWithReads(id),
-      gamification.getMissionsWithUserProgress(id),
-      gamification.getUserLevel(id),
-      gamification.getUserLevelProgress(id),
-    ]);
+    const snapshot = await gamification.getUserSummary(id);
 
-    sendJsonSuccess(res, { user, completedMissionsCount, daysWithReads, missions, level, levelProgress });
+    sendJsonSuccess(res, {
+      user: { ...user, xp: snapshot.user.xp, coins: snapshot.user.coins },
+      completedMissionsCount: snapshot.completedMissionsCount,
+      daysWithReads: snapshot.daysWithReads,
+      missions: snapshot.missions,
+      badges: snapshot.badges,
+      level: snapshot.level,
+      levelProgress: snapshot.levelProgress,
+    });
   };
 
   /** PATCH /user/me — atualiza name, nickname e/ou about. */
@@ -156,6 +158,16 @@ export class UserController {
     sendJsonSuccess(res, updated);
   };
 
+  /** GET /user/me/badges — todas as insígnias ativas com flag `earned` e progresso atual. */
+  public listBadges = async (req: Request, res: Response): Promise<void> => {
+    const user = req.appUser;
+    if (!user) {
+      throw unauthorized('Unauthorized');
+    }
+    const badges = await gamification.getUserBadges(user.id);
+    sendJsonSuccess(res, badges);
+  };
+
   /** GET /user/me/frequency — retorna dias em que leu notícia + data de hoje (YYYY-MM-DD). */
   public getFrequency = async (req: Request, res: Response): Promise<void> => {
     const user = req.appUser;
@@ -180,6 +192,25 @@ export class UserController {
     const wordpressPostId = Number(req.params.postId);
     if (!Number.isFinite(wordpressPostId)) {
       throw badRequest('Invalid postId');
+    }
+
+    const existingRead = await prisma.readPost.findUnique({
+      where: { userId_wordpressPostId: { userId, wordpressPostId } },
+      select: { id: true },
+    });
+    if (existingRead) {
+      const snapshot = await gamification.notify('manual_recompute', { userId });
+      sendJsonSuccess(res, {
+        alreadyRead: true,
+        user: snapshot.user,
+        completedMissionsCount: snapshot.completedMissionsCount,
+        daysWithReads: snapshot.daysWithReads,
+        missions: snapshot.missions,
+        badges: snapshot.badges,
+        level: snapshot.level,
+        rewards: [],
+      });
+      return;
     }
 
     const { slug } = req.body as { slug?: string };
@@ -214,20 +245,18 @@ export class UserController {
 
     await this.postFolderService.ensureSystemFoldersForUser(userId);
 
-    const result = await gamification.recordReadPost(userId, wordpressPostId);
-    const daysWithReads = result.daysWithReads ?? (await gamification.getDaysWithReads(userId));
-    const missions = await gamification.getMissionsWithUserProgress(userId);
-    const data =
-      'user' in result
-        ? {
-            user: result.user,
-            completedMissionsCount: result.completedMissionsCount,
-            daysWithReads,
-            missions,
-            level: result.level ?? null,
-          }
-        : { ...result, daysWithReads, missions };
-    sendJsonSuccess(res, data);
+    const snapshot = await gamification.notify('read', { userId, wordpressPostId });
+
+    sendJsonSuccess(res, {
+      alreadyRead: false,
+      user: snapshot.user,
+      completedMissionsCount: snapshot.completedMissionsCount,
+      daysWithReads: snapshot.daysWithReads,
+      missions: snapshot.missions,
+      badges: snapshot.badges,
+      level: snapshot.level,
+      rewards: snapshot.rewards,
+    });
   };
 
   /** GET /user/me/folders */
@@ -375,35 +404,31 @@ export class UserController {
       select: { internalKey: true },
     });
     if (folder?.internalKey === SYSTEM_FOLDER_KEY_LIKES) {
-      const likeResult = await gamification.syncLikeMissionState(id);
-      const missions = await gamification.getMissionsWithUserProgress(id);
-      const level = await gamification.getUserLevel(id);
-      const base = { folderId, wordpressPostId, missions, level };
-      if ('user' in likeResult && likeResult.user) {
-        sendJsonSuccess(res, {
-          ...base,
-          user: likeResult.user,
-          completedMissionsCount: likeResult.completedMissionsCount,
-        });
-        return;
-      }
-      sendJsonSuccess(res, base);
+      const snapshot = await gamification.notify('like.added', { userId: id, wordpressPostId });
+      sendJsonSuccess(res, {
+        folderId,
+        wordpressPostId,
+        user: snapshot.user,
+        completedMissionsCount: snapshot.completedMissionsCount,
+        missions: snapshot.missions,
+        badges: snapshot.badges,
+        level: snapshot.level,
+        rewards: snapshot.rewards,
+      });
       return;
     }
     if (folder?.internalKey === SYSTEM_FOLDER_KEY_DEFAULT_SAVED) {
-      const saveResult = await gamification.syncSaveMissionState(id);
-      const missions = await gamification.getMissionsWithUserProgress(id);
-      const level = await gamification.getUserLevel(id);
-      const base = { folderId, wordpressPostId, missions, level };
-      if ('user' in saveResult && saveResult.user) {
-        sendJsonSuccess(res, {
-          ...base,
-          user: saveResult.user,
-          completedMissionsCount: saveResult.completedMissionsCount,
-        });
-        return;
-      }
-      sendJsonSuccess(res, base);
+      const snapshot = await gamification.notify('save.added', { userId: id, wordpressPostId });
+      sendJsonSuccess(res, {
+        folderId,
+        wordpressPostId,
+        user: snapshot.user,
+        completedMissionsCount: snapshot.completedMissionsCount,
+        missions: snapshot.missions,
+        badges: snapshot.badges,
+        level: snapshot.level,
+        rewards: snapshot.rewards,
+      });
       return;
     }
 
@@ -431,35 +456,31 @@ export class UserController {
       select: { internalKey: true },
     });
     if (folder?.internalKey === SYSTEM_FOLDER_KEY_LIKES) {
-      const likeResult = await gamification.syncLikeMissionState(id);
-      const missions = await gamification.getMissionsWithUserProgress(id);
-      const level = await gamification.getUserLevel(id);
-      const base = { folderId, wordpressPostId, missions, level };
-      if ('user' in likeResult && likeResult.user) {
-        sendJsonSuccess(res, {
-          ...base,
-          user: likeResult.user,
-          completedMissionsCount: likeResult.completedMissionsCount,
-        });
-        return;
-      }
-      sendJsonSuccess(res, base);
+      const snapshot = await gamification.notify('like.removed', { userId: id, wordpressPostId });
+      sendJsonSuccess(res, {
+        folderId,
+        wordpressPostId,
+        user: snapshot.user,
+        completedMissionsCount: snapshot.completedMissionsCount,
+        missions: snapshot.missions,
+        badges: snapshot.badges,
+        level: snapshot.level,
+        rewards: snapshot.rewards,
+      });
       return;
     }
     if (folder?.internalKey === SYSTEM_FOLDER_KEY_DEFAULT_SAVED) {
-      const saveResult = await gamification.syncSaveMissionState(id);
-      const missions = await gamification.getMissionsWithUserProgress(id);
-      const level = await gamification.getUserLevel(id);
-      const base = { folderId, wordpressPostId, missions, level };
-      if ('user' in saveResult && saveResult.user) {
-        sendJsonSuccess(res, {
-          ...base,
-          user: saveResult.user,
-          completedMissionsCount: saveResult.completedMissionsCount,
-        });
-        return;
-      }
-      sendJsonSuccess(res, base);
+      const snapshot = await gamification.notify('save.removed', { userId: id, wordpressPostId });
+      sendJsonSuccess(res, {
+        folderId,
+        wordpressPostId,
+        user: snapshot.user,
+        completedMissionsCount: snapshot.completedMissionsCount,
+        missions: snapshot.missions,
+        badges: snapshot.badges,
+        level: snapshot.level,
+        rewards: snapshot.rewards,
+      });
       return;
     }
 

@@ -123,6 +123,16 @@ export type LikedPost = Prisma.LikedPostModel
  */
 export type Mission = Prisma.MissionModel
 /**
+ * Model Badge
+ * 
+ */
+export type Badge = Prisma.BadgeModel
+/**
+ * Model UserBadge
+ * 
+ */
+export type UserBadge = Prisma.UserBadgeModel
+/**
  * Model UserMission
  * 
  */
@@ -132,3 +142,8 @@ export type UserMission = Prisma.UserMissionModel
  * 
  */
 export type Level = Prisma.LevelModel
+/**
+ * Model RewardLedger
+ * Registro imutável de toda concessão/estorno de XP, coins e marcações de badge para auditoria.
+ */
+export type RewardLedger = Prisma.RewardLedgerModel

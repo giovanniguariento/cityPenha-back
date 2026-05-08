@@ -405,8 +405,11 @@ export const ModelName = {
   ReadPost: 'ReadPost',
   LikedPost: 'LikedPost',
   Mission: 'Mission',
+  Badge: 'Badge',
+  UserBadge: 'UserBadge',
   UserMission: 'UserMission',
-  Level: 'Level'
+  Level: 'Level',
+  RewardLedger: 'RewardLedger'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -422,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "postFolder" | "favorite" | "readPost" | "likedPost" | "mission" | "userMission" | "level"
+    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "postFolder" | "favorite" | "readPost" | "likedPost" | "mission" | "badge" | "userBadge" | "userMission" | "level" | "rewardLedger"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1812,6 +1815,138 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Badge: {
+      payload: Prisma.$BadgePayload<ExtArgs>
+      fields: Prisma.BadgeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BadgeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BadgePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BadgeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BadgePayload>
+        }
+        findFirst: {
+          args: Prisma.BadgeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BadgePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BadgeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BadgePayload>
+        }
+        findMany: {
+          args: Prisma.BadgeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BadgePayload>[]
+        }
+        create: {
+          args: Prisma.BadgeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BadgePayload>
+        }
+        createMany: {
+          args: Prisma.BadgeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.BadgeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BadgePayload>
+        }
+        update: {
+          args: Prisma.BadgeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BadgePayload>
+        }
+        deleteMany: {
+          args: Prisma.BadgeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BadgeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.BadgeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BadgePayload>
+        }
+        aggregate: {
+          args: Prisma.BadgeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBadge>
+        }
+        groupBy: {
+          args: Prisma.BadgeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BadgeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BadgeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BadgeCountAggregateOutputType> | number
+        }
+      }
+    }
+    UserBadge: {
+      payload: Prisma.$UserBadgePayload<ExtArgs>
+      fields: Prisma.UserBadgeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserBadgeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserBadgePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserBadgeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserBadgePayload>
+        }
+        findFirst: {
+          args: Prisma.UserBadgeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserBadgePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserBadgeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserBadgePayload>
+        }
+        findMany: {
+          args: Prisma.UserBadgeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserBadgePayload>[]
+        }
+        create: {
+          args: Prisma.UserBadgeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserBadgePayload>
+        }
+        createMany: {
+          args: Prisma.UserBadgeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.UserBadgeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserBadgePayload>
+        }
+        update: {
+          args: Prisma.UserBadgeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserBadgePayload>
+        }
+        deleteMany: {
+          args: Prisma.UserBadgeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserBadgeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.UserBadgeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserBadgePayload>
+        }
+        aggregate: {
+          args: Prisma.UserBadgeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserBadge>
+        }
+        groupBy: {
+          args: Prisma.UserBadgeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserBadgeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserBadgeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserBadgeCountAggregateOutputType> | number
+        }
+      }
+    }
     UserMission: {
       payload: Prisma.$UserMissionPayload<ExtArgs>
       fields: Prisma.UserMissionFieldRefs
@@ -1941,6 +2076,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.LevelCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LevelCountAggregateOutputType> | number
+        }
+      }
+    }
+    RewardLedger: {
+      payload: Prisma.$RewardLedgerPayload<ExtArgs>
+      fields: Prisma.RewardLedgerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RewardLedgerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardLedgerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RewardLedgerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardLedgerPayload>
+        }
+        findFirst: {
+          args: Prisma.RewardLedgerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardLedgerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RewardLedgerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardLedgerPayload>
+        }
+        findMany: {
+          args: Prisma.RewardLedgerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardLedgerPayload>[]
+        }
+        create: {
+          args: Prisma.RewardLedgerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardLedgerPayload>
+        }
+        createMany: {
+          args: Prisma.RewardLedgerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.RewardLedgerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardLedgerPayload>
+        }
+        update: {
+          args: Prisma.RewardLedgerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardLedgerPayload>
+        }
+        deleteMany: {
+          args: Prisma.RewardLedgerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RewardLedgerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.RewardLedgerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardLedgerPayload>
+        }
+        aggregate: {
+          args: Prisma.RewardLedgerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRewardLedger>
+        }
+        groupBy: {
+          args: Prisma.RewardLedgerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RewardLedgerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RewardLedgerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RewardLedgerCountAggregateOutputType> | number
         }
       }
     }
@@ -2249,13 +2450,51 @@ export const MissionScalarFieldEnum = {
   key: 'key',
   title: 'title',
   description: 'description',
+  iconUrl: 'iconUrl',
+  category: 'category',
+  isActive: 'isActive',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  metricKey: 'metricKey',
+  metricParams: 'metricParams',
   target: 'target',
+  criteria: 'criteria',
   coinReward: 'coinReward',
   xpReward: 'xpReward',
-  createdAt: 'createdAt'
+  isReversible: 'isReversible',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type MissionScalarFieldEnum = (typeof MissionScalarFieldEnum)[keyof typeof MissionScalarFieldEnum]
+
+
+export const BadgeScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description',
+  iconUrl: 'iconUrl',
+  metricKey: 'metricKey',
+  metricParams: 'metricParams',
+  threshold: 'threshold',
+  criteria: 'criteria',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BadgeScalarFieldEnum = (typeof BadgeScalarFieldEnum)[keyof typeof BadgeScalarFieldEnum]
+
+
+export const UserBadgeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  badgeId: 'badgeId',
+  earnedAt: 'earnedAt'
+} as const
+
+export type UserBadgeScalarFieldEnum = (typeof UserBadgeScalarFieldEnum)[keyof typeof UserBadgeScalarFieldEnum]
 
 
 export const UserMissionScalarFieldEnum = {
@@ -2275,10 +2514,28 @@ export const LevelScalarFieldEnum = {
   levelNumber: 'levelNumber',
   minXp: 'minXp',
   minCompletedMissions: 'minCompletedMissions',
+  title: 'title',
+  iconUrl: 'iconUrl',
+  rewardCoins: 'rewardCoins',
+  rewardXp: 'rewardXp',
   createdAt: 'createdAt'
 } as const
 
 export type LevelScalarFieldEnum = (typeof LevelScalarFieldEnum)[keyof typeof LevelScalarFieldEnum]
+
+
+export const RewardLedgerScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  source: 'source',
+  reason: 'reason',
+  coinsDelta: 'coinsDelta',
+  xpDelta: 'xpDelta',
+  meta: 'meta',
+  createdAt: 'createdAt'
+} as const
+
+export type RewardLedgerScalarFieldEnum = (typeof RewardLedgerScalarFieldEnum)[keyof typeof RewardLedgerScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2287,6 +2544,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const NullsOrder = {
@@ -2488,14 +2753,55 @@ export const LikedPostOrderByRelevanceFieldEnum = {
 export type LikedPostOrderByRelevanceFieldEnum = (typeof LikedPostOrderByRelevanceFieldEnum)[keyof typeof LikedPostOrderByRelevanceFieldEnum]
 
 
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
 export const MissionOrderByRelevanceFieldEnum = {
   id: 'id',
   key: 'key',
   title: 'title',
-  description: 'description'
+  description: 'description',
+  iconUrl: 'iconUrl',
+  category: 'category',
+  metricKey: 'metricKey'
 } as const
 
 export type MissionOrderByRelevanceFieldEnum = (typeof MissionOrderByRelevanceFieldEnum)[keyof typeof MissionOrderByRelevanceFieldEnum]
+
+
+export const BadgeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description',
+  iconUrl: 'iconUrl',
+  metricKey: 'metricKey'
+} as const
+
+export type BadgeOrderByRelevanceFieldEnum = (typeof BadgeOrderByRelevanceFieldEnum)[keyof typeof BadgeOrderByRelevanceFieldEnum]
+
+
+export const UserBadgeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  badgeId: 'badgeId'
+} as const
+
+export type UserBadgeOrderByRelevanceFieldEnum = (typeof UserBadgeOrderByRelevanceFieldEnum)[keyof typeof UserBadgeOrderByRelevanceFieldEnum]
 
 
 export const UserMissionOrderByRelevanceFieldEnum = {
@@ -2508,10 +2814,22 @@ export type UserMissionOrderByRelevanceFieldEnum = (typeof UserMissionOrderByRel
 
 
 export const LevelOrderByRelevanceFieldEnum = {
-  id: 'id'
+  id: 'id',
+  title: 'title',
+  iconUrl: 'iconUrl'
 } as const
 
 export type LevelOrderByRelevanceFieldEnum = (typeof LevelOrderByRelevanceFieldEnum)[keyof typeof LevelOrderByRelevanceFieldEnum]
+
+
+export const RewardLedgerOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  source: 'source',
+  reason: 'reason'
+} as const
+
+export type RewardLedgerOrderByRelevanceFieldEnum = (typeof RewardLedgerOrderByRelevanceFieldEnum)[keyof typeof RewardLedgerOrderByRelevanceFieldEnum]
 
 
 
@@ -2552,6 +2870,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -2677,8 +3009,11 @@ export type GlobalOmitConfig = {
   readPost?: Prisma.ReadPostOmit
   likedPost?: Prisma.LikedPostOmit
   mission?: Prisma.MissionOmit
+  badge?: Prisma.BadgeOmit
+  userBadge?: Prisma.UserBadgeOmit
   userMission?: Prisma.UserMissionOmit
   level?: Prisma.LevelOmit
+  rewardLedger?: Prisma.RewardLedgerOmit
 }
 
 /* Types for Logging */

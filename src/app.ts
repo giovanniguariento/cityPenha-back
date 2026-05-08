@@ -6,6 +6,7 @@ import missionRoutes from './routes/mission.routes';
 import postRoutes from './routes/post.routes';
 import userRoutes from './routes/user.routes';
 import discoveryRoutes from './routes/discovery.routes';
+import adminRoutes from './routes/admin.routes';
 import { notFoundHandler } from './middleware/notFound';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -22,6 +23,7 @@ app.use('/mission', missionRoutes);
 app.use('/post', postRoutes);
 app.use('/user', userRoutes);
 app.use('/discovery', discoveryRoutes);
+app.use('/admin', adminRoutes);
 
 // 3. 404 + global error handler
 app.use(notFoundHandler);

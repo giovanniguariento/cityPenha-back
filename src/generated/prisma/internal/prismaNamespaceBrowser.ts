@@ -72,8 +72,11 @@ export const ModelName = {
   ReadPost: 'ReadPost',
   LikedPost: 'LikedPost',
   Mission: 'Mission',
+  Badge: 'Badge',
+  UserBadge: 'UserBadge',
   UserMission: 'UserMission',
-  Level: 'Level'
+  Level: 'Level',
+  RewardLedger: 'RewardLedger'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -358,13 +361,51 @@ export const MissionScalarFieldEnum = {
   key: 'key',
   title: 'title',
   description: 'description',
+  iconUrl: 'iconUrl',
+  category: 'category',
+  isActive: 'isActive',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  metricKey: 'metricKey',
+  metricParams: 'metricParams',
   target: 'target',
+  criteria: 'criteria',
   coinReward: 'coinReward',
   xpReward: 'xpReward',
-  createdAt: 'createdAt'
+  isReversible: 'isReversible',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type MissionScalarFieldEnum = (typeof MissionScalarFieldEnum)[keyof typeof MissionScalarFieldEnum]
+
+
+export const BadgeScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description',
+  iconUrl: 'iconUrl',
+  metricKey: 'metricKey',
+  metricParams: 'metricParams',
+  threshold: 'threshold',
+  criteria: 'criteria',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BadgeScalarFieldEnum = (typeof BadgeScalarFieldEnum)[keyof typeof BadgeScalarFieldEnum]
+
+
+export const UserBadgeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  badgeId: 'badgeId',
+  earnedAt: 'earnedAt'
+} as const
+
+export type UserBadgeScalarFieldEnum = (typeof UserBadgeScalarFieldEnum)[keyof typeof UserBadgeScalarFieldEnum]
 
 
 export const UserMissionScalarFieldEnum = {
@@ -384,10 +425,28 @@ export const LevelScalarFieldEnum = {
   levelNumber: 'levelNumber',
   minXp: 'minXp',
   minCompletedMissions: 'minCompletedMissions',
+  title: 'title',
+  iconUrl: 'iconUrl',
+  rewardCoins: 'rewardCoins',
+  rewardXp: 'rewardXp',
   createdAt: 'createdAt'
 } as const
 
 export type LevelScalarFieldEnum = (typeof LevelScalarFieldEnum)[keyof typeof LevelScalarFieldEnum]
+
+
+export const RewardLedgerScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  source: 'source',
+  reason: 'reason',
+  coinsDelta: 'coinsDelta',
+  xpDelta: 'xpDelta',
+  meta: 'meta',
+  createdAt: 'createdAt'
+} as const
+
+export type RewardLedgerScalarFieldEnum = (typeof RewardLedgerScalarFieldEnum)[keyof typeof RewardLedgerScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -396,6 +455,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull'
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const NullsOrder = {
@@ -597,14 +664,55 @@ export const LikedPostOrderByRelevanceFieldEnum = {
 export type LikedPostOrderByRelevanceFieldEnum = (typeof LikedPostOrderByRelevanceFieldEnum)[keyof typeof LikedPostOrderByRelevanceFieldEnum]
 
 
+export const JsonNullValueFilter = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull',
+  AnyNull: 'AnyNull'
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
 export const MissionOrderByRelevanceFieldEnum = {
   id: 'id',
   key: 'key',
   title: 'title',
-  description: 'description'
+  description: 'description',
+  iconUrl: 'iconUrl',
+  category: 'category',
+  metricKey: 'metricKey'
 } as const
 
 export type MissionOrderByRelevanceFieldEnum = (typeof MissionOrderByRelevanceFieldEnum)[keyof typeof MissionOrderByRelevanceFieldEnum]
+
+
+export const BadgeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description',
+  iconUrl: 'iconUrl',
+  metricKey: 'metricKey'
+} as const
+
+export type BadgeOrderByRelevanceFieldEnum = (typeof BadgeOrderByRelevanceFieldEnum)[keyof typeof BadgeOrderByRelevanceFieldEnum]
+
+
+export const UserBadgeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  badgeId: 'badgeId'
+} as const
+
+export type UserBadgeOrderByRelevanceFieldEnum = (typeof UserBadgeOrderByRelevanceFieldEnum)[keyof typeof UserBadgeOrderByRelevanceFieldEnum]
 
 
 export const UserMissionOrderByRelevanceFieldEnum = {
@@ -617,8 +725,20 @@ export type UserMissionOrderByRelevanceFieldEnum = (typeof UserMissionOrderByRel
 
 
 export const LevelOrderByRelevanceFieldEnum = {
-  id: 'id'
+  id: 'id',
+  title: 'title',
+  iconUrl: 'iconUrl'
 } as const
 
 export type LevelOrderByRelevanceFieldEnum = (typeof LevelOrderByRelevanceFieldEnum)[keyof typeof LevelOrderByRelevanceFieldEnum]
+
+
+export const RewardLedgerOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  source: 'source',
+  reason: 'reason'
+} as const
+
+export type RewardLedgerOrderByRelevanceFieldEnum = (typeof RewardLedgerOrderByRelevanceFieldEnum)[keyof typeof RewardLedgerOrderByRelevanceFieldEnum]
 

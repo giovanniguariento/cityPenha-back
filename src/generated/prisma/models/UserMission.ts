@@ -482,14 +482,6 @@ export type UserMissionUncheckedUpdateManyWithoutMissionNestedInput = {
   deleteMany?: Prisma.UserMissionScalarWhereInput | Prisma.UserMissionScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type UserMissionCreateWithoutUserInput = {
   id?: string
   progress?: number

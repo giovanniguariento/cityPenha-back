@@ -30,12 +30,16 @@ export type LevelAvgAggregateOutputType = {
   levelNumber: number | null
   minXp: number | null
   minCompletedMissions: number | null
+  rewardCoins: number | null
+  rewardXp: number | null
 }
 
 export type LevelSumAggregateOutputType = {
   levelNumber: number | null
   minXp: number | null
   minCompletedMissions: number | null
+  rewardCoins: number | null
+  rewardXp: number | null
 }
 
 export type LevelMinAggregateOutputType = {
@@ -43,6 +47,10 @@ export type LevelMinAggregateOutputType = {
   levelNumber: number | null
   minXp: number | null
   minCompletedMissions: number | null
+  title: string | null
+  iconUrl: string | null
+  rewardCoins: number | null
+  rewardXp: number | null
   createdAt: Date | null
 }
 
@@ -51,6 +59,10 @@ export type LevelMaxAggregateOutputType = {
   levelNumber: number | null
   minXp: number | null
   minCompletedMissions: number | null
+  title: string | null
+  iconUrl: string | null
+  rewardCoins: number | null
+  rewardXp: number | null
   createdAt: Date | null
 }
 
@@ -59,6 +71,10 @@ export type LevelCountAggregateOutputType = {
   levelNumber: number
   minXp: number
   minCompletedMissions: number
+  title: number
+  iconUrl: number
+  rewardCoins: number
+  rewardXp: number
   createdAt: number
   _all: number
 }
@@ -68,12 +84,16 @@ export type LevelAvgAggregateInputType = {
   levelNumber?: true
   minXp?: true
   minCompletedMissions?: true
+  rewardCoins?: true
+  rewardXp?: true
 }
 
 export type LevelSumAggregateInputType = {
   levelNumber?: true
   minXp?: true
   minCompletedMissions?: true
+  rewardCoins?: true
+  rewardXp?: true
 }
 
 export type LevelMinAggregateInputType = {
@@ -81,6 +101,10 @@ export type LevelMinAggregateInputType = {
   levelNumber?: true
   minXp?: true
   minCompletedMissions?: true
+  title?: true
+  iconUrl?: true
+  rewardCoins?: true
+  rewardXp?: true
   createdAt?: true
 }
 
@@ -89,6 +113,10 @@ export type LevelMaxAggregateInputType = {
   levelNumber?: true
   minXp?: true
   minCompletedMissions?: true
+  title?: true
+  iconUrl?: true
+  rewardCoins?: true
+  rewardXp?: true
   createdAt?: true
 }
 
@@ -97,6 +125,10 @@ export type LevelCountAggregateInputType = {
   levelNumber?: true
   minXp?: true
   minCompletedMissions?: true
+  title?: true
+  iconUrl?: true
+  rewardCoins?: true
+  rewardXp?: true
   createdAt?: true
   _all?: true
 }
@@ -192,6 +224,10 @@ export type LevelGroupByOutputType = {
   levelNumber: number
   minXp: number
   minCompletedMissions: number
+  title: string | null
+  iconUrl: string | null
+  rewardCoins: number
+  rewardXp: number
   createdAt: Date
   _count: LevelCountAggregateOutputType | null
   _avg: LevelAvgAggregateOutputType | null
@@ -223,6 +259,10 @@ export type LevelWhereInput = {
   levelNumber?: Prisma.IntFilter<"Level"> | number
   minXp?: Prisma.IntFilter<"Level"> | number
   minCompletedMissions?: Prisma.IntFilter<"Level"> | number
+  title?: Prisma.StringNullableFilter<"Level"> | string | null
+  iconUrl?: Prisma.StringNullableFilter<"Level"> | string | null
+  rewardCoins?: Prisma.IntFilter<"Level"> | number
+  rewardXp?: Prisma.IntFilter<"Level"> | number
   createdAt?: Prisma.DateTimeFilter<"Level"> | Date | string
 }
 
@@ -231,6 +271,10 @@ export type LevelOrderByWithRelationInput = {
   levelNumber?: Prisma.SortOrder
   minXp?: Prisma.SortOrder
   minCompletedMissions?: Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  iconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  rewardCoins?: Prisma.SortOrder
+  rewardXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _relevance?: Prisma.LevelOrderByRelevanceInput
 }
@@ -243,6 +287,10 @@ export type LevelWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.LevelWhereInput | Prisma.LevelWhereInput[]
   minXp?: Prisma.IntFilter<"Level"> | number
   minCompletedMissions?: Prisma.IntFilter<"Level"> | number
+  title?: Prisma.StringNullableFilter<"Level"> | string | null
+  iconUrl?: Prisma.StringNullableFilter<"Level"> | string | null
+  rewardCoins?: Prisma.IntFilter<"Level"> | number
+  rewardXp?: Prisma.IntFilter<"Level"> | number
   createdAt?: Prisma.DateTimeFilter<"Level"> | Date | string
 }, "id" | "levelNumber">
 
@@ -251,6 +299,10 @@ export type LevelOrderByWithAggregationInput = {
   levelNumber?: Prisma.SortOrder
   minXp?: Prisma.SortOrder
   minCompletedMissions?: Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  iconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  rewardCoins?: Prisma.SortOrder
+  rewardXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.LevelCountOrderByAggregateInput
   _avg?: Prisma.LevelAvgOrderByAggregateInput
@@ -267,6 +319,10 @@ export type LevelScalarWhereWithAggregatesInput = {
   levelNumber?: Prisma.IntWithAggregatesFilter<"Level"> | number
   minXp?: Prisma.IntWithAggregatesFilter<"Level"> | number
   minCompletedMissions?: Prisma.IntWithAggregatesFilter<"Level"> | number
+  title?: Prisma.StringNullableWithAggregatesFilter<"Level"> | string | null
+  iconUrl?: Prisma.StringNullableWithAggregatesFilter<"Level"> | string | null
+  rewardCoins?: Prisma.IntWithAggregatesFilter<"Level"> | number
+  rewardXp?: Prisma.IntWithAggregatesFilter<"Level"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Level"> | Date | string
 }
 
@@ -275,6 +331,10 @@ export type LevelCreateInput = {
   levelNumber: number
   minXp?: number
   minCompletedMissions?: number
+  title?: string | null
+  iconUrl?: string | null
+  rewardCoins?: number
+  rewardXp?: number
   createdAt?: Date | string
 }
 
@@ -283,6 +343,10 @@ export type LevelUncheckedCreateInput = {
   levelNumber: number
   minXp?: number
   minCompletedMissions?: number
+  title?: string | null
+  iconUrl?: string | null
+  rewardCoins?: number
+  rewardXp?: number
   createdAt?: Date | string
 }
 
@@ -291,6 +355,10 @@ export type LevelUpdateInput = {
   levelNumber?: Prisma.IntFieldUpdateOperationsInput | number
   minXp?: Prisma.IntFieldUpdateOperationsInput | number
   minCompletedMissions?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rewardCoins?: Prisma.IntFieldUpdateOperationsInput | number
+  rewardXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -299,6 +367,10 @@ export type LevelUncheckedUpdateInput = {
   levelNumber?: Prisma.IntFieldUpdateOperationsInput | number
   minXp?: Prisma.IntFieldUpdateOperationsInput | number
   minCompletedMissions?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rewardCoins?: Prisma.IntFieldUpdateOperationsInput | number
+  rewardXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -307,6 +379,10 @@ export type LevelCreateManyInput = {
   levelNumber: number
   minXp?: number
   minCompletedMissions?: number
+  title?: string | null
+  iconUrl?: string | null
+  rewardCoins?: number
+  rewardXp?: number
   createdAt?: Date | string
 }
 
@@ -315,6 +391,10 @@ export type LevelUpdateManyMutationInput = {
   levelNumber?: Prisma.IntFieldUpdateOperationsInput | number
   minXp?: Prisma.IntFieldUpdateOperationsInput | number
   minCompletedMissions?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rewardCoins?: Prisma.IntFieldUpdateOperationsInput | number
+  rewardXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -323,6 +403,10 @@ export type LevelUncheckedUpdateManyInput = {
   levelNumber?: Prisma.IntFieldUpdateOperationsInput | number
   minXp?: Prisma.IntFieldUpdateOperationsInput | number
   minCompletedMissions?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rewardCoins?: Prisma.IntFieldUpdateOperationsInput | number
+  rewardXp?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -337,6 +421,10 @@ export type LevelCountOrderByAggregateInput = {
   levelNumber?: Prisma.SortOrder
   minXp?: Prisma.SortOrder
   minCompletedMissions?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  iconUrl?: Prisma.SortOrder
+  rewardCoins?: Prisma.SortOrder
+  rewardXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -344,6 +432,8 @@ export type LevelAvgOrderByAggregateInput = {
   levelNumber?: Prisma.SortOrder
   minXp?: Prisma.SortOrder
   minCompletedMissions?: Prisma.SortOrder
+  rewardCoins?: Prisma.SortOrder
+  rewardXp?: Prisma.SortOrder
 }
 
 export type LevelMaxOrderByAggregateInput = {
@@ -351,6 +441,10 @@ export type LevelMaxOrderByAggregateInput = {
   levelNumber?: Prisma.SortOrder
   minXp?: Prisma.SortOrder
   minCompletedMissions?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  iconUrl?: Prisma.SortOrder
+  rewardCoins?: Prisma.SortOrder
+  rewardXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -359,6 +453,10 @@ export type LevelMinOrderByAggregateInput = {
   levelNumber?: Prisma.SortOrder
   minXp?: Prisma.SortOrder
   minCompletedMissions?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  iconUrl?: Prisma.SortOrder
+  rewardCoins?: Prisma.SortOrder
+  rewardXp?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -366,6 +464,8 @@ export type LevelSumOrderByAggregateInput = {
   levelNumber?: Prisma.SortOrder
   minXp?: Prisma.SortOrder
   minCompletedMissions?: Prisma.SortOrder
+  rewardCoins?: Prisma.SortOrder
+  rewardXp?: Prisma.SortOrder
 }
 
 
@@ -375,6 +475,10 @@ export type LevelSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   levelNumber?: boolean
   minXp?: boolean
   minCompletedMissions?: boolean
+  title?: boolean
+  iconUrl?: boolean
+  rewardCoins?: boolean
+  rewardXp?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["level"]>
 
@@ -385,10 +489,14 @@ export type LevelSelectScalar = {
   levelNumber?: boolean
   minXp?: boolean
   minCompletedMissions?: boolean
+  title?: boolean
+  iconUrl?: boolean
+  rewardCoins?: boolean
+  rewardXp?: boolean
   createdAt?: boolean
 }
 
-export type LevelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "levelNumber" | "minXp" | "minCompletedMissions" | "createdAt", ExtArgs["result"]["level"]>
+export type LevelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "levelNumber" | "minXp" | "minCompletedMissions" | "title" | "iconUrl" | "rewardCoins" | "rewardXp" | "createdAt", ExtArgs["result"]["level"]>
 
 export type $LevelPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Level"
@@ -398,6 +506,10 @@ export type $LevelPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     levelNumber: number
     minXp: number
     minCompletedMissions: number
+    title: string | null
+    iconUrl: string | null
+    rewardCoins: number
+    rewardXp: number
     createdAt: Date
   }, ExtArgs["result"]["level"]>
   composites: {}
@@ -772,6 +884,10 @@ export interface LevelFieldRefs {
   readonly levelNumber: Prisma.FieldRef<"Level", 'Int'>
   readonly minXp: Prisma.FieldRef<"Level", 'Int'>
   readonly minCompletedMissions: Prisma.FieldRef<"Level", 'Int'>
+  readonly title: Prisma.FieldRef<"Level", 'String'>
+  readonly iconUrl: Prisma.FieldRef<"Level", 'String'>
+  readonly rewardCoins: Prisma.FieldRef<"Level", 'Int'>
+  readonly rewardXp: Prisma.FieldRef<"Level", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Level", 'DateTime'>
 }
     
