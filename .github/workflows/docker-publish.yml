@@ -50,7 +50,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Trigger infra deploy
-        if: github.ref == 'refs/heads/main' && secrets.INFRA_DISPATCH_TOKEN != ''
+        if: github.ref == 'refs/heads/main' && vars.INFRA_DISPATCH_ENABLED == 'true'
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.INFRA_DISPATCH_TOKEN }}
