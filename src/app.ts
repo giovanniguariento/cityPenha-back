@@ -9,6 +9,7 @@ import discoveryRoutes from './routes/discovery.routes';
 import adminRoutes from './routes/admin.routes';
 import { notFoundHandler } from './middleware/notFound';
 import { errorHandler } from './middleware/errorHandler';
+import { requestLogger } from './middleware/requestLogger';
 
 const app: Application = express();
 
@@ -16,6 +17,7 @@ const app: Application = express();
 app.use(compression());
 app.use(express.json({ limit: '512kb' }));
 app.use(cors());
+app.use(requestLogger);
 
 // 2. Routes
 app.use('/home', homeRoutes);

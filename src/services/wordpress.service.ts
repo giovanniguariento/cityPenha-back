@@ -13,6 +13,18 @@ import { fetchWithTimeout } from '../helpers/fetch.helper';
 
 export type ResolvedPostBySlug = { id: number; kind: 'post' | 'ad' };
 
+const AD_TYPE_ALIASES = new Set(['ad', 'ads', 'anuncio', 'anúncio']);
+
+function normalizeAdPost(post: IPost): IPost {
+  return { ...post, type: ETypePost.AD, subtype: ETypePost.AD };
+}
+
+function normalizePostsFromAdsEndpoint(data: IPost[]): IPost[] {
+  return data.map((p) =>
+    AD_TYPE_ALIASES.has(String(p.type).toLowerCase()) ? normalizeAdPost(p) : p
+  );
+}
+
 /** Shape of WordPress REST `GET /categories` items (fields used by Discovery). */
 export interface WordpressCategoryRest {
   id: number;
@@ -320,7 +332,7 @@ export class WordpressService {
     if (!response.ok) {
       throw new Error(`Erro ao buscar anuncios: ${response.statusText}`);
     }
-    const data = await response.json();
+    const data = normalizePostsFromAdsEndpoint((await response.json()) as IPost[]);
     this.cache.ads.set('all', data);
     return data;
   }
@@ -335,7 +347,7 @@ export class WordpressService {
     if (!response.ok) {
       throw new Error(`Erro ao buscar anuncio: ${response.statusText}`);
     }
-    const data = await response.json();
+    const data = normalizeAdPost((await response.json()) as IPost);
     this.cache.ad.set(key, data);
     return data;
   }

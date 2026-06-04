@@ -5,6 +5,7 @@ import type { FeedItem } from '../types';
 import { toFeedItem } from '../helpers/post.helper';
 import { insertAdsIntoPosts } from '../helpers/ad.helper';
 import { prisma } from '../lib/prisma';
+import { setFeedCacheHeaders } from '../helpers/feedCache.helper';
 import { sendJsonSuccess } from '../lib/apiResponse';
 import { notFound } from '../lib/httpErrors';
 
@@ -100,7 +101,7 @@ export class HomeController {
       throw notFound('Posts not found');
     }
 
-    res.set('Cache-Control', 'public, max-age=60');
+    setFeedCacheHeaders(res, Boolean(userId));
     sendJsonSuccess(res, { categories: categoriesWithPosts, carousel });
   };
 }

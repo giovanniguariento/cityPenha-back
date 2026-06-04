@@ -54,6 +54,7 @@ export function toPostDetail(
   return {
     id: post.id,
     slug: post.slug,
+    type: post.type,
     title: post.title.rendered,
     resume: post.excerpt.rendered,
     readingTime: post.acf.reading_time,
@@ -70,13 +71,22 @@ export function toPostDetail(
 /** Busca post de conteúdo ou anúncio por ID; `null` se não existir. */
 export async function fetchPostOrAd(
   wordpressService: WordpressService,
-  wordpressPostId: number
+  wordpressPostId: number,
+  prefer?: 'post' | 'ad'
 ): Promise<IPost | null> {
+  const tryPostFirst = prefer !== 'ad';
+  const first = tryPostFirst
+    ? () => wordpressService.getPost(wordpressPostId)
+    : () => wordpressService.getAd(wordpressPostId);
+  const second = tryPostFirst
+    ? () => wordpressService.getAd(wordpressPostId)
+    : () => wordpressService.getPost(wordpressPostId);
+
   try {
-    return await wordpressService.getPost(wordpressPostId);
+    return await first();
   } catch {
     try {
-      return await wordpressService.getAd(wordpressPostId);
+      return await second();
     } catch {
       return null;
     }

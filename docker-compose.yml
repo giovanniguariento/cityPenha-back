@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: citypenha
+      MYSQL_USER: citypenha
+      MYSQL_PASSWORD: citypenha
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  api:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_HOST: db
+      DATABASE_USER: citypenha
+      DATABASE_PASSWORD: citypenha
+      DATABASE_NAME: citypenha
+      DATABASE_PORT: "3306"
+      DATABASE_URL: mysql://citypenha:citypenha@db:3306/citypenha
+
+volumes:
+  db_data:

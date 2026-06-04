@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { internalError, isHttpError } from '../lib/httpErrors';
+import { logger } from '../lib/logger';
 
 export function errorHandler(
   err: unknown,
@@ -13,14 +14,16 @@ export function errorHandler(
 
   if (isHttpError(err)) {
     if (err.statusCode >= 500) {
-      console.error(err.stack ?? err.message);
+      logger.error({ err, statusCode: err.statusCode }, err.message);
+    } else {
+      logger.warn({ statusCode: err.statusCode }, err.message);
     }
     res.status(err.statusCode).json(err.toBody());
     return;
   }
 
   const message = err instanceof Error ? err.message : String(err);
-  console.error(err instanceof Error ? err.stack ?? err.message : err);
+  logger.error({ err }, message);
 
   const isProd = process.env.NODE_ENV === 'production';
   const safe = internalError(isProd ? 'An unexpected error occurred' : message);

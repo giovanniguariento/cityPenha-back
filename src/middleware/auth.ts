@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { verifyFirebaseIdToken } from '../config/firebase';
 import { prisma } from '../lib/prisma';
 import { unauthorized } from '../lib/httpErrors';
+import { logger } from '../lib/logger';
 
 function parseBearerToken(req: Request): string | null {
   const raw = req.header('authorization') ?? req.header('Authorization');
@@ -19,6 +20,7 @@ export async function authenticateFirebaseToken(
   try {
     const token = parseBearerToken(req);
     if (!token) {
+      logger.warn({ path: req.path, reason: 'missing_token' }, 'auth rejected');
       next(unauthorized('Missing Authorization Bearer token'));
       return;
     }
@@ -29,6 +31,7 @@ export async function authenticateFirebaseToken(
     };
     next();
   } catch {
+    logger.warn({ path: req.path, reason: 'invalid_token' }, 'auth rejected');
     next(unauthorized('Invalid or expired token'));
   }
 }
@@ -38,6 +41,7 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
   try {
     const token = parseBearerToken(req);
     if (!token) {
+      logger.warn({ path: req.path, reason: 'missing_token' }, 'auth rejected');
       next(unauthorized('Missing Authorization Bearer token'));
       return;
     }
@@ -46,6 +50,10 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
       where: { firebaseUid: decoded.uid },
     });
     if (!user) {
+      logger.warn(
+        { path: req.path, firebaseUid: decoded.uid, reason: 'user_not_registered' },
+        'auth rejected'
+      );
       next(unauthorized('User not registered; complete signup first'));
       return;
     }
@@ -53,6 +61,7 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
     req.appUser = user;
     next();
   } catch {
+    logger.warn({ path: req.path, reason: 'invalid_token' }, 'auth rejected');
     next(unauthorized('Invalid or expired token'));
   }
 }
@@ -73,6 +82,7 @@ export async function optionalAuth(req: Request, _res: Response, next: NextFunct
     if (user) req.appUser = user;
     next();
   } catch {
+    logger.warn({ path: req.path, reason: 'invalid_token' }, 'auth rejected');
     next(unauthorized('Invalid or expired token'));
   }
 }

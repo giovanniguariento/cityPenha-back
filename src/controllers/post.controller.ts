@@ -1,9 +1,9 @@
 import type { Request, Response } from 'express';
-import type { IPost } from '../models/post.interface';
+import { prisma } from '../lib/prisma';
 import { WordpressService } from '../services/wordpress.service';
 import { gamification } from '../services';
 import type { PostFolderService } from '../services/postFolder.service';
-import { toPostDetail, verifyWordpressPostExists } from '../helpers/post.helper';
+import { fetchPostOrAd, toPostDetail, verifyWordpressPostExists } from '../helpers/post.helper';
 import type { PostDetailResponse } from '../types';
 import { sendJsonSuccess } from '../lib/apiResponse';
 import { badRequest, notFound, unauthorized } from '../lib/httpErrors';
@@ -21,20 +21,28 @@ export class PostController {
       throw notFound('Post not found');
     }
 
-    const post: IPost =
-      resolved.kind === 'post'
-        ? await this.wordpressService.getPost(resolved.id)
-        : await this.wordpressService.getAd(resolved.id);
+    const post = await fetchPostOrAd(this.wordpressService, resolved.id, resolved.kind);
+    if (!post) {
+      throw notFound('Post not found');
+    }
 
-    const [categories, tags, likesCount] = await Promise.all([
+    const userId = req.appUser?.id;
+
+    const [categories, tags, likesCount, readRecord] = await Promise.all([
       this.wordpressService.getCategoriesById(post.categories),
       this.wordpressService.getTagsById(post.tags),
       this.postFolderService.countLikesForPost(post.id),
+      userId
+        ? prisma.readPost.findUnique({
+            where: {
+              userId_wordpressPostId: { userId, wordpressPostId: post.id },
+            },
+            select: { id: true },
+          })
+        : Promise.resolve(null),
     ]);
 
     const base = toPostDetail(post, categories, tags);
-    const userId = req.appUser?.id;
-
     let payload: PostDetailResponse = { ...base, likesCount };
 
     if (userId) {
@@ -42,7 +50,7 @@ export class PostController {
         this.postFolderService.isPostLikedByUser(userId, post.id),
         this.postFolderService.getAllFolderIdsContainingPost(userId, post.id),
       ]);
-      payload = { ...payload, liked, savedFolderIds };
+      payload = { ...payload, liked, savedFolderIds, viewed: Boolean(readRecord) };
     }
 
     sendJsonSuccess(res, payload);

@@ -1,7 +1,9 @@
+import './setupTimezone';
 import app from './app';
+import { logger } from './lib/logger';
 
 const PORT = Number(process.env.PORT) || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  logger.info({ port: PORT }, 'Server listening');
 });

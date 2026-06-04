@@ -8,7 +8,7 @@ import {
   WORLD_NEWS_CATEGORY_IDS,
 } from '../config/discovery';
 import { ETypePost, type IPost } from '../models/post.interface';
-import { toFeedItem } from '../helpers/post.helper';
+import { fetchPostOrAd, toFeedItem } from '../helpers/post.helper';
 import { formatPublishedRelativePtBr } from '../helpers/relativeTimePt.helper';
 import { gravatarUrlFromEmail } from '../helpers/gravatar.helper';
 import { getPublishPressAuthorAvatarUrl } from '../helpers/publishPressAuthors.helper';
@@ -191,22 +191,19 @@ export class DiscoveryService {
     const categoryNameById = new Map(allCategories.map((c) => [c.id, c.name]));
 
     for (const id of wordpressPostIds) {
-      try {
-        const post: IPost = await this.wordpressService.getPost(id);
-        if (post.type !== ETypePost.POST) continue;
-        const item = toFeedItem(post);
-        item.publishedAtRelative = formatPublishedRelativePtBr(post.date);
-        for (const cid of item.categories) {
-          const name = categoryNameById.get(cid);
-          if (name) {
-            item.categoryName = name;
-            break;
-          }
+      const post = await fetchPostOrAd(this.wordpressService, id);
+      if (!post) continue;
+
+      const item = toFeedItem(post);
+      item.publishedAtRelative = formatPublishedRelativePtBr(post.date);
+      for (const cid of item.categories) {
+        const name = categoryNameById.get(cid);
+        if (name) {
+          item.categoryName = name;
+          break;
         }
-        items.push(item);
-      } catch {
-        /* skip missing posts */
       }
+      items.push(item);
     }
     return items;
   }

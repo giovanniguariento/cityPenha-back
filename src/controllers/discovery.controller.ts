@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import type { DiscoveryService } from '../services/discovery.service';
+import { setFeedCacheHeaders } from '../helpers/feedCache.helper';
 import { sendJsonSuccess } from '../lib/apiResponse';
 
 export class DiscoveryController {
@@ -16,7 +17,7 @@ export class DiscoveryController {
       userId: req.appUser?.id,
     });
 
-    res.set('Cache-Control', 'public, max-age=60');
+    setFeedCacheHeaders(res, Boolean(req.appUser?.id));
     sendJsonSuccess(res, payload);
   };
 }

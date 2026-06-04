@@ -202,6 +202,8 @@ export class UserController {
       const snapshot = await gamification.notify('manual_recompute', { userId });
       sendJsonSuccess(res, {
         alreadyRead: true,
+        viewed: true,
+        wordpressPostId,
         user: snapshot.user,
         completedMissionsCount: snapshot.completedMissionsCount,
         daysWithReads: snapshot.daysWithReads,
@@ -214,32 +216,21 @@ export class UserController {
     }
 
     const { slug } = req.body as { slug?: string };
-    let postExists = false;
+    let prefer: 'post' | 'ad' | undefined;
 
     if (slug) {
       try {
         const resolved = await this.wordpressService.resolvePostBySlug(slug);
-        if (resolved?.id === wordpressPostId) postExists = true;
+        if (resolved?.id === wordpressPostId) {
+          prefer = resolved.kind;
+        }
       } catch {
         // fallback to id-based checks below
       }
     }
 
-    if (!postExists) {
-      try {
-        await this.wordpressService.getPost(wordpressPostId);
-        postExists = true;
-      } catch {
-        try {
-          await this.wordpressService.getAd(wordpressPostId);
-          postExists = true;
-        } catch {
-          postExists = false;
-        }
-      }
-    }
-
-    if (!postExists) {
+    const post = await fetchPostOrAd(this.wordpressService, wordpressPostId, prefer);
+    if (!post) {
       throw notFound('Post not found');
     }
 
@@ -249,6 +240,8 @@ export class UserController {
 
     sendJsonSuccess(res, {
       alreadyRead: false,
+      viewed: true,
+      wordpressPostId,
       user: snapshot.user,
       completedMissionsCount: snapshot.completedMissionsCount,
       daysWithReads: snapshot.daysWithReads,

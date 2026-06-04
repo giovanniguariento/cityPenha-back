@@ -6,6 +6,7 @@
  * webhooks futuros) que queiram reagir ao mesmo evento sem acoplar ao engine.
  */
 import type { DomainEventPayload, DomainEventType } from '../types';
+import { logger } from '../../../lib/logger';
 
 export type DomainEventListener = (
   type: DomainEventType,
@@ -30,7 +31,7 @@ export async function emitDomainEvent(
     try {
       await listener(type, payload);
     } catch (err) {
-      console.error(`[gamification.events] listener error on "${type}":`, err);
+      logger.error({ err, eventType: type }, 'gamification event listener error');
     }
   }
 }

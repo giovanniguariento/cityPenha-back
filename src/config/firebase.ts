@@ -1,4 +1,5 @@
 import admin from 'firebase-admin';
+import { logger } from '../lib/logger';
 
 let initialized = false;
 
@@ -18,7 +19,7 @@ function initFirebaseAdmin(): void {
       );
     }
   } catch (error) {
-    console.log(error)
+    logger.error({ err: error }, 'Firebase Admin initialization failed');
   }
 
   initialized = true;

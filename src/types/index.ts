@@ -48,6 +48,8 @@ export interface FeedItem {
 export interface PostDetailResponse {
   id: number;
   slug: string;
+  /** `"post"` ou `"anuncio"` (enum `ETypePost`). */
+  type: string;
   title: string;
   resume: string;
   readingTime: number;
@@ -62,12 +64,17 @@ export interface PostDetailResponse {
   likesCount: number;
   /** Presente quando o cliente envia Bearer token de usuário registrado. */
   liked?: boolean;
+  /** Presente quando o cliente envia Bearer token de usuário registrado. */
+  viewed?: boolean;
   /** IDs das pastas do usuário em que o post está (inclui `curtidas` e `Salvos` se aplicável). */
   savedFolderIds?: string[];
 }
 
 /** Campos do post vindos do WordPress (antes de likes/salvamentos). */
-export type PostDetailBase = Omit<PostDetailResponse, 'likesCount' | 'liked' | 'savedFolderIds'>;
+export type PostDetailBase = Omit<
+  PostDetailResponse,
+  'likesCount' | 'liked' | 'savedFolderIds' | 'viewed'
+>;
 
 /** Item em GET /user/me/folders — pasta + capa do último post (curtido/salvo) nessa pasta. */
 export interface PostFolderListItem {
