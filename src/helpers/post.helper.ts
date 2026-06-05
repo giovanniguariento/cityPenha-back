@@ -38,8 +38,23 @@ export function toFeedItem(post: IPost): FeedItem {
     image: getFeaturedImageUrl(post),
     categories: post.categories,
     categoryName: '',
+    categorySlug: '',
     onlyVideo: isSingleVideoContent(post.content.rendered),
   } as FeedItem;
+}
+
+export function enrichFeedItemCategory(
+  item: FeedItem,
+  categoryById: Map<number, ICategory>
+): void {
+  for (const id of item.categories) {
+    const cat = categoryById.get(id);
+    if (cat) {
+      item.categoryName = cat.name;
+      item.categorySlug = cat.slug;
+      break;
+    }
+  }
 }
 
 export function toPostDetail(
@@ -64,6 +79,7 @@ export function toPostDetail(
     content: post.content.rendered,
     tags: tagNames,
     categoryName: categories[0]?.name ?? '',
+    categorySlug: categories[0]?.slug ?? '',
     onlyVideo: isSingleVideoContent(post.content.rendered),
   };
 }

@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { ETypePost, type IPost } from '../models/post.interface';
 import { WordpressService } from '../services/wordpress.service';
 import type { FeedItem } from '../types';
-import { toFeedItem } from '../helpers/post.helper';
+import { enrichFeedItemCategory, toFeedItem } from '../helpers/post.helper';
 import { insertAdsIntoPosts } from '../helpers/ad.helper';
 import { prisma } from '../lib/prisma';
 import { setFeedCacheHeaders } from '../helpers/feedCache.helper';
@@ -24,7 +24,7 @@ export class HomeController {
 
     const categories = recentCatsResult.categories;
     const postsByCategory = recentCatsResult.postsByCategory;
-    const categoryNameById = new Map(allCategories.map((c) => [c.id, c.name]));
+    const categoryById = new Map(allCategories.map((c) => [c.id, c]));
 
     const intervalMin = Number(process.env.AD_INTERVAL_MIN) || 4;
     const intervalMax = Number(process.env.AD_INTERVAL_MAX) || 5;
@@ -39,13 +39,7 @@ export class HomeController {
     const carousel: FeedItem[] = carouselWithAds.map((post) => toFeedItem(post));
 
     for (const item of carousel) {
-      for (const id of item.categories) {
-        const name = categoryNameById.get(id);
-        if (name) {
-          item.categoryName = name;
-          break;
-        }
-      }
+      enrichFeedItemCategory(item, categoryById);
     }
 
     const categoriesWithPosts = categories.map((category) => {
@@ -62,8 +56,9 @@ export class HomeController {
       const feedItems = listWithAds.map((p) => toFeedItem(p));
       for (const item of feedItems) {
         item.categoryName = category.name;
+        item.categorySlug = category.slug;
       }
-      return { id: category.id, name: category.name, posts: feedItems };
+      return { id: category.id, name: category.name, slug: category.slug, posts: feedItems };
     });
 
     const userId = req.appUser?.id;

@@ -317,14 +317,18 @@ export class UserController {
     const categoryList =
       uniqueCatIds.length > 0 ? await this.wordpressService.getCategoriesById(uniqueCatIds) : [];
     const catById = new Map(categoryList.map((c) => [c.id, c]));
-    const posts = pairs.map(({ wordpressPostId, post }) => ({
-      wordpressPostId,
-      post,
-      categories: post.categories
+    const posts = pairs.map(({ wordpressPostId, post }) => {
+      const categories = post.categories
         .map((cid) => catById.get(cid))
-        .filter((c): c is ICategory => c != null),
-      image: getFeaturedImageUrl(post),
-    }));
+        .filter((c): c is ICategory => c != null);
+      return {
+        wordpressPostId,
+        post,
+        categories,
+        categorySlug: categories[0]?.slug ?? '',
+        image: getFeaturedImageUrl(post),
+      };
+    });
     sendJsonSuccess(res, { folderId, posts });
   };
 

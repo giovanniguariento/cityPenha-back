@@ -38,6 +38,7 @@ export interface FeedItem {
   image: string;
   categories: number[];
   categoryName: string;
+  categorySlug: string;
   onlyVideo: boolean;
   viewed?: boolean;
   /** Present on GET /discovery `trendingTopics` — post publish time, PT-BR relative (e.g. "2 horas atrás"). */
@@ -59,6 +60,7 @@ export interface PostDetailResponse {
   content: string;
   tags: string[];
   categoryName: string;
+  categorySlug: string;
   onlyVideo: boolean;
   /** Total de curtidas (pasta fixa `curtidas` de todos os usuários). */
   likesCount: number;
@@ -98,6 +100,8 @@ export interface FolderSavedPostItem {
   post: IPost;
   /** Objetos de categoria na ordem dos IDs em `post.categories`. */
   categories: ICategory[];
+  /** Slug da primeira categoria resolvida (para URL no frontend). */
+  categorySlug: string;
   /** URL da imagem de destaque (`_embedded`), igual `FeedItem.image` na home. */
   image: string;
 }

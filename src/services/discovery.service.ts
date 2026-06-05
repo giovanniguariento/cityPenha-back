@@ -8,7 +8,7 @@ import {
   WORLD_NEWS_CATEGORY_IDS,
 } from '../config/discovery';
 import { ETypePost, type IPost } from '../models/post.interface';
-import { fetchPostOrAd, toFeedItem } from '../helpers/post.helper';
+import { enrichFeedItemCategory, fetchPostOrAd, toFeedItem } from '../helpers/post.helper';
 import { formatPublishedRelativePtBr } from '../helpers/relativeTimePt.helper';
 import { gravatarUrlFromEmail } from '../helpers/gravatar.helper';
 import { getPublishPressAuthorAvatarUrl } from '../helpers/publishPressAuthors.helper';
@@ -106,17 +106,11 @@ export class DiscoveryService {
     );
     const contentPosts = posts.filter((p) => p.type === ETypePost.POST);
     const allCategories = await this.wordpressService.getCategories();
-    const categoryNameById = new Map(allCategories.map((c) => [c.id, c.name]));
+    const categoryById = new Map(allCategories.map((c) => [c.id, c]));
 
     return contentPosts.map((post) => {
       const item = toFeedItem(post);
-      for (const id of item.categories) {
-        const name = categoryNameById.get(id);
-        if (name) {
-          item.categoryName = name;
-          break;
-        }
-      }
+      enrichFeedItemCategory(item, categoryById);
       return item;
     });
   }
@@ -188,7 +182,7 @@ export class DiscoveryService {
   private async postIdsToFeedItems(wordpressPostIds: number[]): Promise<FeedItem[]> {
     const items: FeedItem[] = [];
     const allCategories = await this.wordpressService.getCategories();
-    const categoryNameById = new Map(allCategories.map((c) => [c.id, c.name]));
+    const categoryById = new Map(allCategories.map((c) => [c.id, c]));
 
     for (const id of wordpressPostIds) {
       const post = await fetchPostOrAd(this.wordpressService, id);
@@ -196,13 +190,7 @@ export class DiscoveryService {
 
       const item = toFeedItem(post);
       item.publishedAtRelative = formatPublishedRelativePtBr(post.date);
-      for (const cid of item.categories) {
-        const name = categoryNameById.get(cid);
-        if (name) {
-          item.categoryName = name;
-          break;
-        }
-      }
+      enrichFeedItemCategory(item, categoryById);
       items.push(item);
     }
     return items;
