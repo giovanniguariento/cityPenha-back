@@ -11,3 +11,4 @@ export const userService = new UserService();
 export const gamification = gamificationFacade;
 export { postFolderService };
 export { discoveryService };
+export { commentService } from './comment.service';

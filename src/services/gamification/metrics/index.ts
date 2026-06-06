@@ -10,6 +10,7 @@ import { consecutiveReadingDaysMetric } from './consecutiveReadingDays.metric';
 import { categoryReadsMetric } from './categoryReads.metric';
 import { missionsCompletedMetric } from './missionsCompleted.metric';
 import { xpMetric, coinsMetric, currentLevelMetric } from './userScalar.metric';
+import { totalCommentsMetric } from './totalComments.metric';
 
 let registered = false;
 
@@ -24,6 +25,7 @@ export function registerBuiltInMetrics(): void {
   registerMetric(xpMetric);
   registerMetric(coinsMetric);
   registerMetric(currentLevelMetric);
+  registerMetric(totalCommentsMetric);
   registered = true;
 }
 

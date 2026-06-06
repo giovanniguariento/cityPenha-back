@@ -147,3 +147,13 @@ export type Level = Prisma.LevelModel
  * Registro imutável de toda concessão/estorno de XP, coins e marcações de badge para auditoria.
  */
 export type RewardLedger = Prisma.RewardLedgerModel
+/**
+ * Model Comment
+ * Comentário de usuário em uma postagem do WordPress. parentId não nulo = resposta (profundidade máxima 1).
+ */
+export type Comment = Prisma.CommentModel
+/**
+ * Model CommentLike
+ * Curtida de usuário em um comentário.
+ */
+export type CommentLike = Prisma.CommentLikeModel

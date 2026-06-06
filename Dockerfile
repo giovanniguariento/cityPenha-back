@@ -25,6 +25,7 @@ RUN npm ci --omit=dev --ignore-scripts \
     && npm install prisma@^7.2.0 --no-save
 
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/assets ./assets
 COPY --from=builder /app/src/generated/prisma ./src/generated/prisma
 COPY prisma ./prisma
 COPY prisma.config.ts ./

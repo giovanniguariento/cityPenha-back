@@ -409,7 +409,9 @@ export const ModelName = {
   UserBadge: 'UserBadge',
   UserMission: 'UserMission',
   Level: 'Level',
-  RewardLedger: 'RewardLedger'
+  RewardLedger: 'RewardLedger',
+  Comment: 'Comment',
+  CommentLike: 'CommentLike'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -425,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "postFolder" | "favorite" | "readPost" | "likedPost" | "mission" | "badge" | "userBadge" | "userMission" | "level" | "rewardLedger"
+    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "postFolder" | "favorite" | "readPost" | "likedPost" | "mission" | "badge" | "userBadge" | "userMission" | "level" | "rewardLedger" | "comment" | "commentLike"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2145,6 +2147,138 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Comment: {
+      payload: Prisma.$CommentPayload<ExtArgs>
+      fields: Prisma.CommentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentPayload>
+        }
+        findFirst: {
+          args: Prisma.CommentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentPayload>
+        }
+        findMany: {
+          args: Prisma.CommentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentPayload>[]
+        }
+        create: {
+          args: Prisma.CommentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentPayload>
+        }
+        createMany: {
+          args: Prisma.CommentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CommentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentPayload>
+        }
+        update: {
+          args: Prisma.CommentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CommentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentPayload>
+        }
+        aggregate: {
+          args: Prisma.CommentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateComment>
+        }
+        groupBy: {
+          args: Prisma.CommentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommentCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommentLike: {
+      payload: Prisma.$CommentLikePayload<ExtArgs>
+      fields: Prisma.CommentLikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommentLikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommentLikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        findFirst: {
+          args: Prisma.CommentLikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommentLikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        findMany: {
+          args: Prisma.CommentLikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>[]
+        }
+        create: {
+          args: Prisma.CommentLikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        createMany: {
+          args: Prisma.CommentLikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CommentLikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        update: {
+          args: Prisma.CommentLikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        deleteMany: {
+          args: Prisma.CommentLikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommentLikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CommentLikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        aggregate: {
+          args: Prisma.CommentLikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommentLike>
+        }
+        groupBy: {
+          args: Prisma.CommentLikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommentLikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommentLikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommentLikeCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2538,6 +2672,29 @@ export const RewardLedgerScalarFieldEnum = {
 export type RewardLedgerScalarFieldEnum = (typeof RewardLedgerScalarFieldEnum)[keyof typeof RewardLedgerScalarFieldEnum]
 
 
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  wordpressPostId: 'wordpressPostId',
+  content: 'content',
+  userId: 'userId',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const CommentLikeScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentLikeScalarFieldEnum = (typeof CommentLikeScalarFieldEnum)[keyof typeof CommentLikeScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2832,6 +2989,25 @@ export const RewardLedgerOrderByRelevanceFieldEnum = {
 export type RewardLedgerOrderByRelevanceFieldEnum = (typeof RewardLedgerOrderByRelevanceFieldEnum)[keyof typeof RewardLedgerOrderByRelevanceFieldEnum]
 
 
+export const CommentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  content: 'content',
+  userId: 'userId',
+  parentId: 'parentId'
+} as const
+
+export type CommentOrderByRelevanceFieldEnum = (typeof CommentOrderByRelevanceFieldEnum)[keyof typeof CommentOrderByRelevanceFieldEnum]
+
+
+export const CommentLikeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId'
+} as const
+
+export type CommentLikeOrderByRelevanceFieldEnum = (typeof CommentLikeOrderByRelevanceFieldEnum)[keyof typeof CommentLikeOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -3014,6 +3190,8 @@ export type GlobalOmitConfig = {
   userMission?: Prisma.UserMissionOmit
   level?: Prisma.LevelOmit
   rewardLedger?: Prisma.RewardLedgerOmit
+  comment?: Prisma.CommentOmit
+  commentLike?: Prisma.CommentLikeOmit
 }
 
 /* Types for Logging */

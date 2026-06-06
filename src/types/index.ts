@@ -187,4 +187,40 @@ export interface DiscoveryResponse {
   popularAuthors: DiscoveryPopularAuthor[];
 }
 
+/** Author info em comentários (pode usar nickname). */
+export interface CommentAuthor {
+  id: string;
+  name: string;
+  avatarUrl: string | null;
+}
+
+/** Representação de um comentário na API (top-level ou resposta). */
+export interface CommentView {
+  id: string;
+  content: string;
+  author: CommentAuthor;
+  /** ISO-8601 */
+  createdAt: string;
+  /** Tempo relativo em PT-BR, ex.: "2 dias atrás". */
+  createdAtRelative: string;
+  likeCount: number;
+  /** Presente quando a requisição tem Bearer de usuário registrado. */
+  liked?: boolean;
+  /** Quantidade de respostas diretas (apenas em comentários top-level). */
+  replyCount?: number;
+  /** `true` quando o viewer autenticado é o autor do comentário. */
+  isOwn?: boolean;
+}
+
+/** Resposta de POST /post/:id/comments — comentário criado + snapshot de gamificação. */
+export interface CreateCommentResponse {
+  comment: CommentView;
+  missions: unknown[];
+  badges: unknown[];
+  level: unknown | null;
+  user: { id: string; xp: number; coins: number };
+  completedMissionsCount: number;
+  rewards: unknown[];
+}
+
 export type { ApiSuccessBody, ApiErrorBody, ApiErrorCode } from './api';

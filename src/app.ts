@@ -7,6 +7,8 @@ import postRoutes from './routes/post.routes';
 import userRoutes from './routes/user.routes';
 import discoveryRoutes from './routes/discovery.routes';
 import adminRoutes from './routes/admin.routes';
+import commentRoutes from './routes/comment.routes';
+import ogRoutes from './routes/og.routes';
 import { notFoundHandler } from './middleware/notFound';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
@@ -26,6 +28,8 @@ app.use('/post', postRoutes);
 app.use('/user', userRoutes);
 app.use('/discovery', discoveryRoutes);
 app.use('/admin', adminRoutes);
+app.use('/comment', commentRoutes);
+app.use('/og-image', ogRoutes);
 
 // 3. 404 + global error handler
 app.use(notFoundHandler);

@@ -76,7 +76,9 @@ export const ModelName = {
   UserBadge: 'UserBadge',
   UserMission: 'UserMission',
   Level: 'Level',
-  RewardLedger: 'RewardLedger'
+  RewardLedger: 'RewardLedger',
+  Comment: 'Comment',
+  CommentLike: 'CommentLike'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -449,6 +451,29 @@ export const RewardLedgerScalarFieldEnum = {
 export type RewardLedgerScalarFieldEnum = (typeof RewardLedgerScalarFieldEnum)[keyof typeof RewardLedgerScalarFieldEnum]
 
 
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  wordpressPostId: 'wordpressPostId',
+  content: 'content',
+  userId: 'userId',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const CommentLikeScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentLikeScalarFieldEnum = (typeof CommentLikeScalarFieldEnum)[keyof typeof CommentLikeScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -741,4 +766,23 @@ export const RewardLedgerOrderByRelevanceFieldEnum = {
 } as const
 
 export type RewardLedgerOrderByRelevanceFieldEnum = (typeof RewardLedgerOrderByRelevanceFieldEnum)[keyof typeof RewardLedgerOrderByRelevanceFieldEnum]
+
+
+export const CommentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  content: 'content',
+  userId: 'userId',
+  parentId: 'parentId'
+} as const
+
+export type CommentOrderByRelevanceFieldEnum = (typeof CommentOrderByRelevanceFieldEnum)[keyof typeof CommentOrderByRelevanceFieldEnum]
+
+
+export const CommentLikeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId'
+} as const
+
+export type CommentLikeOrderByRelevanceFieldEnum = (typeof CommentLikeOrderByRelevanceFieldEnum)[keyof typeof CommentLikeOrderByRelevanceFieldEnum]
 

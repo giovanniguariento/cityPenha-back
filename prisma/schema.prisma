@@ -243,6 +243,8 @@ model User {
   userMissions  UserMission[]
   userBadges    UserBadge[]
   rewardLedger  RewardLedger[]
+  comments      Comment[]
+  commentLikes  CommentLike[]
 
   @@map("users")
 }
@@ -417,4 +419,44 @@ model RewardLedger {
 
   @@index([userId, createdAt])
   @@map("reward_ledger")
+}
+
+/// Comentário de usuário em uma postagem do WordPress. parentId não nulo = resposta (profundidade máxima 1).
+model Comment {
+  id String @id @default(uuid())
+
+  wordpressPostId Int
+  content         String @db.Text
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Referência ao comentário-pai (somente 1 nível de profundidade permitido).
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+
+  likes CommentLike[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([wordpressPostId, parentId, createdAt])
+  @@map("comments")
+}
+
+/// Curtida de usuário em um comentário.
+model CommentLike {
+  id String @id @default(uuid())
+
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userId])
+  @@map("comment_likes")
 }

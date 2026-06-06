@@ -36,6 +36,8 @@ export type DomainEventType =
   | 'like.removed'
   | 'save.added'
   | 'save.removed'
+  | 'comment.added'
+  | 'comment.removed'
   | 'manual_recompute';
 
 export interface DomainEventPayload {
@@ -43,6 +45,8 @@ export interface DomainEventPayload {
   wordpressPostId?: number;
   /** IDs WordPress de categorias do post envolvido (necessário para métricas filtradas por categoria). */
   categoryIds?: number[];
+  /** ID do comentário criado/removido (necessário para evento comment.*). */
+  commentId?: string;
   /** Hint para o ledger sobre quem disparou (auditoria). */
   source?: string;
 }

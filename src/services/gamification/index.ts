@@ -35,6 +35,7 @@ import type {
 } from './types';
 
 const XP_PER_READ = 10;
+const XP_PER_COMMENT = 1;
 
 registerBuiltInMetrics();
 
@@ -91,6 +92,23 @@ async function applyReadSideEffect(tx: Tx, userId: string, wordpressPostId: numb
   return reward ? [reward] : [];
 }
 
+/**
+ * Side-effect do evento `comment.added`: concede +1 XP idempotente por comentário criado.
+ * A idempotência é garantida pelo `source = COMMENT_XP:<commentId>` no ledger.
+ */
+async function applyCommentSideEffect(tx: Tx, userId: string, commentId: string): Promise<RewardView[]> {
+  const reward = await applyReward({
+    tx,
+    userId,
+    source: `COMMENT_XP:${commentId}`,
+    reason: 'granted',
+    coinsDelta: 0,
+    xpDelta: XP_PER_COMMENT,
+    meta: { commentId },
+  });
+  return reward ? [reward] : [];
+}
+
 export class GamificationFacade {
   /**
    * Publica um evento de domínio e devolve o snapshot atualizado.
@@ -106,6 +124,10 @@ export class GamificationFacade {
 
         if (eventType === 'read' && payload.wordpressPostId) {
           rewards.push(...(await applyReadSideEffect(tx, userId, payload.wordpressPostId)));
+        }
+
+        if (eventType === 'comment.added' && payload.commentId) {
+          rewards.push(...(await applyCommentSideEffect(tx, userId, payload.commentId)));
         }
 
         const [missions, badges, levels] = await Promise.all([
