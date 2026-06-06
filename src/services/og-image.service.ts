@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { BR_TIMEZONE } from '../lib/brTime';
 import { fetchWithTimeout } from '../helpers/fetch.helper';
+import { logger } from '../lib/logger';
 
 // ─── Canvas dimensions ───────────────────────────────────────────────────────
 const WIDTH = 1200;
@@ -52,21 +53,40 @@ export interface OgImageParams {
 }
 
 // ─── Logo cache ───────────────────────────────────────────────────────────────
-let logoImagePromise: Promise<Image> | undefined;
+let logoImagePromise: Promise<Image | null> | undefined;
 
-function loadLogo(): Promise<Image> {
-  logoImagePromise ??= loadImage(readFileSync(LOGO_PATH));
+function loadLogo(): Promise<Image | null> {
+  logoImagePromise ??= loadImage(readFileSync(LOGO_PATH)).catch((err) => {
+    logger.warn({ err, path: LOGO_PATH }, 'og-image: logo file could not be loaded');
+    return null;
+  });
   return logoImagePromise;
 }
 
 // ─── Background ──────────────────────────────────────────────────────────────
-async function loadBackground(url: string): Promise<Image> {
-  const response = await fetchWithTimeout(url, {}, 10_000);
-  if (!response.ok) throw new Error(`Failed to fetch background image: ${response.status}`);
-  return loadImage(Buffer.from(await response.arrayBuffer()));
+async function loadBackground(url: string): Promise<Image | null> {
+  try {
+    const response = await fetchWithTimeout(url, {}, 10_000);
+    if (!response.ok) {
+      logger.warn({ url, status: response.status }, 'og-image: background fetch returned non-ok status, using fallback');
+      return null;
+    }
+    return await loadImage(Buffer.from(await response.arrayBuffer()));
+  } catch (err) {
+    logger.warn({ url, err }, 'og-image: background fetch failed, using fallback');
+    return null;
+  }
 }
 
 // ─── Draw helpers ─────────────────────────────────────────────────────────────
+
+function drawFallbackBackground(ctx: SKRSContext2D): void {
+  const gradient = ctx.createLinearGradient(0, 0, WIDTH, HEIGHT);
+  gradient.addColorStop(0, '#0a0f19');
+  gradient.addColorStop(1, '#1a1f2e');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+}
 
 function drawCoverImage(ctx: SKRSContext2D, image: Image): void {
   const imageRatio = image.width / image.height;
@@ -97,7 +117,8 @@ function drawAccentBar(ctx: SKRSContext2D): void {
   ctx.fillRect(0, 0, ACCENT_BAR_WIDTH, HEIGHT);
 }
 
-function drawLogo(ctx: SKRSContext2D, logo: Image): number {
+function drawLogo(ctx: SKRSContext2D, logo: Image | null): number {
+  if (!logo) return 0;
   const scale = LOGO_MAX_WIDTH / logo.width;
   const logoHeight = Math.round(logo.height * scale);
   ctx.drawImage(logo, PADDING_X, LOGO_Y, LOGO_MAX_WIDTH, logoHeight);
@@ -217,11 +238,17 @@ export async function generateOgImage(params: OgImageParams): Promise<Buffer> {
   const canvas = createCanvas(WIDTH, HEIGHT);
   const ctx = canvas.getContext('2d');
 
-  // 1. Background photo (cover fill)
-  drawCoverImage(ctx, background);
+  // 1. Background photo (cover fill) — or dark gradient fallback
+  if (background) {
+    drawCoverImage(ctx, background);
+  } else {
+    drawFallbackBackground(ctx);
+  }
 
-  // 2. Dark gradient overlay (left → transparent)
-  drawGradientOverlay(ctx);
+  // 2. Dark gradient overlay (left → transparent) — only needed over a photo
+  if (background) {
+    drawGradientOverlay(ctx);
+  }
 
   // 3. Red accent bar (leftmost edge)
   drawAccentBar(ctx);
