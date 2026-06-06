@@ -13,6 +13,7 @@ const HEIGHT = 630;
 // ─── Design tokens (matches styles/_variables.scss) ──────────────────────────
 const BRAND_PRIMARY = '#ff1500';
 const BRAND_ACCENT = '#ff3b30';
+const BRAND_FOREGROUND = '#ffffff';
 
 // ─── Layout constants ─────────────────────────────────────────────────────────
 const ACCENT_BAR_WIDTH = 6;
@@ -209,7 +210,7 @@ function drawDate(ctx: SKRSContext2D, dateInput: string): void {
   const label = formatOgDate(dateInput);
   if (!label) return;
   ctx.font = DATE_FONT;
-  ctx.fillStyle = BRAND_ACCENT;
+  ctx.fillStyle = BRAND_FOREGROUND;
   ctx.fillText(label, PADDING_X, DATE_BASELINE_Y);
 }
 
