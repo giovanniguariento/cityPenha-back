@@ -1,5 +1,6 @@
 # --- builder ---
-FROM node:22-alpine AS builder
+# bookworm-slim (glibc): @napi-rs/canvas SIGILL (exit 132) on some VPS with Alpine/musl Skia builds
+FROM node:22-bookworm-slim AS builder
 
 WORKDIR /app
 
@@ -11,9 +12,11 @@ RUN npx prisma generate
 RUN npm run build
 
 # --- production ---
-FROM node:22-alpine
+FROM node:22-bookworm-slim
 
-RUN apk add --no-cache tzdata
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tzdata openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
