@@ -39,7 +39,8 @@ const DESC_LINE_HEIGHT = 36;
 const DESC_MAX_LINES = 3;
 const DESC_MAX_WIDTH = 460;
 
-const DATE_FONT = `22px Arial, Helvetica, sans-serif`;
+const FONT_FAMILY = 'DejaVu Sans, Liberation Sans, sans-serif';
+const DATE_FONT = `22px ${FONT_FAMILY}`;
 
 // ─── Months ───────────────────────────────────────────────────────────────────
 const MONTHS_PT = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
@@ -187,7 +188,7 @@ function wrapText(
 }
 
 function drawTitle(ctx: SKRSContext2D, title: string, titleBaselineY: number): void {
-  ctx.font = `bold ${TITLE_FONT_SIZE}px Arial, Helvetica, sans-serif`;
+  ctx.font = `bold ${TITLE_FONT_SIZE}px ${FONT_FAMILY}`;
   ctx.fillStyle = '#ffffff';
   const lines = wrapText(ctx, title.toUpperCase(), TITLE_MAX_WIDTH, TITLE_MAX_LINES);
   for (let i = 0; i < lines.length; i++) {
@@ -196,7 +197,7 @@ function drawTitle(ctx: SKRSContext2D, title: string, titleBaselineY: number): v
 }
 
 function drawDescription(ctx: SKRSContext2D, description: string, descBaselineY: number): void {
-  ctx.font = `${DESC_FONT_SIZE}px Arial, Helvetica, sans-serif`;
+  ctx.font = `${DESC_FONT_SIZE}px ${FONT_FAMILY}`;
   ctx.fillStyle = '#cccccc';
   const lines = wrapText(ctx, description, DESC_MAX_WIDTH, DESC_MAX_LINES);
   for (let i = 0; i < lines.length; i++) {
