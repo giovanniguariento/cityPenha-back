@@ -2,6 +2,7 @@ import { createCanvas, loadImage, type Image, type SKRSContext2D } from '@napi-r
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { BR_TIMEZONE } from '../lib/brTime';
+import { createTtlCache } from '../helpers/cache.helper';
 import { fetchWithTimeout } from '../helpers/fetch.helper';
 import { logger } from '../lib/logger';
 
@@ -64,15 +65,22 @@ function loadLogo(): Promise<Image | null> {
 }
 
 // ─── Background ──────────────────────────────────────────────────────────────
+const BAD_URL_TTL_MS = 10 * 60 * 1000;
+const badUrlCache = createTtlCache<true>(BAD_URL_TTL_MS);
+
 async function loadBackground(url: string): Promise<Image | null> {
+  if (badUrlCache.get(url)) return null;
+
   try {
     const response = await fetchWithTimeout(url, {}, 10_000);
     if (!response.ok) {
+      badUrlCache.set(url, true);
       logger.warn({ url, status: response.status }, 'og-image: background fetch returned non-ok status, using fallback');
       return null;
     }
     return await loadImage(Buffer.from(await response.arrayBuffer()));
   } catch (err) {
+    badUrlCache.set(url, true);
     logger.warn({ url, err }, 'og-image: background fetch failed, using fallback');
     return null;
   }

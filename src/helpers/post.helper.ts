@@ -23,7 +23,11 @@ export function getAuthor(post: IPost): Author {
 
 export function getFeaturedImageUrl(post: IPost): string {
   const media = post._embedded?.['wp:featuredmedia'];
-  return media?.[0]?.source_url ?? '';
+  return (
+    media?.[0]?.media_details?.sizes?.large?.source_url ??
+    media?.[0]?.source_url ??
+    ''
+  );
 }
 
 export function toFeedItem(post: IPost): FeedItem {

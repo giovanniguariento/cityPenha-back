@@ -23,6 +23,12 @@ export interface IPost {
 
 export interface IFeaturedMedia {
   source_url: string;
+  media_details?: {
+    sizes?: {
+      large?: { source_url: string; width: number; height: number };
+      full?: { source_url: string };
+    };
+  };
 }
 
 export enum ETypePost {
