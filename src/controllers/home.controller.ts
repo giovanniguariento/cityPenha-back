@@ -8,6 +8,8 @@ import { prisma } from '../lib/prisma';
 import { setFeedCacheHeaders } from '../helpers/feedCache.helper';
 import { sendJsonSuccess } from '../lib/apiResponse';
 import { notFound } from '../lib/httpErrors';
+import { postViewService } from '../services/postView.service';
+import { commentService } from '../services/comment.service';
 
 export class HomeController {
   constructor(private readonly wordpressService: WordpressService) {}
@@ -91,6 +93,15 @@ export class HomeController {
         for (const item of cat.posts) item.viewed = false;
       }
     }
+
+    const allFeedItems: FeedItem[] = [
+      ...carousel,
+      ...categoriesWithPosts.flatMap((c) => c.posts),
+    ];
+    await Promise.all([
+      postViewService.applyViewsCountsToFeedItems(allFeedItems),
+      commentService.applyCommentsCountsToFeedItems(allFeedItems),
+    ]);
 
     if (posts.length === 0 && categories.length === 0) {
       throw notFound('Posts not found');

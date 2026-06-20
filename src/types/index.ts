@@ -41,6 +41,10 @@ export interface FeedItem {
   categorySlug: string;
   onlyVideo: boolean;
   viewed?: boolean;
+  /** Total de views (leituras logadas + visitantes anônimos). Presente em GET /home e /discovery. */
+  viewsCount?: number;
+  /** Total de comentários (top-level + respostas). Presente em GET /home. */
+  commentsCount?: number;
   /** Present on GET /discovery `trendingTopics` — post publish time, PT-BR relative (e.g. "2 horas atrás"). */
   publishedAtRelative?: string;
 }
@@ -64,6 +68,8 @@ export interface PostDetailResponse {
   onlyVideo: boolean;
   /** Total de curtidas (pasta fixa `curtidas` de todos os usuários). */
   likesCount: number;
+  /** Total de views (leituras logadas em read_posts + views anônimas em post_views). */
+  viewsCount: number;
   /** Presente quando o cliente envia Bearer token de usuário registrado. */
   liked?: boolean;
   /** Presente quando o cliente envia Bearer token de usuário registrado. */
@@ -75,7 +81,7 @@ export interface PostDetailResponse {
 /** Campos do post vindos do WordPress (antes de likes/salvamentos). */
 export type PostDetailBase = Omit<
   PostDetailResponse,
-  'likesCount' | 'liked' | 'savedFolderIds' | 'viewed'
+  'likesCount' | 'viewsCount' | 'liked' | 'savedFolderIds' | 'viewed'
 >;
 
 /** Item em GET /user/me/folders — pasta + capa do último post (curtido/salvo) nessa pasta. */
@@ -112,6 +118,21 @@ export interface WordPressUserResponse {
   name?: string;
   slug?: string;
   [key: string]: unknown;
+}
+
+export type WordpressCredentialsStatus = 'ready' | 'missing';
+
+/** Item retornado pelos endpoints admin de acesso WordPress. */
+export interface AdminWordpressAccessItem {
+  userId: string;
+  email: string;
+  name: string;
+  createdAt: string;
+  wordpressId: number | null;
+  wordpressUsername: string | null;
+  wordpressPassword: string | null;
+  wordpressLoginUrl: string;
+  credentialsStatus: WordpressCredentialsStatus;
 }
 
 /** Dates (YYYY-MM-DD) when the user read at least one post. Returned in GET /user/:id and after recording a read. */

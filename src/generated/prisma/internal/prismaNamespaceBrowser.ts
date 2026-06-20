@@ -70,6 +70,7 @@ export const ModelName = {
   PostFolder: 'PostFolder',
   Favorite: 'Favorite',
   ReadPost: 'ReadPost',
+  PostView: 'PostView',
   LikedPost: 'LikedPost',
   Mission: 'Mission',
   Badge: 'Badge',
@@ -308,6 +309,8 @@ export const UserScalarFieldEnum = {
   about: 'about',
   firebaseUid: 'firebaseUid',
   wordpressId: 'wordpressId',
+  wordpressUsername: 'wordpressUsername',
+  wordpressPasswordEnc: 'wordpressPasswordEnc',
   xp: 'xp',
   coins: 'coins',
   createdAt: 'createdAt',
@@ -346,6 +349,17 @@ export const ReadPostScalarFieldEnum = {
 } as const
 
 export type ReadPostScalarFieldEnum = (typeof ReadPostScalarFieldEnum)[keyof typeof ReadPostScalarFieldEnum]
+
+
+export const PostViewScalarFieldEnum = {
+  id: 'id',
+  wordpressPostId: 'wordpressPostId',
+  visitorKey: 'visitorKey',
+  ipHash: 'ipHash',
+  createdAt: 'createdAt'
+} as const
+
+export type PostViewScalarFieldEnum = (typeof PostViewScalarFieldEnum)[keyof typeof PostViewScalarFieldEnum]
 
 
 export const LikedPostScalarFieldEnum = {
@@ -649,7 +663,9 @@ export const UserOrderByRelevanceFieldEnum = {
   photoUrl: 'photoUrl',
   nickname: 'nickname',
   about: 'about',
-  firebaseUid: 'firebaseUid'
+  firebaseUid: 'firebaseUid',
+  wordpressUsername: 'wordpressUsername',
+  wordpressPasswordEnc: 'wordpressPasswordEnc'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
@@ -679,6 +695,15 @@ export const ReadPostOrderByRelevanceFieldEnum = {
 } as const
 
 export type ReadPostOrderByRelevanceFieldEnum = (typeof ReadPostOrderByRelevanceFieldEnum)[keyof typeof ReadPostOrderByRelevanceFieldEnum]
+
+
+export const PostViewOrderByRelevanceFieldEnum = {
+  id: 'id',
+  visitorKey: 'visitorKey',
+  ipHash: 'ipHash'
+} as const
+
+export type PostViewOrderByRelevanceFieldEnum = (typeof PostViewOrderByRelevanceFieldEnum)[keyof typeof PostViewOrderByRelevanceFieldEnum]
 
 
 export const LikedPostOrderByRelevanceFieldEnum = {

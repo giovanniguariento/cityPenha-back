@@ -228,6 +228,8 @@ model User {
   // Conectores de Identidade
   firebaseUid String @unique // O ID que vem do token do Google/Facebook
   wordpressId Int?   @unique // O ID do usuário criado dentro do WordPress
+  wordpressUsername String? @db.VarChar(60)
+  wordpressPasswordEnc String? @db.Text // Senha WP criptografada (AES-256-GCM)
 
   // Relacionamentos
   postFolders PostFolder[]
@@ -293,7 +295,22 @@ model ReadPost {
   createdAt DateTime @default(now())
 
   @@unique([userId, wordpressPostId])
+  @@index([wordpressPostId])
   @@map("read_posts")
+}
+
+/// View de visitante anônimo ao terminar de ler. Views de logados vêm de read_posts.
+model PostView {
+  id String @id @default(uuid())
+
+  wordpressPostId Int
+  visitorKey      String
+  ipHash          String?
+  createdAt       DateTime @default(now())
+
+  @@unique([visitorKey, wordpressPostId])
+  @@index([wordpressPostId])
+  @@map("post_views")
 }
 
 /// Primeira vez que o usuário curtiu cada post (pasta fixa curtidas). Não remove ao descurtir — usado na missão like_10_posts.

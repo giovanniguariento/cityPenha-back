@@ -4,7 +4,7 @@ import { UserService } from '../services/user.service';
 import { prisma } from '../lib/prisma';
 import type { PostFolderService } from '../services/postFolder.service';
 import { SYSTEM_FOLDER_KEY_DEFAULT_SAVED, SYSTEM_FOLDER_KEY_LIKES } from '../services/postFolder.service';
-import { gamification } from '../services';
+import { gamification, postViewService } from '../services';
 import type { CreateUserBody, UpdateUserProfileBody } from '../types';
 import type { ICategory } from '../models/category.interface';
 import type { IPost } from '../models/post.interface';
@@ -16,6 +16,8 @@ import {
 } from '../helpers/post.helper';
 import { brazilTodayYyyyMmDd } from '../lib/brTime';
 import { sendJsonSuccess } from '../lib/apiResponse';
+import { toPublicUser } from '../helpers/userResponse.helper';
+import { encryptWordpressPassword } from '../helpers/wordpressCredentials.helper';
 import {
   badRequest,
   forbidden,
@@ -53,22 +55,24 @@ export class UserController {
 
     const existing = await this.userService.findByFirebaseUid(firebaseUid);
     if (existing) {
-      sendJsonSuccess(res, existing);
+      sendJsonSuccess(res, toPublicUser(existing));
       return;
     }
 
-    const wpUser = await this.wordpressService.createUser(email);
+    const wpUser = await this.wordpressService.createUser({ email, displayName: name });
     const user = await this.userService.create({
       email,
       firebaseUid,
       wordpressId: wpUser.id,
+      wordpressUsername: wpUser.username,
+      wordpressPasswordEnc: encryptWordpressPassword(wpUser.password),
       name,
       photoUrl,
     });
 
     await this.postFolderService.ensureSystemFoldersForUser(user.id);
 
-    sendJsonSuccess(res, user, { status: 201 });
+    sendJsonSuccess(res, toPublicUser(user), { status: 201 });
   };
 
   public getInfo = async (req: Request, res: Response): Promise<void> => {
@@ -80,7 +84,7 @@ export class UserController {
     const snapshot = await gamification.getUserSummary(id);
 
     sendJsonSuccess(res, {
-      user: { ...user, xp: snapshot.user.xp, coins: snapshot.user.coins },
+      user: toPublicUser({ ...user, xp: snapshot.user.xp, coins: snapshot.user.coins }),
       completedMissionsCount: snapshot.completedMissionsCount,
       daysWithReads: snapshot.daysWithReads,
       missions: snapshot.missions,
@@ -155,7 +159,7 @@ export class UserController {
     }
 
     const updated = await this.userService.updateProfile(user.id, data);
-    sendJsonSuccess(res, updated);
+    sendJsonSuccess(res, toPublicUser(updated));
   };
 
   /** GET /user/me/badges — todas as insígnias ativas com flag `earned` e progresso atual. */
@@ -199,11 +203,15 @@ export class UserController {
       select: { id: true },
     });
     if (existingRead) {
-      const snapshot = await gamification.notify('manual_recompute', { userId });
+      const [snapshot, viewsCount] = await Promise.all([
+        gamification.notify('manual_recompute', { userId }),
+        postViewService.getViewsCount(wordpressPostId),
+      ]);
       sendJsonSuccess(res, {
         alreadyRead: true,
         viewed: true,
         wordpressPostId,
+        viewsCount,
         user: snapshot.user,
         completedMissionsCount: snapshot.completedMissionsCount,
         daysWithReads: snapshot.daysWithReads,
@@ -237,11 +245,13 @@ export class UserController {
     await this.postFolderService.ensureSystemFoldersForUser(userId);
 
     const snapshot = await gamification.notify('read', { userId, wordpressPostId });
+    const viewsCount = await postViewService.getViewsCount(wordpressPostId);
 
     sendJsonSuccess(res, {
       alreadyRead: false,
       viewed: true,
       wordpressPostId,
+      viewsCount,
       user: snapshot.user,
       completedMissionsCount: snapshot.completedMissionsCount,
       daysWithReads: snapshot.daysWithReads,

@@ -22,7 +22,7 @@ const PADDING_X = 64;
 
 // Logo
 const LOGO_Y = 40;
-const LOGO_MAX_WIDTH = 200;
+const LOGO_MAX_WIDTH = 365;
 
 // Vertical spacing (logo bottom → title → description → date)
 const LOGO_TO_TITLE_GAP = 90;   // from logo bottom edge to first title baseline

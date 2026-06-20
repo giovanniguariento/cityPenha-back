@@ -1,7 +1,7 @@
 import { prisma } from '../lib/prisma';
 import { formatPublishedRelativePtBr } from '../helpers/relativeTimePt.helper';
 import { notFound } from '../lib/httpErrors';
-import type { CommentView } from '../types';
+import type { CommentView, FeedItem } from '../types';
 
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 50;
@@ -73,6 +73,35 @@ async function getLikedIds(viewerId: string, commentIds: string[]): Promise<Set<
 }
 
 export class CommentService {
+  async getCommentsCounts(wordpressPostIds: number[]): Promise<Map<number, number>> {
+    const uniqueIds = [...new Set(wordpressPostIds)];
+    const counts = new Map<number, number>();
+    if (uniqueIds.length === 0) return counts;
+
+    for (const id of uniqueIds) counts.set(id, 0);
+
+    const groups = await prisma.comment.groupBy({
+      by: ['wordpressPostId'],
+      where: { wordpressPostId: { in: uniqueIds } },
+      _count: { _all: true },
+    });
+
+    for (const row of groups) {
+      counts.set(row.wordpressPostId, row._count._all);
+    }
+
+    return counts;
+  }
+
+  async applyCommentsCountsToFeedItems(items: FeedItem[]): Promise<void> {
+    if (items.length === 0) return;
+    const ids = [...new Set(items.map((item) => item.id))];
+    const counts = await this.getCommentsCounts(ids);
+    for (const item of items) {
+      item.commentsCount = counts.get(item.id) ?? 0;
+    }
+  }
+
   async listTopLevel(
     wordpressPostId: number,
     { cursor, limit }: ListOptions,

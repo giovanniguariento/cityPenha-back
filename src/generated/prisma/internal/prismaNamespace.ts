@@ -403,6 +403,7 @@ export const ModelName = {
   PostFolder: 'PostFolder',
   Favorite: 'Favorite',
   ReadPost: 'ReadPost',
+  PostView: 'PostView',
   LikedPost: 'LikedPost',
   Mission: 'Mission',
   Badge: 'Badge',
@@ -427,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "postFolder" | "favorite" | "readPost" | "likedPost" | "mission" | "badge" | "userBadge" | "userMission" | "level" | "rewardLedger" | "comment" | "commentLike"
+    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "postFolder" | "favorite" | "readPost" | "postView" | "likedPost" | "mission" | "badge" | "userBadge" | "userMission" | "level" | "rewardLedger" | "comment" | "commentLike"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1685,6 +1686,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PostView: {
+      payload: Prisma.$PostViewPayload<ExtArgs>
+      fields: Prisma.PostViewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostViewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostViewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostViewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostViewPayload>
+        }
+        findFirst: {
+          args: Prisma.PostViewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostViewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostViewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostViewPayload>
+        }
+        findMany: {
+          args: Prisma.PostViewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostViewPayload>[]
+        }
+        create: {
+          args: Prisma.PostViewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostViewPayload>
+        }
+        createMany: {
+          args: Prisma.PostViewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.PostViewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostViewPayload>
+        }
+        update: {
+          args: Prisma.PostViewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostViewPayload>
+        }
+        deleteMany: {
+          args: Prisma.PostViewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostViewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.PostViewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostViewPayload>
+        }
+        aggregate: {
+          args: Prisma.PostViewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostView>
+        }
+        groupBy: {
+          args: Prisma.PostViewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostViewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostViewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostViewCountAggregateOutputType> | number
+        }
+      }
+    }
     LikedPost: {
       payload: Prisma.$LikedPostPayload<ExtArgs>
       fields: Prisma.LikedPostFieldRefs
@@ -2529,6 +2596,8 @@ export const UserScalarFieldEnum = {
   about: 'about',
   firebaseUid: 'firebaseUid',
   wordpressId: 'wordpressId',
+  wordpressUsername: 'wordpressUsername',
+  wordpressPasswordEnc: 'wordpressPasswordEnc',
   xp: 'xp',
   coins: 'coins',
   createdAt: 'createdAt',
@@ -2567,6 +2636,17 @@ export const ReadPostScalarFieldEnum = {
 } as const
 
 export type ReadPostScalarFieldEnum = (typeof ReadPostScalarFieldEnum)[keyof typeof ReadPostScalarFieldEnum]
+
+
+export const PostViewScalarFieldEnum = {
+  id: 'id',
+  wordpressPostId: 'wordpressPostId',
+  visitorKey: 'visitorKey',
+  ipHash: 'ipHash',
+  createdAt: 'createdAt'
+} as const
+
+export type PostViewScalarFieldEnum = (typeof PostViewScalarFieldEnum)[keyof typeof PostViewScalarFieldEnum]
 
 
 export const LikedPostScalarFieldEnum = {
@@ -2870,7 +2950,9 @@ export const UserOrderByRelevanceFieldEnum = {
   photoUrl: 'photoUrl',
   nickname: 'nickname',
   about: 'about',
-  firebaseUid: 'firebaseUid'
+  firebaseUid: 'firebaseUid',
+  wordpressUsername: 'wordpressUsername',
+  wordpressPasswordEnc: 'wordpressPasswordEnc'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
@@ -2900,6 +2982,15 @@ export const ReadPostOrderByRelevanceFieldEnum = {
 } as const
 
 export type ReadPostOrderByRelevanceFieldEnum = (typeof ReadPostOrderByRelevanceFieldEnum)[keyof typeof ReadPostOrderByRelevanceFieldEnum]
+
+
+export const PostViewOrderByRelevanceFieldEnum = {
+  id: 'id',
+  visitorKey: 'visitorKey',
+  ipHash: 'ipHash'
+} as const
+
+export type PostViewOrderByRelevanceFieldEnum = (typeof PostViewOrderByRelevanceFieldEnum)[keyof typeof PostViewOrderByRelevanceFieldEnum]
 
 
 export const LikedPostOrderByRelevanceFieldEnum = {
@@ -3183,6 +3274,7 @@ export type GlobalOmitConfig = {
   postFolder?: Prisma.PostFolderOmit
   favorite?: Prisma.FavoriteOmit
   readPost?: Prisma.ReadPostOmit
+  postView?: Prisma.PostViewOmit
   likedPost?: Prisma.LikedPostOmit
   mission?: Prisma.MissionOmit
   badge?: Prisma.BadgeOmit

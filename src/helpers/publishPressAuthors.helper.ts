@@ -1,18 +1,9 @@
 import { Prisma } from '../generated/prisma/client';
 import { prisma } from '../lib/prisma';
 
-/**
- * PublishPress Authors stores:
- * - Link WP user → author term: `wp_termmeta.meta_key` = `user_id_{wpUserId}` + join `wp_term_taxonomy.taxonomy = 'author'`
- * - Custom avatar: `wp_termmeta` for that `term_id`, `meta_key = 'avatar'`, `meta_value` = attachment post ID (see Author.php `get_custom_avatar_url`).
- *
- * Resolves attachment → public URL via `wp_posts.guid` for `post_type = 'attachment'`.
- */
-export async function getPublishPressAuthorAvatarUrl(
-  wordpressUserId: number
-): Promise<string | null> {
+/** True when PublishPress has a mapped author term for this WP user ID. */
+export async function hasPublishPressAuthorProfile(wordpressUserId: number): Promise<boolean> {
   const metaKey = `user_id_${wordpressUserId}`;
-
   const linkRows = await prisma.$queryRaw<Array<{ term_id: bigint }>>(
     Prisma.sql`
       SELECT te.term_id AS term_id
@@ -24,10 +15,36 @@ export async function getPublishPressAuthorAvatarUrl(
       LIMIT 1
     `
   );
+  return linkRows.length > 0;
+}
 
-  if (linkRows.length === 0) {
+/**
+ * PublishPress Authors stores:
+ * - Link WP user → author term: `wp_termmeta.meta_key` = `user_id_{wpUserId}` + join `wp_term_taxonomy.taxonomy = 'author'`
+ * - Custom avatar: `wp_termmeta` for that `term_id`, `meta_key = 'avatar'`, `meta_value` = attachment post ID (see Author.php `get_custom_avatar_url`).
+ *
+ * Resolves attachment → public URL via `wp_posts.guid` for `post_type = 'attachment'`.
+ */
+export async function getPublishPressAuthorAvatarUrl(
+  wordpressUserId: number
+): Promise<string | null> {
+  const hasProfile = await hasPublishPressAuthorProfile(wordpressUserId);
+  if (!hasProfile) {
     return null;
   }
+
+  const metaKey = `user_id_${wordpressUserId}`;
+  const linkRows = await prisma.$queryRaw<Array<{ term_id: bigint }>>(
+    Prisma.sql`
+      SELECT te.term_id AS term_id
+      FROM wp_termmeta te
+      INNER JOIN wp_term_taxonomy tt
+        ON tt.term_id = te.term_id
+        AND tt.taxonomy = 'author'
+      WHERE te.meta_key = ${metaKey}
+      LIMIT 1
+    `
+  );
 
   const termId = linkRows[0].term_id;
 

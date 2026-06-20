@@ -135,6 +135,11 @@ export type Favorite = Prisma.FavoriteModel
  */
 export type ReadPost = Prisma.ReadPostModel
 /**
+ * Model PostView
+ * View de visitante anônimo ao terminar de ler. Views de logados vêm de read_posts.
+ */
+export type PostView = Prisma.PostViewModel
+/**
  * Model LikedPost
  * Primeira vez que o usuário curtiu cada post (pasta fixa curtidas). Não remove ao descurtir — usado na missão like_10_posts.
  */

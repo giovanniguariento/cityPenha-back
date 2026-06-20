@@ -20,6 +20,7 @@ import type {
 } from '../types';
 import { WordpressService, wordpressService } from './wordpress.service';
 import { SYSTEM_FOLDER_KEY_LIKES } from './postFolder.service';
+import { postViewService } from './postView.service';
 
 export class DiscoveryService {
   constructor(private readonly wordpressService: WordpressService) {}
@@ -65,6 +66,7 @@ export class DiscoveryService {
 
     const allFeedItems: FeedItem[] = [...worldPosts, ...trendingFeedItems];
     await this.applyViewedFlags(options.userId, allFeedItems);
+    await postViewService.applyViewsCountsToFeedItems(allFeedItems);
 
     return {
       newExperiences: [],

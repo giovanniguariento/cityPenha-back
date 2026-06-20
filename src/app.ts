@@ -12,8 +12,12 @@ import ogRoutes from './routes/og.routes';
 import { notFoundHandler } from './middleware/notFound';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
+import { postViewRateLimit } from './middleware/viewRateLimit';
 
 const app: Application = express();
+
+// Behind reverse proxy (load balancer) — required for accurate req.ip in rate limits
+app.set('trust proxy', Number(process.env.TRUST_PROXY_HOPS) || 1);
 
 // 1. Global Middlewares — compression first so responses are gzipped
 app.use(compression());

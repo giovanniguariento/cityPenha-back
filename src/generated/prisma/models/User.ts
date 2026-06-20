@@ -47,6 +47,8 @@ export type UserMinAggregateOutputType = {
   about: string | null
   firebaseUid: string | null
   wordpressId: number | null
+  wordpressUsername: string | null
+  wordpressPasswordEnc: string | null
   xp: number | null
   coins: number | null
   createdAt: Date | null
@@ -62,6 +64,8 @@ export type UserMaxAggregateOutputType = {
   about: string | null
   firebaseUid: string | null
   wordpressId: number | null
+  wordpressUsername: string | null
+  wordpressPasswordEnc: string | null
   xp: number | null
   coins: number | null
   createdAt: Date | null
@@ -77,6 +81,8 @@ export type UserCountAggregateOutputType = {
   about: number
   firebaseUid: number
   wordpressId: number
+  wordpressUsername: number
+  wordpressPasswordEnc: number
   xp: number
   coins: number
   createdAt: number
@@ -106,6 +112,8 @@ export type UserMinAggregateInputType = {
   about?: true
   firebaseUid?: true
   wordpressId?: true
+  wordpressUsername?: true
+  wordpressPasswordEnc?: true
   xp?: true
   coins?: true
   createdAt?: true
@@ -121,6 +129,8 @@ export type UserMaxAggregateInputType = {
   about?: true
   firebaseUid?: true
   wordpressId?: true
+  wordpressUsername?: true
+  wordpressPasswordEnc?: true
   xp?: true
   coins?: true
   createdAt?: true
@@ -136,6 +146,8 @@ export type UserCountAggregateInputType = {
   about?: true
   firebaseUid?: true
   wordpressId?: true
+  wordpressUsername?: true
+  wordpressPasswordEnc?: true
   xp?: true
   coins?: true
   createdAt?: true
@@ -238,6 +250,8 @@ export type UserGroupByOutputType = {
   about: string | null
   firebaseUid: string
   wordpressId: number | null
+  wordpressUsername: string | null
+  wordpressPasswordEnc: string | null
   xp: number
   coins: number
   createdAt: Date
@@ -276,6 +290,8 @@ export type UserWhereInput = {
   about?: Prisma.StringNullableFilter<"User"> | string | null
   firebaseUid?: Prisma.StringFilter<"User"> | string
   wordpressId?: Prisma.IntNullableFilter<"User"> | number | null
+  wordpressUsername?: Prisma.StringNullableFilter<"User"> | string | null
+  wordpressPasswordEnc?: Prisma.StringNullableFilter<"User"> | string | null
   xp?: Prisma.IntFilter<"User"> | number
   coins?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -299,6 +315,8 @@ export type UserOrderByWithRelationInput = {
   about?: Prisma.SortOrderInput | Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressPasswordEnc?: Prisma.SortOrderInput | Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -326,6 +344,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   photoUrl?: Prisma.StringNullableFilter<"User"> | string | null
   nickname?: Prisma.StringNullableFilter<"User"> | string | null
   about?: Prisma.StringNullableFilter<"User"> | string | null
+  wordpressUsername?: Prisma.StringNullableFilter<"User"> | string | null
+  wordpressPasswordEnc?: Prisma.StringNullableFilter<"User"> | string | null
   xp?: Prisma.IntFilter<"User"> | number
   coins?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -349,6 +369,8 @@ export type UserOrderByWithAggregationInput = {
   about?: Prisma.SortOrderInput | Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordpressPasswordEnc?: Prisma.SortOrderInput | Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -372,6 +394,8 @@ export type UserScalarWhereWithAggregatesInput = {
   about?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   firebaseUid?: Prisma.StringWithAggregatesFilter<"User"> | string
   wordpressId?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
+  wordpressUsername?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  wordpressPasswordEnc?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   xp?: Prisma.IntWithAggregatesFilter<"User"> | number
   coins?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -387,6 +411,8 @@ export type UserCreateInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -410,6 +436,8 @@ export type UserUncheckedCreateInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -433,6 +461,8 @@ export type UserUpdateInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -456,6 +486,8 @@ export type UserUncheckedUpdateInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -479,6 +511,8 @@ export type UserCreateManyInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -494,6 +528,8 @@ export type UserUpdateManyMutationInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -509,6 +545,8 @@ export type UserUncheckedUpdateManyInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -530,6 +568,8 @@ export type UserCountOrderByAggregateInput = {
   about?: Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrder
+  wordpressUsername?: Prisma.SortOrder
+  wordpressPasswordEnc?: Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -551,6 +591,8 @@ export type UserMaxOrderByAggregateInput = {
   about?: Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrder
+  wordpressUsername?: Prisma.SortOrder
+  wordpressPasswordEnc?: Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -566,6 +608,8 @@ export type UserMinOrderByAggregateInput = {
   about?: Prisma.SortOrder
   firebaseUid?: Prisma.SortOrder
   wordpressId?: Prisma.SortOrder
+  wordpressUsername?: Prisma.SortOrder
+  wordpressPasswordEnc?: Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -712,6 +756,8 @@ export type UserCreateWithoutPostFoldersInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -734,6 +780,8 @@ export type UserUncheckedCreateWithoutPostFoldersInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -772,6 +820,8 @@ export type UserUpdateWithoutPostFoldersInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -794,6 +844,8 @@ export type UserUncheckedUpdateWithoutPostFoldersInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -816,6 +868,8 @@ export type UserCreateWithoutReadPostsInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -838,6 +892,8 @@ export type UserUncheckedCreateWithoutReadPostsInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -876,6 +932,8 @@ export type UserUpdateWithoutReadPostsInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -898,6 +956,8 @@ export type UserUncheckedUpdateWithoutReadPostsInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -920,6 +980,8 @@ export type UserCreateWithoutLikedPostsInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -942,6 +1004,8 @@ export type UserUncheckedCreateWithoutLikedPostsInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -980,6 +1044,8 @@ export type UserUpdateWithoutLikedPostsInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1002,6 +1068,8 @@ export type UserUncheckedUpdateWithoutLikedPostsInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1024,6 +1092,8 @@ export type UserCreateWithoutUserBadgesInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1046,6 +1116,8 @@ export type UserUncheckedCreateWithoutUserBadgesInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1084,6 +1156,8 @@ export type UserUpdateWithoutUserBadgesInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1106,6 +1180,8 @@ export type UserUncheckedUpdateWithoutUserBadgesInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1128,6 +1204,8 @@ export type UserCreateWithoutUserMissionsInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1150,6 +1228,8 @@ export type UserUncheckedCreateWithoutUserMissionsInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1188,6 +1268,8 @@ export type UserUpdateWithoutUserMissionsInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1210,6 +1292,8 @@ export type UserUncheckedUpdateWithoutUserMissionsInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1232,6 +1316,8 @@ export type UserCreateWithoutRewardLedgerInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1254,6 +1340,8 @@ export type UserUncheckedCreateWithoutRewardLedgerInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1292,6 +1380,8 @@ export type UserUpdateWithoutRewardLedgerInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1314,6 +1404,8 @@ export type UserUncheckedUpdateWithoutRewardLedgerInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1336,6 +1428,8 @@ export type UserCreateWithoutCommentsInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1358,6 +1452,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1396,6 +1492,8 @@ export type UserUpdateWithoutCommentsInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1418,6 +1516,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1440,6 +1540,8 @@ export type UserCreateWithoutCommentLikesInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1462,6 +1564,8 @@ export type UserUncheckedCreateWithoutCommentLikesInput = {
   about?: string | null
   firebaseUid: string
   wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1500,6 +1604,8 @@ export type UserUpdateWithoutCommentLikesInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1522,6 +1628,8 @@ export type UserUncheckedUpdateWithoutCommentLikesInput = {
   about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
   wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1638,6 +1746,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   about?: boolean
   firebaseUid?: boolean
   wordpressId?: boolean
+  wordpressUsername?: boolean
+  wordpressPasswordEnc?: boolean
   xp?: boolean
   coins?: boolean
   createdAt?: boolean
@@ -1664,13 +1774,15 @@ export type UserSelectScalar = {
   about?: boolean
   firebaseUid?: boolean
   wordpressId?: boolean
+  wordpressUsername?: boolean
+  wordpressPasswordEnc?: boolean
   xp?: boolean
   coins?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "photoUrl" | "nickname" | "about" | "firebaseUid" | "wordpressId" | "xp" | "coins" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "photoUrl" | "nickname" | "about" | "firebaseUid" | "wordpressId" | "wordpressUsername" | "wordpressPasswordEnc" | "xp" | "coins" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   postFolders?: boolean | Prisma.User$postFoldersArgs<ExtArgs>
   readPosts?: boolean | Prisma.User$readPostsArgs<ExtArgs>
@@ -1704,6 +1816,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     about: string | null
     firebaseUid: string
     wordpressId: number | null
+    wordpressUsername: string | null
+    wordpressPasswordEnc: string | null
     xp: number
     coins: number
     createdAt: Date
@@ -2093,6 +2207,8 @@ export interface UserFieldRefs {
   readonly about: Prisma.FieldRef<"User", 'String'>
   readonly firebaseUid: Prisma.FieldRef<"User", 'String'>
   readonly wordpressId: Prisma.FieldRef<"User", 'Int'>
+  readonly wordpressUsername: Prisma.FieldRef<"User", 'String'>
+  readonly wordpressPasswordEnc: Prisma.FieldRef<"User", 'String'>
   readonly xp: Prisma.FieldRef<"User", 'Int'>
   readonly coins: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>

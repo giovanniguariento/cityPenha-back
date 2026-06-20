@@ -42,6 +42,11 @@ router.delete('/levels/:id', asyncHandler(c.deleteLevel));
 // Recomputo manual (após mudar regras / migração)
 router.post('/recompute/:userId', asyncHandler(c.recomputeUser));
 
+// Acesso WordPress dos usuários cadastrados (rotas estáticas antes de /users/:userId/*)
+router.get('/users/wordpress-access', asyncHandler(c.listWordpressAccess));
+router.get('/users/:userId/wordpress-access', asyncHandler(c.getWordpressAccess));
+router.post('/users/:userId/wordpress-access/provision', asyncHandler(c.provisionWordpressAccess));
+
 // Auditoria do reward ledger (analytics / suporte)
 router.get('/users/:userId/ledger', asyncHandler(c.getUserLedger));
 

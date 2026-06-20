@@ -1,9 +1,12 @@
 import { createTtlCache, CACHE_TTL_MS } from '../helpers/cache.helper';
-import type { WordPressUserResponse } from '../types';
 import type { ICategory } from '../models/category.interface';
 import { ETypePost, type IPost } from '../models/post.interface';
 import type { ITag } from '../models/tag.interface';
 import { getFeaturedImageUrl } from '../helpers/post.helper';
+import {
+  generateWordpressPassword,
+} from '../helpers/wordpressCredentials.helper';
+import { publishPressAuthorsService } from './publishPressAuthors.service';
 
 const credentials = Buffer.from(
   `${process.env.ENV_API_WORDPRESS_ADMIN_USER}:${process.env.ENV_API_WORDPRESS_ADMIN_PASSWORD}`
@@ -32,6 +35,12 @@ export interface WordpressCategoryRest {
   slug: string;
   count: number;
 }
+
+export type WordPressCreatedUser = {
+  id: number;
+  username: string;
+  password: string;
+};
 
 export class WordpressService {
   private cache = {
@@ -352,11 +361,17 @@ export class WordpressService {
     return data;
   }
 
-  async createUser(email: string): Promise<WordPressUserResponse> {
+  async createUser(input: {
+    email: string;
+    displayName: string;
+  }): Promise<WordPressCreatedUser> {
+    const { email, displayName } = input;
+    const username = email.split('@')[0] + '_' + Math.floor(Math.random() * 1000);
+    const password = generateWordpressPassword();
     const newUser = {
-      username: email.split('@')[0] + '_' + Math.floor(Math.random() * 1000),
+      username,
       email,
-      password: Math.random().toString(36),
+      password,
       roles: ['author'],
     };
 
@@ -373,7 +388,31 @@ export class WordpressService {
       throw new Error(`Erro ao criar user: ${response.statusText}`);
     }
 
-    return response.json();
+    const data = (await response.json()) as { id: number };
+
+    await publishPressAuthorsService.ensureAuthorProfile({
+      wordpressUserId: data.id,
+      displayName,
+      email,
+    });
+    await publishPressAuthorsService.ensureEditOwnProfileCapability(data.id);
+
+    return { id: data.id, username, password };
+  }
+
+  async updateUserPassword(wpUserId: number, password: string): Promise<void> {
+    const response = await fetchWithTimeout(`${this.baseUrl()}/users/${wpUserId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${credentials}`,
+      },
+      body: JSON.stringify({ password }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro ao atualizar senha do user: ${response.statusText}`);
+    }
   }
 }
 

@@ -8,6 +8,7 @@ import { sendJsonSuccess } from '../lib/apiResponse';
 import { badRequest, notFound, validationError } from '../lib/httpErrors';
 import { adminGamificationService } from '../services/gamification/admin/service';
 import { gamification } from '../services';
+import { wordpressAccessAdminService } from '../services/admin/wordpressAccess.service';
 import {
   badgeCreateSchema,
   badgeUpdateSchema,
@@ -188,5 +189,49 @@ export class AdminController {
         count: entries.length,
       },
     });
+  };
+
+  listWordpressAccess = async (req: Request, res: Response): Promise<void> => {
+    const limit = req.query.limit ? Number(req.query.limit) : undefined;
+    const cursor = typeof req.query.cursor === 'string' ? req.query.cursor : undefined;
+    const q = typeof req.query.q === 'string' ? req.query.q : undefined;
+    if (limit !== undefined && !Number.isFinite(limit)) {
+      throw validationError('Invalid limit');
+    }
+
+    const result = await wordpressAccessAdminService.listWordpressAccess({ limit, cursor, q });
+    sendJsonSuccess(res, result.items, {
+      meta: {
+        nextCursor: result.nextCursor,
+        count: result.items.length,
+      },
+    });
+  };
+
+  getWordpressAccess = async (req: Request, res: Response): Promise<void> => {
+    const { userId } = req.params;
+    if (!userId) throw validationError('Missing userId');
+    const item = await wordpressAccessAdminService.getWordpressAccess(userId);
+    if (!item) throw notFound('User not found');
+    sendJsonSuccess(res, item);
+  };
+
+  provisionWordpressAccess = async (req: Request, res: Response): Promise<void> => {
+    const { userId } = req.params;
+    if (!userId) throw validationError('Missing userId');
+    try {
+      const item = await wordpressAccessAdminService.provisionWordpressAccess(userId);
+      sendJsonSuccess(res, item);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to provision WordPress access';
+      if (message === 'USER_NOT_FOUND') throw notFound('User not found');
+      if (message === 'NO_WORDPRESS_LINK') {
+        throw badRequest('User has no linked WordPress account');
+      }
+      if (message === 'WORDPRESS_USERNAME_NOT_FOUND') {
+        throw badRequest('WordPress username could not be resolved');
+      }
+      throw badRequest(message);
+    }
   };
 }

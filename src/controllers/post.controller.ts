@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { WordpressService } from '../services/wordpress.service';
-import { gamification } from '../services';
+import { gamification, postViewService } from '../services';
 import type { PostFolderService } from '../services/postFolder.service';
 import { fetchPostOrAd, toPostDetail, verifyWordpressPostExists } from '../helpers/post.helper';
 import type { PostDetailResponse } from '../types';
@@ -28,7 +28,7 @@ export class PostController {
 
     const userId = req.appUser?.id;
 
-    const [categories, tags, likesCount, readRecord] = await Promise.all([
+    const [categories, tags, likesCount, readRecord, viewsCount] = await Promise.all([
       this.wordpressService.getCategoriesById(post.categories),
       this.wordpressService.getTagsById(post.tags),
       this.postFolderService.countLikesForPost(post.id),
@@ -40,10 +40,11 @@ export class PostController {
             select: { id: true },
           })
         : Promise.resolve(null),
+      postViewService.getViewsCount(post.id),
     ]);
 
     const base = toPostDetail(post, categories, tags);
-    let payload: PostDetailResponse = { ...base, likesCount };
+    let payload: PostDetailResponse = { ...base, likesCount, viewsCount };
 
     if (userId) {
       const [liked, savedFolderIds] = await Promise.all([
@@ -54,6 +55,32 @@ export class PostController {
     }
 
     sendJsonSuccess(res, payload);
+  };
+
+  /** POST /post/:wordpressPostId/view — somente visitantes anônimos (ver rejectRegisteredAuth). */
+  recordView = async (req: Request, res: Response): Promise<void> => {
+    const wordpressPostId = Number(req.params.wordpressPostId);
+    if (!Number.isFinite(wordpressPostId)) {
+      throw badRequest('Invalid post id');
+    }
+
+    const { visitorId } = req.body as { visitorId?: string };
+    if (!visitorId) {
+      throw badRequest('Invalid or missing visitorId (expected UUID v4)');
+    }
+
+    const exists = await verifyWordpressPostExists(this.wordpressService, wordpressPostId);
+    if (!exists) {
+      throw notFound('Post not found');
+    }
+
+    const { alreadyViewed } = await postViewService.recordAnonymousView(
+      wordpressPostId,
+      visitorId
+    );
+    const viewsCount = await postViewService.getViewsCount(wordpressPostId);
+
+    sendJsonSuccess(res, { wordpressPostId, viewsCount, alreadyViewed });
   };
 
   /** POST /post/:wordpressPostId/like — identidade via Bearer (requireAuth). */
