@@ -16,7 +16,8 @@ export interface CreateUserBody {
   email: string;
   firebaseUid: string;
   name: string;
-  photoUrl: string;
+  /** Optional Firebase photo; when omitted or blank, backend uses WP/PublishPress default or Gravatar. */
+  photoUrl?: string;
 }
 
 /** Request body for PATCH /user/me — omit a key to leave unchanged; `null` clears nickname/about. */

@@ -364,8 +364,9 @@ export class WordpressService {
   async createUser(input: {
     email: string;
     displayName: string;
+    defaultAvatarAttachmentId?: number;
   }): Promise<WordPressCreatedUser> {
-    const { email, displayName } = input;
+    const { email, displayName, defaultAvatarAttachmentId } = input;
     const username = email.split('@')[0] + '_' + Math.floor(Math.random() * 1000);
     const password = generateWordpressPassword();
     const newUser = {
@@ -396,6 +397,13 @@ export class WordpressService {
       email,
     });
     await publishPressAuthorsService.ensureEditOwnProfileCapability(data.id);
+
+    if (defaultAvatarAttachmentId != null) {
+      await publishPressAuthorsService.setAuthorAvatarAttachment(
+        data.id,
+        defaultAvatarAttachmentId
+      );
+    }
 
     return { id: data.id, username, password };
   }

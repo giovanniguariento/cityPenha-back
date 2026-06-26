@@ -1,3 +1,4 @@
+import { Prisma } from '../generated/prisma/client';
 import { fetchWithTimeout } from '../helpers/fetch.helper';
 import { hasPublishPressAuthorProfile } from '../helpers/publishPressAuthors.helper';
 import {
@@ -136,6 +137,60 @@ export class PublishPressAuthorsService {
       data: { option_value: updated },
     });
     logger.info('Added ppma_edit_own_profile to author role in wp_user_roles');
+  }
+
+  /**
+   * Sets PublishPress author avatar (`wp_termmeta.avatar` = attachment post ID).
+   * No-op if author term is missing or attachment id is invalid.
+   */
+  async setAuthorAvatarAttachment(
+    wordpressUserId: number,
+    attachmentId: number
+  ): Promise<void> {
+    if (!Number.isFinite(attachmentId) || attachmentId <= 0) {
+      return;
+    }
+
+    const metaKey = `user_id_${wordpressUserId}`;
+    const linkRows = await prisma.$queryRaw<Array<{ term_id: bigint }>>(
+      Prisma.sql`
+        SELECT te.term_id AS term_id
+        FROM wp_termmeta te
+        INNER JOIN wp_term_taxonomy tt
+          ON tt.term_id = te.term_id
+          AND tt.taxonomy = 'author'
+        WHERE te.meta_key = ${metaKey}
+        LIMIT 1
+      `
+    );
+
+    const termId = linkRows[0]?.term_id;
+    if (termId == null) {
+      logger.warn({ wordpressUserId }, 'PublishPress author term not found; skipping avatar');
+      return;
+    }
+
+    const existing = await prisma.wp_termmeta.findFirst({
+      where: { term_id: termId, meta_key: 'avatar' },
+      select: { meta_id: true },
+    });
+
+    const metaValue = String(Math.floor(attachmentId));
+    if (existing) {
+      await prisma.wp_termmeta.update({
+        where: { meta_id: existing.meta_id },
+        data: { meta_value: metaValue },
+      });
+      return;
+    }
+
+    await prisma.wp_termmeta.create({
+      data: {
+        term_id: termId,
+        meta_key: 'avatar',
+        meta_value: metaValue,
+      },
+    });
   }
 }
 

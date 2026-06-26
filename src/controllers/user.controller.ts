@@ -26,6 +26,7 @@ import {
   unauthorized,
   validationError,
 } from '../lib/httpErrors';
+import { resolveSignupProfilePhoto } from '../helpers/wordpressDefaultAvatar.helper';
 
 export class UserController {
   constructor(
@@ -41,9 +42,21 @@ export class UserController {
     }
 
     const body = req.body as Partial<CreateUserBody>;
-    const { email, firebaseUid, name, photoUrl } = body;
-    if (!email || !firebaseUid || !name || !photoUrl) {
+    const { email, firebaseUid, name } = body;
+    if (!email || !firebaseUid || !name) {
       throw validationError('Missing required fields');
+    }
+
+    const photoFromClient =
+      typeof body.photoUrl === 'string' ? body.photoUrl.trim() : '';
+
+    let photoUrl = photoFromClient;
+    let defaultAvatarAttachmentId: number | undefined;
+
+    if (!photoUrl) {
+      const resolved = await resolveSignupProfilePhoto(email);
+      photoUrl = resolved.photoUrl;
+      defaultAvatarAttachmentId = resolved.defaultAvatarAttachmentId;
     }
 
     if (firebaseUid !== auth.uid) {
@@ -59,7 +72,11 @@ export class UserController {
       return;
     }
 
-    const wpUser = await this.wordpressService.createUser({ email, displayName: name });
+    const wpUser = await this.wordpressService.createUser({
+      email,
+      displayName: name,
+      defaultAvatarAttachmentId,
+    });
     const user = await this.userService.create({
       email,
       firebaseUid,

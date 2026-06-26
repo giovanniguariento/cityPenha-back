@@ -7,6 +7,7 @@ import {
 } from '../../helpers/wordpressCredentials.helper';
 import { wordpressService } from '../wordpress.service';
 import { publishPressAuthorsService } from '../publishPressAuthors.service';
+import { resolveSignupProfilePhoto } from '../../helpers/wordpressDefaultAvatar.helper';
 
 export type WordpressCredentialsStatus = 'ready' | 'missing';
 
@@ -122,11 +123,28 @@ export class WordpressAccessAdminService {
     });
     await publishPressAuthorsService.ensureEditOwnProfileCapability(user.wordpressId);
 
+    let photoUrl = user.photoUrl?.trim() ?? '';
+    let defaultAvatarAttachmentId: number | undefined;
+
+    if (!photoUrl) {
+      const resolved = await resolveSignupProfilePhoto(user.email);
+      photoUrl = resolved.photoUrl;
+      defaultAvatarAttachmentId = resolved.defaultAvatarAttachmentId;
+    }
+
+    if (defaultAvatarAttachmentId != null) {
+      await publishPressAuthorsService.setAuthorAvatarAttachment(
+        user.wordpressId,
+        defaultAvatarAttachmentId
+      );
+    }
+
     const updated = await prisma.user.update({
       where: { id: userId },
       data: {
         wordpressUsername: username,
         wordpressPasswordEnc: encryptWordpressPassword(password),
+        ...(photoUrl && !user.photoUrl?.trim() ? { photoUrl } : {}),
       },
     });
 

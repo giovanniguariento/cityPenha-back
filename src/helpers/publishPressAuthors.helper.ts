@@ -1,8 +1,9 @@
 import { Prisma } from '../generated/prisma/client';
 import { prisma } from '../lib/prisma';
 
-/** True when PublishPress has a mapped author term for this WP user ID. */
-export async function hasPublishPressAuthorProfile(wordpressUserId: number): Promise<boolean> {
+async function getPublishPressAuthorTermId(
+  wordpressUserId: number
+): Promise<bigint | null> {
   const metaKey = `user_id_${wordpressUserId}`;
   const linkRows = await prisma.$queryRaw<Array<{ term_id: bigint }>>(
     Prisma.sql`
@@ -15,7 +16,12 @@ export async function hasPublishPressAuthorProfile(wordpressUserId: number): Pro
       LIMIT 1
     `
   );
-  return linkRows.length > 0;
+  return linkRows[0]?.term_id ?? null;
+}
+
+/** True when PublishPress has a mapped author term for this WP user ID. */
+export async function hasPublishPressAuthorProfile(wordpressUserId: number): Promise<boolean> {
+  return (await getPublishPressAuthorTermId(wordpressUserId)) != null;
 }
 
 /**
@@ -33,20 +39,10 @@ export async function getPublishPressAuthorAvatarUrl(
     return null;
   }
 
-  const metaKey = `user_id_${wordpressUserId}`;
-  const linkRows = await prisma.$queryRaw<Array<{ term_id: bigint }>>(
-    Prisma.sql`
-      SELECT te.term_id AS term_id
-      FROM wp_termmeta te
-      INNER JOIN wp_term_taxonomy tt
-        ON tt.term_id = te.term_id
-        AND tt.taxonomy = 'author'
-      WHERE te.meta_key = ${metaKey}
-      LIMIT 1
-    `
-  );
-
-  const termId = linkRows[0].term_id;
+  const termId = await getPublishPressAuthorTermId(wordpressUserId);
+  if (termId == null) {
+    return null;
+  }
 
   const avatarRow = await prisma.wp_termmeta.findFirst({
     where: {
