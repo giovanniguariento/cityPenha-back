@@ -3,6 +3,7 @@ import { ETypePost, type IPost } from '../models/post.interface';
 import { WordpressService } from '../services/wordpress.service';
 import type { FeedItem } from '../types';
 import { enrichFeedItemCategory, toFeedItem } from '../helpers/post.helper';
+import { resolveDefaultAuthorAvatarUrl } from '../helpers/wordpressDefaultAvatar.helper';
 import { insertAdsIntoPosts } from '../helpers/ad.helper';
 import { prisma } from '../lib/prisma';
 import { setFeedCacheHeaders } from '../helpers/feedCache.helper';
@@ -15,10 +16,11 @@ export class HomeController {
   constructor(private readonly wordpressService: WordpressService) {}
 
   getAll = async (req: Request, res: Response): Promise<void> => {
-    const [posts, allCategories, ads] = await Promise.all([
+    const [posts, allCategories, ads, defaultAvatarUrl] = await Promise.all([
       this.wordpressService.getRecentContentPosts(11),
       this.wordpressService.getCategories(),
       this.wordpressService.getAllAds(),
+      resolveDefaultAuthorAvatarUrl(),
     ]);
 
     const recentCatsResult =
@@ -38,7 +40,9 @@ export class HomeController {
       intervalMin,
       intervalMax
     );
-    const carousel: FeedItem[] = carouselWithAds.map((post) => toFeedItem(post));
+    const carousel: FeedItem[] = carouselWithAds.map((post) =>
+      toFeedItem(post, defaultAvatarUrl)
+    );
 
     for (const item of carousel) {
       enrichFeedItemCategory(item, categoryById);
@@ -55,7 +59,7 @@ export class HomeController {
         intervalMax,
         category.id
       );
-      const feedItems = listWithAds.map((p) => toFeedItem(p));
+      const feedItems = listWithAds.map((p) => toFeedItem(p, defaultAvatarUrl));
       for (const item of feedItems) {
         item.categoryName = category.name;
         item.categorySlug = category.slug;

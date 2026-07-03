@@ -6,6 +6,8 @@ import { UserController } from '../controllers/user.controller';
 import { wordpressService, userService, postFolderService } from '../services';
 import { authenticateFirebaseToken, requireAuth } from '../middleware/auth';
 import { asyncHandler } from '../middleware/asyncHandler';
+import { uploadAvatar } from '../middleware/uploadAvatar';
+import { avatarUploadRateLimit } from '../middleware/avatarUploadRateLimit';
 
 const router = Router();
 const userController = new UserController(wordpressService, userService, postFolderService);
@@ -15,6 +17,13 @@ router.post('/read/:postId', requireAuth, asyncHandler(userController.recordRead
 
 router.get('/me', requireAuth, asyncHandler(userController.getInfo));
 router.patch('/me', requireAuth, asyncHandler(userController.updateProfile));
+router.post(
+  '/me/avatar',
+  requireAuth,
+  avatarUploadRateLimit,
+  uploadAvatar,
+  asyncHandler(userController.updateAvatar)
+);
 router.get('/me/badges', requireAuth, asyncHandler(userController.listBadges));
 router.get('/me/frequency', requireAuth, asyncHandler(userController.getFrequency));
 router.get('/me/folders', requireAuth, asyncHandler(userController.listFolders));

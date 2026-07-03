@@ -181,6 +181,22 @@ export async function resolveWordpressDefaultAvatar(): Promise<WordpressDefaultA
   return loadWordpressDefaultAvatarCached();
 }
 
+export const HARDCODED_AUTHOR_AVATAR_FALLBACK = 'assets/logo-perfil.svg';
+
+/**
+ * Default author avatar for feed/post responses when the author has no custom photo.
+ * Chain: PublishPress / WordPress site default → `DEFAULT_PROFILE_AVATAR_URL` env → static asset.
+ */
+export async function resolveDefaultAuthorAvatarUrl(): Promise<string> {
+  const wp = await resolveWordpressDefaultAvatar();
+  if (wp?.url?.trim()) return wp.url.trim();
+
+  const env = process.env.DEFAULT_PROFILE_AVATAR_URL?.trim();
+  if (env && isHttpUrl(env)) return env;
+
+  return HARDCODED_AUTHOR_AVATAR_FALLBACK;
+}
+
 /**
  * Signup photo: WordPress/PublishPress default when configured; otherwise Gravatar from email.
  */

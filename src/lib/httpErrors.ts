@@ -61,3 +61,7 @@ export function internalError(
 ): HttpError {
   return new HttpError(500, 'INTERNAL_ERROR', message, details);
 }
+
+export function badGateway(message: string, details: unknown | null = null): HttpError {
+  return new HttpError(502, 'BAD_GATEWAY', message, details);
+}

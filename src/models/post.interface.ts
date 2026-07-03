@@ -5,9 +5,9 @@ export interface IPost {
   title: { rendered: string };
   type: ETypePost;
   subtype: ETypePost;
-  authors: {
-    display_name: string;
-    avatar_url: { url: string };
+  authors?: {
+    display_name?: string;
+    avatar_url?: string | { url?: string };
   }[];
   tags: number[];
   acf: { reading_time: number };

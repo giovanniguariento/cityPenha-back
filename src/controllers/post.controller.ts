@@ -4,6 +4,7 @@ import { WordpressService } from '../services/wordpress.service';
 import { gamification, postViewService } from '../services';
 import type { PostFolderService } from '../services/postFolder.service';
 import { fetchPostOrAd, toPostDetail, verifyWordpressPostExists } from '../helpers/post.helper';
+import { resolveDefaultAuthorAvatarUrl } from '../helpers/wordpressDefaultAvatar.helper';
 import type { PostDetailResponse } from '../types';
 import { sendJsonSuccess } from '../lib/apiResponse';
 import { badRequest, notFound, unauthorized } from '../lib/httpErrors';
@@ -28,7 +29,8 @@ export class PostController {
 
     const userId = req.appUser?.id;
 
-    const [categories, tags, likesCount, readRecord, viewsCount] = await Promise.all([
+    const [categories, tags, likesCount, readRecord, viewsCount, defaultAvatarUrl] =
+      await Promise.all([
       this.wordpressService.getCategoriesById(post.categories),
       this.wordpressService.getTagsById(post.tags),
       this.postFolderService.countLikesForPost(post.id),
@@ -41,9 +43,10 @@ export class PostController {
           })
         : Promise.resolve(null),
       postViewService.getViewsCount(post.id),
+      resolveDefaultAuthorAvatarUrl(),
     ]);
 
-    const base = toPostDetail(post, categories, tags);
+    const base = toPostDetail(post, categories, tags, defaultAvatarUrl);
     let payload: PostDetailResponse = { ...base, likesCount, viewsCount };
 
     if (userId) {

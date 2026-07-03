@@ -12,6 +12,7 @@ import { enrichFeedItemCategory, fetchPostOrAd, toFeedItem } from '../helpers/po
 import { formatPublishedRelativePtBr } from '../helpers/relativeTimePt.helper';
 import { gravatarUrlFromEmail } from '../helpers/gravatar.helper';
 import { getPublishPressAuthorAvatarUrl } from '../helpers/publishPressAuthors.helper';
+import { resolveDefaultAuthorAvatarUrl } from '../helpers/wordpressDefaultAvatar.helper';
 import type {
   DiscoveryPopularAuthor,
   DiscoveryResponse,
@@ -57,11 +58,15 @@ export class DiscoveryService {
       options.worldNewsCategoriesQuery
     );
 
-    const [topics, worldPosts, trendingFeedItems, popularAuthors] = await Promise.all([
+    const [topics, popularAuthors, defaultAvatarUrl] = await Promise.all([
       this.loadTopics(),
-      this.loadWorldNews(worldNewsCategoryIds),
-      this.loadTrendingFeedItems(),
       this.loadPopularAuthors(),
+      resolveDefaultAuthorAvatarUrl(),
+    ]);
+
+    const [worldPosts, trendingFeedItems] = await Promise.all([
+      this.loadWorldNews(worldNewsCategoryIds, defaultAvatarUrl),
+      this.loadTrendingFeedItems(defaultAvatarUrl),
     ]);
 
     const allFeedItems: FeedItem[] = [...worldPosts, ...trendingFeedItems];
@@ -100,7 +105,10 @@ export class DiscoveryService {
     }));
   }
 
-  private async loadWorldNews(categoryIds: number[]): Promise<FeedItem[]> {
+  private async loadWorldNews(
+    categoryIds: number[],
+    defaultAvatarUrl: string
+  ): Promise<FeedItem[]> {
     if (categoryIds.length === 0) return [];
     const posts = await this.wordpressService.getPostsByCategoryIds(
       categoryIds,
@@ -111,77 +119,122 @@ export class DiscoveryService {
     const categoryById = new Map(allCategories.map((c) => [c.id, c]));
 
     return contentPosts.map((post) => {
-      const item = toFeedItem(post);
+      const item = toFeedItem(post, defaultAvatarUrl);
       enrichFeedItemCategory(item, categoryById);
       return item;
     });
   }
 
   /**
-   * Trending: `read_posts` grouped by `wordpressPostId`, ordered by read count desc.
-   * Prisma `groupBy` cannot `orderBy` aggregate `_count._all` for this model (see `ReadPostOrderByWithAggregationInput`), so we use `$queryRaw`.
+   * Trending score = sum (1:1:1) of active likes (`favorites` in likes folder),
+   * logged reads (`read_posts`) and anonymous views (`post_views`) per post.
+   * Uses `$queryRaw` because Prisma `groupBy` cannot order by aggregate count on these models.
    *
-   * 1) Today (Brazil): `createdAt` in `[start, endExclusive)` from `brazilDayUtcBounds(brazilTodayYyyyMmDd())`.
+   * 1) Today (Brazil): events with `createdAt` in `[start, endExclusive)`.
    * 2) If no rows today: all-time only (same query without date filter).
-   * 3) If there are rows today but fewer than the limit: append top all-time posts (excluding IDs already chosen) until the limit.
+   * 3) If there are rows today but fewer than the limit: append top all-time posts
+   *    (excluding IDs already chosen) until the limit.
    */
-  private async loadTrendingFeedItems(): Promise<FeedItem[]> {
+  private async loadTrendingFeedItems(defaultAvatarUrl: string): Promise<FeedItem[]> {
     const limit = DISCOVERY_LIMIT_TRENDING;
     const todayYmd = brazilTodayYyyyMmDd();
     const { start, endExclusive } = brazilDayUtcBounds(todayYmd);
 
-    /*
-     * Trending (today): `read_posts` — filter `createdAt` between Brazil-day UTC bounds;
-     * `GROUP BY wordpressPostId`; `ORDER BY COUNT(*) DESC`; `LIMIT`.
-     */
-    let rows = await prisma.$queryRaw<Array<{ wordpressPostId: number }>>(
-      Prisma.sql`
-        SELECT rp.wordpressPostId AS wordpressPostId
-        FROM read_posts rp
-        WHERE rp.createdAt >= ${start}
-          AND rp.createdAt < ${endExclusive}
-        GROUP BY rp.wordpressPostId
-        ORDER BY COUNT(*) DESC
-        LIMIT ${limit}
-      `
-    );
+    let rows = await this.queryTrendingPostIds({ limit, start, endExclusive });
 
     if (rows.length === 0) {
-      /*
-       * Trending (fallback / all-time): same on `read_posts` without `createdAt` filter.
-       */
-      rows = await prisma.$queryRaw<Array<{ wordpressPostId: number }>>(
-        Prisma.sql`
-          SELECT rp.wordpressPostId AS wordpressPostId
-          FROM read_posts rp
-          GROUP BY rp.wordpressPostId
-          ORDER BY COUNT(*) DESC
-          LIMIT ${limit}
-        `
-      );
+      rows = await this.queryTrendingPostIds({ limit });
     } else if (rows.length < limit) {
       const excludeIds = rows.map((r) => r.wordpressPostId);
       const need = limit - rows.length;
-      const more = await prisma.$queryRaw<Array<{ wordpressPostId: number }>>(
-        Prisma.sql`
-          SELECT rp.wordpressPostId AS wordpressPostId
-          FROM read_posts rp
-          WHERE rp.wordpressPostId NOT IN (${Prisma.join(
-            excludeIds.map((id) => Prisma.sql`${id}`)
-          )})
-          GROUP BY rp.wordpressPostId
-          ORDER BY COUNT(*) DESC
-          LIMIT ${need}
-        `
-      );
+      const more = await this.queryTrendingPostIds({ limit: need, excludeIds });
       rows = [...rows, ...more];
     }
 
     const ids = rows.map((r) => r.wordpressPostId);
-    return this.postIdsToFeedItems(ids);
+    return this.postIdsToFeedItems(ids, defaultAvatarUrl);
   }
 
-  private async postIdsToFeedItems(wordpressPostIds: number[]): Promise<FeedItem[]> {
+  /**
+   * Ranks posts by engagement score: each like, logged read and anonymous view counts as 1.
+   * Sources: `favorites` (likes folder) + `read_posts` + `post_views`.
+   */
+  private async queryTrendingPostIds(options: {
+    limit: number;
+    start?: Date;
+    endExclusive?: Date;
+    excludeIds?: number[];
+  }): Promise<Array<{ wordpressPostId: number }>> {
+    const { limit, start, endExclusive, excludeIds = [] } = options;
+    const hasDateFilter = start != null && endExclusive != null;
+    const hasExclude = excludeIds.length > 0;
+
+    const favoritesDateFilter = hasDateFilter
+      ? Prisma.sql`AND f.createdAt >= ${start} AND f.createdAt < ${endExclusive}`
+      : Prisma.sql``;
+    const readsDateFilter = hasDateFilter
+      ? Prisma.sql`AND rp.createdAt >= ${start} AND rp.createdAt < ${endExclusive}`
+      : Prisma.sql``;
+    const viewsDateFilter = hasDateFilter
+      ? Prisma.sql`AND pv.createdAt >= ${start} AND pv.createdAt < ${endExclusive}`
+      : Prisma.sql``;
+
+    const favoritesExclude = hasExclude
+      ? Prisma.sql`AND f.wordpressPostId NOT IN (${Prisma.join(
+          excludeIds.map((id) => Prisma.sql`${id}`)
+        )})`
+      : Prisma.sql``;
+    const readsExclude = hasExclude
+      ? Prisma.sql`AND rp.wordpressPostId NOT IN (${Prisma.join(
+          excludeIds.map((id) => Prisma.sql`${id}`)
+        )})`
+      : Prisma.sql``;
+    const viewsExclude = hasExclude
+      ? Prisma.sql`AND pv.wordpressPostId NOT IN (${Prisma.join(
+          excludeIds.map((id) => Prisma.sql`${id}`)
+        )})`
+      : Prisma.sql``;
+
+    return prisma.$queryRaw<Array<{ wordpressPostId: number }>>(
+      Prisma.sql`
+        SELECT events.wordpressPostId AS wordpressPostId
+        FROM (
+          SELECT f.wordpressPostId AS wordpressPostId
+          FROM favorites f
+          INNER JOIN post_folders pf
+            ON pf.id = f.folderId
+            AND pf.internalKey = ${SYSTEM_FOLDER_KEY_LIKES}
+          WHERE 1 = 1
+            ${favoritesDateFilter}
+            ${favoritesExclude}
+
+          UNION ALL
+
+          SELECT rp.wordpressPostId AS wordpressPostId
+          FROM read_posts rp
+          WHERE 1 = 1
+            ${readsDateFilter}
+            ${readsExclude}
+
+          UNION ALL
+
+          SELECT pv.wordpressPostId AS wordpressPostId
+          FROM post_views pv
+          WHERE 1 = 1
+            ${viewsDateFilter}
+            ${viewsExclude}
+        ) AS events
+        GROUP BY events.wordpressPostId
+        ORDER BY COUNT(*) DESC, events.wordpressPostId ASC
+        LIMIT ${limit}
+      `
+    );
+  }
+
+  private async postIdsToFeedItems(
+    wordpressPostIds: number[],
+    defaultAvatarUrl: string
+  ): Promise<FeedItem[]> {
     const items: FeedItem[] = [];
     const allCategories = await this.wordpressService.getCategories();
     const categoryById = new Map(allCategories.map((c) => [c.id, c]));
@@ -190,7 +243,7 @@ export class DiscoveryService {
       const post = await fetchPostOrAd(this.wordpressService, id);
       if (!post) continue;
 
-      const item = toFeedItem(post);
+      const item = toFeedItem(post, defaultAvatarUrl);
       item.publishedAtRelative = formatPublishedRelativePtBr(post.date);
       enrichFeedItemCategory(item, categoryById);
       items.push(item);

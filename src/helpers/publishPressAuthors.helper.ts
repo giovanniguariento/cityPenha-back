@@ -25,6 +25,35 @@ export async function hasPublishPressAuthorProfile(wordpressUserId: number): Pro
 }
 
 /**
+ * Current PublishPress avatar attachment ID for a WP user, or `null` when unset.
+ * Used to clean up the previous upload when the avatar is replaced.
+ */
+export async function getPublishPressAuthorAvatarAttachmentId(
+  wordpressUserId: number
+): Promise<number | null> {
+  const termId = await getPublishPressAuthorTermId(wordpressUserId);
+  if (termId == null) {
+    return null;
+  }
+
+  const avatarRow = await prisma.wp_termmeta.findFirst({
+    where: { term_id: termId, meta_key: 'avatar' },
+    select: { meta_value: true },
+  });
+
+  const raw = avatarRow?.meta_value?.trim();
+  if (!raw) {
+    return null;
+  }
+
+  const attachmentId = Number(raw);
+  if (!Number.isFinite(attachmentId) || attachmentId <= 0) {
+    return null;
+  }
+  return attachmentId;
+}
+
+/**
  * PublishPress Authors stores:
  * - Link WP user → author term: `wp_termmeta.meta_key` = `user_id_{wpUserId}` + join `wp_term_taxonomy.taxonomy = 'author'`
  * - Custom avatar: `wp_termmeta` for that `term_id`, `meta_key = 'avatar'`, `meta_value` = attachment post ID (see Author.php `get_custom_avatar_url`).

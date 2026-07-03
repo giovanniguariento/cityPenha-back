@@ -5,20 +5,57 @@ import type { ICategory } from '../models/category.interface';
 import type { ITag } from '../models/tag.interface';
 import { isSingleVideoContent } from './content.helper';
 import type { WordpressService } from '../services/wordpress.service';
+import { HARDCODED_AUTHOR_AVATAR_FALLBACK } from './wordpressDefaultAvatar.helper';
 
-const SPONSORED_AUTHOR: Author = {
-  name: 'Patrocinado',
-  avatarUrl: 'assets/logo-perfil.svg',
-};
+function firstNonEmpty(...values: (string | null | undefined)[]): string | undefined {
+  for (const v of values) {
+    const t = v?.trim();
+    if (t) return t;
+  }
+  return undefined;
+}
 
-export function getAuthor(post: IPost): Author {
-  if (post.type === ETypePost.POST) {
+function extractPublishPressAvatarUrl(
+  avatarUrl: string | { url?: string } | undefined
+): string | undefined {
+  if (avatarUrl == null) return undefined;
+  if (typeof avatarUrl === 'string') return firstNonEmpty(avatarUrl);
+  return firstNonEmpty(avatarUrl.url);
+}
+
+function resolveContentAuthor(post: IPost, defaultAvatarUrl: string): Author {
+  const ppAuthor = post.authors?.[0];
+  if (ppAuthor) {
+    const avatarUrl =
+      firstNonEmpty(
+        extractPublishPressAvatarUrl(ppAuthor.avatar_url),
+        post._embedded?.author?.[0]?.avatar_urls?.['96']
+      ) ?? defaultAvatarUrl;
     return {
-      name: post.authors[0].display_name,
-      avatarUrl: post.authors[0].avatar_url.url,
+      name: ppAuthor.display_name ?? '',
+      avatarUrl,
     };
   }
-  return SPONSORED_AUTHOR;
+
+  const wpAuthor = post._embedded?.author?.[0];
+  if (wpAuthor) {
+    return {
+      name: wpAuthor.name ?? '',
+      avatarUrl: firstNonEmpty(wpAuthor.avatar_urls?.['96']) ?? defaultAvatarUrl,
+    };
+  }
+
+  return { name: '', avatarUrl: defaultAvatarUrl };
+}
+
+export function getAuthor(
+  post: IPost,
+  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK
+): Author {
+  if (post.type === ETypePost.POST) {
+    return resolveContentAuthor(post, defaultAvatarUrl);
+  }
+  return { name: 'Patrocinado', avatarUrl: defaultAvatarUrl };
 }
 
 export function getFeaturedImageUrl(post: IPost): string {
@@ -30,13 +67,16 @@ export function getFeaturedImageUrl(post: IPost): string {
   );
 }
 
-export function toFeedItem(post: IPost): FeedItem {
+export function toFeedItem(
+  post: IPost,
+  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK
+): FeedItem {
   return {
     slug: post.slug,
     id: post.id,
     title: post.title.rendered,
     type: post.type,
-    author: getAuthor(post),
+    author: getAuthor(post, defaultAvatarUrl),
     tags: post.tags,
     readingTime: post.acf.reading_time,
     image: getFeaturedImageUrl(post),
@@ -64,7 +104,8 @@ export function enrichFeedItemCategory(
 export function toPostDetail(
   post: IPost,
   categories: ICategory[],
-  tags: ITag[]
+  tags: ITag[],
+  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK
 ): PostDetailBase {
   const tagNames = post.tags
     .map((tagId) => tags.find((t) => t.id === tagId)?.name)
@@ -78,7 +119,7 @@ export function toPostDetail(
     resume: post.excerpt.rendered,
     readingTime: post.acf.reading_time,
     date: String(post.date),
-    author: getAuthor(post),
+    author: getAuthor(post, defaultAvatarUrl),
     image: getFeaturedImageUrl(post),
     content: post.content.rendered,
     tags: tagNames,
@@ -150,4 +191,3 @@ export async function fetchFeaturedImageUrl(
     }
   }
 }
-

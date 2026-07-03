@@ -21,4 +21,8 @@ export class UserService {
   ): Promise<User> {
     return prisma.user.update({ where: { id }, data });
   }
+
+  async updatePhotoUrl(id: string, photoUrl: string): Promise<User> {
+    return prisma.user.update({ where: { id }, data: { photoUrl } });
+  }
 }

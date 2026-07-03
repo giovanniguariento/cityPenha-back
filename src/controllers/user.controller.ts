@@ -5,6 +5,7 @@ import { prisma } from '../lib/prisma';
 import type { PostFolderService } from '../services/postFolder.service';
 import { SYSTEM_FOLDER_KEY_DEFAULT_SAVED, SYSTEM_FOLDER_KEY_LIKES } from '../services/postFolder.service';
 import { gamification, postViewService } from '../services';
+import { userAvatarService } from '../services/userAvatar.service';
 import type { CreateUserBody, UpdateUserProfileBody } from '../types';
 import type { ICategory } from '../models/category.interface';
 import type { IPost } from '../models/post.interface';
@@ -89,7 +90,19 @@ export class UserController {
 
     await this.postFolderService.ensureSystemFoldersForUser(user.id);
 
-    sendJsonSuccess(res, toPublicUser(user), { status: 201 });
+    let responseUser = user;
+    if (photoFromClient) {
+      const synced = await userAvatarService.syncExternalPhoto({
+        userId: user.id,
+        wordpressId: wpUser.id,
+        imageUrl: photoFromClient,
+      });
+      if (synced) {
+        responseUser = synced;
+      }
+    }
+
+    sendJsonSuccess(res, toPublicUser(responseUser), { status: 201 });
   };
 
   public getInfo = async (req: Request, res: Response): Promise<void> => {
@@ -176,6 +189,27 @@ export class UserController {
     }
 
     const updated = await this.userService.updateProfile(user.id, data);
+    sendJsonSuccess(res, toPublicUser(updated));
+  };
+
+  /** POST /user/me/avatar — upload multipart (`file`) que atualiza a foto de perfil. */
+  public updateAvatar = async (req: Request, res: Response): Promise<void> => {
+    const user = req.appUser;
+    if (!user) {
+      throw unauthorized('Unauthorized');
+    }
+    if (!req.file) {
+      throw validationError('Missing avatar file');
+    }
+    if (user.wordpressId == null) {
+      throw badRequest('User has no linked WordPress account');
+    }
+
+    const updated = await userAvatarService.updateUserAvatar({
+      userId: user.id,
+      wordpressId: user.wordpressId,
+      buffer: req.file.buffer,
+    });
     sendJsonSuccess(res, toPublicUser(updated));
   };
 

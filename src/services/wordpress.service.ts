@@ -13,8 +13,11 @@ const credentials = Buffer.from(
 ).toString('base64');
 
 import { fetchWithTimeout } from '../helpers/fetch.helper';
+import { logger } from '../lib/logger';
 
 export type ResolvedPostBySlug = { id: number; kind: 'post' | 'ad' };
+
+export type WordPressMedia = { id: number; sourceUrl: string };
 
 const AD_TYPE_ALIASES = new Set(['ad', 'ads', 'anuncio', 'anúncio']);
 
@@ -420,6 +423,81 @@ export class WordpressService {
 
     if (!response.ok) {
       throw new Error(`Erro ao atualizar senha do user: ${response.statusText}`);
+    }
+  }
+
+  /**
+   * Uploads a binary image to the WordPress Media Library (`POST /media`).
+   * When `authorId` is set, reassigns the attachment author to that WP user so
+   * later ownership checks (e.g. delete-on-replace) can distinguish it from the
+   * shared default avatar.
+   */
+  async uploadMedia(input: {
+    buffer: Buffer;
+    filename: string;
+    mimeType: string;
+    authorId?: number;
+  }): Promise<WordPressMedia> {
+    const { buffer, filename, mimeType, authorId } = input;
+
+    const response = await fetchWithTimeout(`${this.baseUrl()}/media`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': mimeType,
+        'Content-Disposition': `attachment; filename="${filename}"`,
+        Authorization: `Basic ${credentials}`,
+      },
+      body: new Uint8Array(buffer),
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`Erro ao enviar mídia: ${response.statusText} ${body}`);
+    }
+
+    const data = (await response.json()) as { id: number; source_url: string };
+
+    if (authorId != null && Number.isFinite(authorId) && authorId > 0) {
+      await this.updateMediaAuthor(data.id, authorId);
+    }
+
+    return { id: data.id, sourceUrl: data.source_url };
+  }
+
+  private async updateMediaAuthor(attachmentId: number, authorId: number): Promise<void> {
+    const response = await fetchWithTimeout(`${this.baseUrl()}/media/${attachmentId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${credentials}`,
+      },
+      body: JSON.stringify({ author: authorId }),
+    });
+
+    if (!response.ok) {
+      logger.warn(
+        { attachmentId, authorId, status: response.status },
+        'Failed to set WordPress media author'
+      );
+    }
+  }
+
+  /** Best-effort deletion of a media attachment (`DELETE /media/:id?force=true`). */
+  async deleteMedia(attachmentId: number): Promise<void> {
+    if (!Number.isFinite(attachmentId) || attachmentId <= 0) {
+      return;
+    }
+    const response = await fetchWithTimeout(`${this.baseUrl()}/media/${attachmentId}?force=true`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Basic ${credentials}`,
+      },
+    });
+    if (!response.ok) {
+      logger.warn(
+        { attachmentId, status: response.status },
+        'Failed to delete WordPress media'
+      );
     }
   }
 }
