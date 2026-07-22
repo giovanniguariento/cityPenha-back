@@ -189,6 +189,24 @@ export class WordpressService {
   }
 
   /**
+   * WordPress REST search across published posts (`search` query param).
+   */
+  public async searchPosts(q: string, limit: number): Promise<IPost[]> {
+    const trimmed = q.trim();
+    if (!trimmed || limit <= 0) return [];
+    const perPage = Math.min(Math.max(1, limit), 100);
+    const encoded = encodeURIComponent(trimmed);
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/posts?search=${encoded}&per_page=${perPage}&_embed=wp:featuredmedia`
+    );
+    if (!response.ok) {
+      throw new Error(`Erro ao pesquisar posts: ${response.statusText}`);
+    }
+    const data = (await response.json()) as IPost[];
+    return data.filter((p) => p.type === ETypePost.POST);
+  }
+
+  /**
    * Posts in any of the given category IDs (WordPress OR semantics on `categories` param).
    */
   public async getPostsByCategoryIds(

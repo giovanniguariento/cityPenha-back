@@ -40,3 +40,12 @@ export const DISCOVERY_LIMIT_POPULAR_AUTHORS = parsePositiveInt(
   process.env.DISCOVERY_LIMIT_POPULAR_AUTHORS,
   5
 );
+
+/** Minimum length of `q` for GET /discovery/search. */
+export const DISCOVERY_SEARCH_MIN_Q = 2;
+
+/** Default per-group limit for GET /discovery/search (dropdown preview). */
+export const DISCOVERY_SEARCH_LIMIT_DEFAULT = 3;
+
+/** Max per-group limit for GET /discovery/search. */
+export const DISCOVERY_SEARCH_LIMIT_MAX = 20;

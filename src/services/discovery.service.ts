@@ -7,7 +7,7 @@ import {
   DISCOVERY_LIMIT_WORLD_NEWS,
   WORLD_NEWS_CATEGORY_IDS,
 } from '../config/discovery';
-import { ETypePost, type IPost } from '../models/post.interface';
+import { ETypePost } from '../models/post.interface';
 import { enrichFeedItemCategory, fetchPostOrAd, toFeedItem } from '../helpers/post.helper';
 import { formatPublishedRelativePtBr } from '../helpers/relativeTimePt.helper';
 import { gravatarUrlFromEmail } from '../helpers/gravatar.helper';
@@ -16,6 +16,7 @@ import { resolveDefaultAuthorAvatarUrl } from '../helpers/wordpressDefaultAvatar
 import type {
   DiscoveryPopularAuthor,
   DiscoveryResponse,
+  DiscoverySearchResponse,
   DiscoveryTopicCategory,
   FeedItem,
 } from '../types';
@@ -81,6 +82,98 @@ export class DiscoveryService {
       trendingTopics: trendingFeedItems,
       popularAuthors,
     };
+  }
+
+  /**
+   * General discovery search: WordPress posts, category topics, and authors with published posts.
+   * Topics omit latestPostImageUrl (empty string) for performance.
+   * Authors include avatar; `totalLikes` is 0 (not ranked here).
+   */
+  async search(options: {
+    q: string;
+    limit: number;
+    userId: string | undefined;
+  }): Promise<DiscoverySearchResponse> {
+    const q = options.q.trim();
+    const limit = options.limit;
+    const needle = q.toLowerCase();
+
+    const [wpPosts, allCategories, defaultAvatarUrl, authorRows] = await Promise.all([
+      this.wordpressService.searchPosts(q, limit),
+      this.wordpressService.getCategoriesForDiscovery(),
+      resolveDefaultAuthorAvatarUrl(),
+      this.searchAuthors(q, limit),
+    ]);
+
+    const categoryById = new Map(
+      (await this.wordpressService.getCategories()).map((c) => [c.id, c])
+    );
+
+    const posts: FeedItem[] = wpPosts.slice(0, limit).map((post) => {
+      const item = toFeedItem(post, defaultAvatarUrl);
+      enrichFeedItemCategory(item, categoryById);
+      return item;
+    });
+
+    await this.applyViewedFlags(options.userId, posts);
+    await postViewService.applyViewsCountsToFeedItems(posts);
+
+    const topics: DiscoveryTopicCategory[] = allCategories
+      .filter(
+        (c) =>
+          c.name.toLowerCase().includes(needle) || c.slug.toLowerCase().includes(needle)
+      )
+      .slice(0, limit)
+      .map((c) => ({
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+        newsCount: c.count,
+        latestPostImageUrl: '',
+      }));
+
+    return {
+      posts,
+      topics,
+      authors: authorRows,
+    };
+  }
+
+  private async searchAuthors(q: string, limit: number): Promise<DiscoveryPopularAuthor[]> {
+    const like = `%${q}%`;
+    const rows = await prisma.$queryRaw<
+      Array<{ ID: bigint; display_name: string | null; user_email: string | null }>
+    >(Prisma.sql`
+      SELECT u.ID AS ID, u.display_name AS display_name, u.user_email AS user_email
+      FROM wp_users u
+      WHERE EXISTS (
+        SELECT 1
+        FROM wp_posts wp
+        WHERE wp.post_author = u.ID
+          AND wp.post_type = 'post'
+          AND wp.post_status = 'publish'
+      )
+        AND u.display_name LIKE ${like}
+      ORDER BY u.display_name ASC
+      LIMIT ${limit}
+    `);
+
+    if (rows.length === 0) return [];
+
+    const ppmaAvatars = await Promise.all(
+      rows.map((r) => getPublishPressAuthorAvatarUrl(Number(r.ID)))
+    );
+
+    return rows.map((r, i) => {
+      const email = r.user_email ?? '';
+      const fromPpma = ppmaAvatars[i];
+      return {
+        wordpressUserId: Number(r.ID),
+        name: r.display_name ?? '',
+        avatarUrl: fromPpma ?? gravatarUrlFromEmail(email),
+        totalLikes: 0,
+      };
+    });
   }
 
   private async loadTopics(): Promise<DiscoveryTopicCategory[]> {

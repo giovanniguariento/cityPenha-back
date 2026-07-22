@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma';
 import { logger } from '../lib/logger';
 import { badGateway } from '../lib/httpErrors';
 import { fetchWithTimeout } from '../helpers/fetch.helper';
+import { assertSafeExternalUrl } from '../helpers/safeUrl.helper';
 import { getPublishPressAuthorAvatarAttachmentId } from '../helpers/publishPressAuthors.helper';
 import { buildAvatarFilename, processAvatarImage } from '../helpers/avatarImage.helper';
 import { wordpressService } from './wordpress.service';
@@ -66,6 +67,7 @@ export class UserAvatarService {
   }): Promise<User | null> {
     const { userId, wordpressId, imageUrl } = input;
     try {
+      assertSafeExternalUrl(imageUrl);
       const response = await fetchWithTimeout(imageUrl, {}, EXTERNAL_PHOTO_TIMEOUT_MS);
       if (!response.ok) {
         return null;

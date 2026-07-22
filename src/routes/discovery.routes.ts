@@ -7,6 +7,7 @@ import { asyncHandler } from '../middleware/asyncHandler';
 const router = Router();
 const discoveryController = new DiscoveryController(discoveryService);
 
+router.get('/search', optionalAuth, asyncHandler(discoveryController.search));
 router.get('/', optionalAuth, asyncHandler(discoveryController.get));
 
 export default router;

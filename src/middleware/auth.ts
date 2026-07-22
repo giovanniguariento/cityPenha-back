@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { verifyFirebaseIdToken } from '../config/firebase';
 import { prisma } from '../lib/prisma';
-import { unauthorized } from '../lib/httpErrors';
+import { badRequest, unauthorized } from '../lib/httpErrors';
 import { logger } from '../lib/logger';
 
 function parseBearerToken(req: Request): string | null {

@@ -28,6 +28,7 @@ import {
   validationError,
 } from '../lib/httpErrors';
 import { resolveSignupProfilePhoto } from '../helpers/wordpressDefaultAvatar.helper';
+import { isSafeExternalUrl } from '../helpers/safeUrl.helper';
 
 export class UserController {
   constructor(
@@ -50,6 +51,11 @@ export class UserController {
 
     const photoFromClient =
       typeof body.photoUrl === 'string' ? body.photoUrl.trim() : '';
+
+    // Reject unsafe external URLs (SSRF); empty photo falls back to Gravatar/default
+    if (photoFromClient && !isSafeExternalUrl(photoFromClient)) {
+      throw validationError('Invalid photoUrl');
+    }
 
     let photoUrl = photoFromClient;
     let defaultAvatarAttachmentId: number | undefined;

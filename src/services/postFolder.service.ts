@@ -228,6 +228,34 @@ export class PostFolderService {
     return rows.map((r) => r.folderId);
   }
 
+  /**
+   * Pastas do usuário que contêm cada post (consulta em lote).
+   * Posts sem favorito não entram no Map (ou use `get(id) ?? []`).
+   */
+  async getFolderIdsContainingPosts(
+    userId: string,
+    wordpressPostIds: number[]
+  ): Promise<Map<number, string[]>> {
+    const result = new Map<number, string[]>();
+    if (wordpressPostIds.length === 0) return result;
+
+    await this.ensureSystemFoldersForUser(userId);
+    const rows = await prisma.favorite.findMany({
+      where: {
+        wordpressPostId: { in: wordpressPostIds },
+        folder: { userId },
+      },
+      select: { wordpressPostId: true, folderId: true },
+    });
+
+    for (const row of rows) {
+      const list = result.get(row.wordpressPostId);
+      if (list) list.push(row.folderId);
+      else result.set(row.wordpressPostId, [row.folderId]);
+    }
+    return result;
+  }
+
   async isPostLikedByUser(userId: string, wordpressPostId: number): Promise<boolean> {
     await this.ensureSystemFoldersForUser(userId);
     const likesFolder = await prisma.postFolder.findFirst({

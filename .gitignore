@@ -1,3 +1,7 @@
 /node_modules
 .env
 /dist
+
+# Firebase Admin service account keys (never commit)
+*firebase*adminsdk*.json
+**/citypenha-firebase-adminsdk*.json

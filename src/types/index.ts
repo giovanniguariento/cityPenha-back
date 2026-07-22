@@ -46,6 +46,11 @@ export interface FeedItem {
   viewsCount?: number;
   /** Total de comentários (top-level + respostas). Presente em GET /home. */
   commentsCount?: number;
+  /**
+   * IDs das pastas do usuário que contêm o post (inclui curtidas e Salvos).
+   * Presente em GET /home; `[]` se anônimo ou post não salvo.
+   */
+  savedFolderIds?: string[];
   /** Present on GET /discovery `trendingTopics` — post publish time, PT-BR relative (e.g. "2 horas atrás"). */
   publishedAtRelative?: string;
 }
@@ -207,6 +212,13 @@ export interface DiscoveryResponse {
   worldNews: FeedItem[];
   trendingTopics: FeedItem[];
   popularAuthors: DiscoveryPopularAuthor[];
+}
+
+/** Payload of GET /discovery/search `data`. */
+export interface DiscoverySearchResponse {
+  posts: FeedItem[];
+  topics: DiscoveryTopicCategory[];
+  authors: DiscoveryPopularAuthor[];
 }
 
 /** Author info em comentários (pode usar nickname). */

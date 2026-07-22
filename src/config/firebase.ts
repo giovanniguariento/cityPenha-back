@@ -18,11 +18,17 @@ function initFirebaseAdmin(): void {
         'Firebase Admin is not configured: set FIREBASE_SERVICE_ACCOUNT (JSON string) or GOOGLE_APPLICATION_CREDENTIALS'
       );
     }
+    initialized = true;
   } catch (error) {
     logger.error({ err: error }, 'Firebase Admin initialization failed');
+    // Fail hard — do not mark initialized so misconfig is visible and retries can succeed after fix
+    throw error instanceof Error ? error : new Error(String(error));
   }
+}
 
-  initialized = true;
+/** Call once at process startup so misconfiguration aborts boot. */
+export function ensureFirebaseAdminReady(): void {
+  initFirebaseAdmin();
 }
 
 /** Verifies a Firebase ID token (e.g. from Authorization: Bearer). */

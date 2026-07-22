@@ -11,6 +11,7 @@ import { sendJsonSuccess } from '../lib/apiResponse';
 import { notFound } from '../lib/httpErrors';
 import { postViewService } from '../services/postView.service';
 import { commentService } from '../services/comment.service';
+import { postFolderService } from '../services/postFolder.service';
 
 export class HomeController {
   constructor(private readonly wordpressService: WordpressService) {}
@@ -76,25 +77,37 @@ export class HomeController {
       }
 
       if (allIds.size > 0) {
-        const readRecords = await prisma.readPost.findMany({
-          where: { userId, wordpressPostId: { in: Array.from(allIds) } },
-          select: { wordpressPostId: true },
-        });
+        const ids = Array.from(allIds);
+        const [readRecords, folderIdsByPost] = await Promise.all([
+          prisma.readPost.findMany({
+            where: { userId, wordpressPostId: { in: ids } },
+            select: { wordpressPostId: true },
+          }),
+          postFolderService.getFolderIdsContainingPosts(userId, ids),
+        ]);
         const readSet = new Set(readRecords.map((r) => r.wordpressPostId));
 
         for (const item of carousel) {
           item.viewed = readSet.has(item.id);
+          item.savedFolderIds = folderIdsByPost.get(item.id) ?? [];
         }
         for (const cat of categoriesWithPosts) {
           for (const item of cat.posts) {
             item.viewed = readSet.has(item.id);
+            item.savedFolderIds = folderIdsByPost.get(item.id) ?? [];
           }
         }
       }
     } else {
-      for (const item of carousel) item.viewed = false;
+      for (const item of carousel) {
+        item.viewed = false;
+        item.savedFolderIds = [];
+      }
       for (const cat of categoriesWithPosts) {
-        for (const item of cat.posts) item.viewed = false;
+        for (const item of cat.posts) {
+          item.viewed = false;
+          item.savedFolderIds = [];
+        }
       }
     }
 

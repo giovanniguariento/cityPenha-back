@@ -3,7 +3,9 @@ import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { createTtlCache } from '../helpers/cache.helper';
+import { assertSafeExternalUrl, UnsafeUrlError } from '../helpers/safeUrl.helper';
 import { generateOgImage } from '../services/og-image.service';
+import { ogImageRateLimit } from '../middleware/writeRateLimit';
 
 const router = Router();
 
@@ -23,10 +25,19 @@ function cacheKey(params: z.infer<typeof ogImageQuerySchema>): string {
 
 router.get(
   '/',
+  ogImageRateLimit,
   asyncHandler(async (req: Request, res: Response) => {
     const parsed = ogImageQuerySchema.safeParse(req.query);
     if (!parsed.success) {
       res.status(400).type('text/plain').send('Invalid query parameters');
+      return;
+    }
+
+    try {
+      assertSafeExternalUrl(parsed.data.imageUrl);
+    } catch (err) {
+      const message = err instanceof UnsafeUrlError ? err.message : 'Unsafe image URL';
+      res.status(400).type('text/plain').send(message);
       return;
     }
 

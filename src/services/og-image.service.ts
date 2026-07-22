@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { BR_TIMEZONE } from '../lib/brTime';
 import { createTtlCache } from '../helpers/cache.helper';
 import { fetchWithTimeout } from '../helpers/fetch.helper';
+import { assertSafeExternalUrl, UnsafeUrlError } from '../helpers/safeUrl.helper';
 import { logger } from '../lib/logger';
 
 // ─── Canvas dimensions ───────────────────────────────────────────────────────
@@ -74,6 +75,7 @@ async function loadBackground(url: string): Promise<Image | null> {
   if (badUrlCache.get(url)) return null;
 
   try {
+    assertSafeExternalUrl(url);
     const response = await fetchWithTimeout(url, {}, 10_000);
     if (!response.ok) {
       badUrlCache.set(url, true);
@@ -83,7 +85,11 @@ async function loadBackground(url: string): Promise<Image | null> {
     return await loadImage(Buffer.from(await response.arrayBuffer()));
   } catch (err) {
     badUrlCache.set(url, true);
-    logger.warn({ url, err }, 'og-image: background fetch failed, using fallback');
+    if (err instanceof UnsafeUrlError) {
+      logger.warn({ url, reason: err.message }, 'og-image: blocked unsafe background URL');
+    } else {
+      logger.warn({ url, err }, 'og-image: background fetch failed, using fallback');
+    }
     return null;
   }
 }
