@@ -219,8 +219,9 @@ export class AdminController {
   provisionWordpressAccess = async (req: Request, res: Response): Promise<void> => {
     const { userId } = req.params;
     if (!userId) throw validationError('Missing userId');
+    const force = (req.body as { force?: unknown } | undefined)?.force === true;
     try {
-      const item = await wordpressAccessAdminService.provisionWordpressAccess(userId);
+      const item = await wordpressAccessAdminService.provisionWordpressAccess(userId, { force });
       sendJsonSuccess(res, item);
     } catch (e) {
       const message = e instanceof Error ? e.message : 'Failed to provision WordPress access';

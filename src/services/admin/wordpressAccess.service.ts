@@ -89,7 +89,10 @@ export class WordpressAccessAdminService {
     return toAdminWordpressAccess(user);
   }
 
-  async provisionWordpressAccess(userId: string): Promise<AdminWordpressAccessItem> {
+  async provisionWordpressAccess(
+    userId: string,
+    options: { force?: boolean } = {}
+  ): Promise<AdminWordpressAccessItem> {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       throw new Error('USER_NOT_FOUND');
@@ -97,7 +100,10 @@ export class WordpressAccessAdminService {
     if (user.wordpressId == null) {
       throw new Error('NO_WORDPRESS_LINK');
     }
-    if (user.wordpressPasswordEnc) {
+    // Sem `force`, mantém o comportamento idempotente (apenas usuários legados sem senha).
+    // Com `force`, regenera a senha WP mesmo quando já existe uma criptografada — usado para
+    // ressincronizar quando a senha guardada divergiu da senha real no WordPress.
+    if (user.wordpressPasswordEnc && !options.force) {
       return toAdminWordpressAccess(user);
     }
 
