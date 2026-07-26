@@ -59,6 +59,8 @@ export class WordpressService {
     categoryBySlug: createTtlCache<number | null>(CACHE_TTL_MS.CATEGORIES),
     /** `latestImg:${categoryId}` → featured media URL of newest post in that category */
     categoryLatestImage: createTtlCache<string | null>(CACHE_TTL_MS.CATEGORIES),
+    /** `catPaged:${categoryId}:${page}:${perPage}` → `X-WP-TotalPages` header value */
+    categoryPagedTotalPages: createTtlCache<number>(CACHE_TTL_MS.HOME),
   };
 
   private baseUrl(): string {
@@ -227,6 +229,45 @@ export class WordpressService {
     const data = (await response.json()) as IPost[];
     this.cache.posts.set(key, data);
     return data;
+  }
+
+  /**
+   * Paginated posts for a single category (WordPress REST `page`/`per_page`).
+   * Returns the (content-only) posts for the requested page plus `totalPages`
+   * from the `X-WP-TotalPages` response header (used to compute "has more").
+   */
+  public async getPostsByCategoryPaged(
+    categoryId: number,
+    page: number,
+    perPage: number
+  ): Promise<{ posts: IPost[]; totalPages: number }> {
+    if (categoryId <= 0 || page <= 0 || perPage <= 0) {
+      return { posts: [], totalPages: 0 };
+    }
+    const safePerPage = Math.min(perPage, 100);
+    const key = `catPaged:${categoryId}:${page}:${safePerPage}`;
+    const cached = this.cache.posts.get(key);
+    if (cached) {
+      const totalPagesHeader = this.cache.categoryPagedTotalPages.get(key) ?? 0;
+      return { posts: cached as IPost[], totalPages: totalPagesHeader };
+    }
+    const response = await fetchWithTimeout(
+      `${this.baseUrl()}/posts?categories=${categoryId}&per_page=${safePerPage}&page=${page}&_embed=wp:featuredmedia`
+    );
+    // WordPress returns 400 when `page` is beyond the last page — treat as empty.
+    if (response.status === 400) {
+      return { posts: [], totalPages: 0 };
+    }
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar posts paginados por categoria: ${response.statusText}`);
+    }
+    const totalPagesRaw = response.headers.get('X-WP-TotalPages');
+    const totalPages = totalPagesRaw != null ? Number(totalPagesRaw) || 0 : 0;
+    const data = (await response.json()) as IPost[];
+    const posts = data.filter((p) => p.type === ETypePost.POST);
+    this.cache.posts.set(key, posts);
+    this.cache.categoryPagedTotalPages.set(key, totalPages);
+    return { posts, totalPages };
   }
 
   /**

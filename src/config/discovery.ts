@@ -49,3 +49,9 @@ export const DISCOVERY_SEARCH_LIMIT_DEFAULT = 3;
 
 /** Max per-group limit for GET /discovery/search. */
 export const DISCOVERY_SEARCH_LIMIT_MAX = 20;
+
+/** Default page size for GET /discovery/topics/:slug (articles per page). */
+export const DISCOVERY_TOPIC_POSTS_PER_PAGE_DEFAULT = 20;
+
+/** Max page size for GET /discovery/topics/:slug. */
+export const DISCOVERY_TOPIC_POSTS_PER_PAGE_MAX = 50;

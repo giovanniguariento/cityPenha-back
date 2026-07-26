@@ -4,6 +4,8 @@ import {
   DISCOVERY_SEARCH_LIMIT_DEFAULT,
   DISCOVERY_SEARCH_LIMIT_MAX,
   DISCOVERY_SEARCH_MIN_Q,
+  DISCOVERY_TOPIC_POSTS_PER_PAGE_DEFAULT,
+  DISCOVERY_TOPIC_POSTS_PER_PAGE_MAX,
 } from '../config/discovery';
 import { setFeedCacheHeaders } from '../helpers/feedCache.helper';
 import { sendJsonSuccess } from '../lib/apiResponse';
@@ -51,6 +53,41 @@ export class DiscoveryController {
     const payload = await this.discoveryService.search({
       q: rawQ,
       limit,
+      userId: req.appUser?.id,
+    });
+
+    setFeedCacheHeaders(res, Boolean(req.appUser?.id));
+    sendJsonSuccess(res, payload);
+  };
+
+  getTopicPosts = async (req: Request, res: Response): Promise<void> => {
+    const slug = typeof req.params.slug === 'string' ? req.params.slug.trim() : '';
+    if (!slug) {
+      throw validationError('slug is required');
+    }
+
+    let page = 1;
+    if (typeof req.query.page === 'string' && req.query.page.trim()) {
+      const n = Number(req.query.page);
+      if (!Number.isFinite(n) || n < 1) {
+        throw validationError('page must be a positive integer');
+      }
+      page = Math.floor(n);
+    }
+
+    let perPage = DISCOVERY_TOPIC_POSTS_PER_PAGE_DEFAULT;
+    if (typeof req.query.perPage === 'string' && req.query.perPage.trim()) {
+      const n = Number(req.query.perPage);
+      if (!Number.isFinite(n) || n < 1) {
+        throw validationError('perPage must be a positive integer');
+      }
+      perPage = Math.min(Math.floor(n), DISCOVERY_TOPIC_POSTS_PER_PAGE_MAX);
+    }
+
+    const payload = await this.discoveryService.getTopicPosts({
+      slug,
+      page,
+      perPage,
       userId: req.appUser?.id,
     });
 

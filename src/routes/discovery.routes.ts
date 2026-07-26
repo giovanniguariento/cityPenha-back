@@ -8,6 +8,7 @@ const router = Router();
 const discoveryController = new DiscoveryController(discoveryService);
 
 router.get('/search', optionalAuth, asyncHandler(discoveryController.search));
+router.get('/topics/:slug', optionalAuth, asyncHandler(discoveryController.getTopicPosts));
 router.get('/', optionalAuth, asyncHandler(discoveryController.get));
 
 export default router;

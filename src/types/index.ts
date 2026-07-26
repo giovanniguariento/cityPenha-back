@@ -221,6 +221,14 @@ export interface DiscoverySearchResponse {
   authors: DiscoveryPopularAuthor[];
 }
 
+/** Payload of GET /discovery/topics/:slug `data`. */
+export interface DiscoveryTopicPostsResponse {
+  topic: DiscoveryTopicCategory;
+  posts: FeedItem[];
+  page: number;
+  hasMore: boolean;
+}
+
 /** Author info em comentários (pode usar nickname). */
 export interface CommentAuthor {
   id: string;

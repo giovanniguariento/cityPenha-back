@@ -18,8 +18,10 @@ import type {
   DiscoveryResponse,
   DiscoverySearchResponse,
   DiscoveryTopicCategory,
+  DiscoveryTopicPostsResponse,
   FeedItem,
 } from '../types';
+import { notFound } from '../lib/httpErrors';
 import { WordpressService, wordpressService } from './wordpress.service';
 import { SYSTEM_FOLDER_KEY_LIKES } from './postFolder.service';
 import { postViewService } from './postView.service';
@@ -136,6 +138,62 @@ export class DiscoveryService {
       posts,
       topics,
       authors: authorRows,
+    };
+  }
+
+  /**
+   * Paginated list of articles for a single topic (WordPress category), resolved by slug.
+   * Mirrors the feed mapping used by `loadWorldNews` (toFeedItem + category enrichment)
+   * and applies viewed/view-count flags for consistency with the rest of discovery.
+   */
+  async getTopicPosts(options: {
+    slug: string;
+    page: number;
+    perPage: number;
+    userId: string | undefined;
+  }): Promise<DiscoveryTopicPostsResponse> {
+    const slug = options.slug.trim();
+    if (!slug) {
+      throw notFound('Tópico não encontrado.');
+    }
+
+    const categoryId = await this.wordpressService.getCategoryIdBySlug(slug);
+    if (categoryId == null) {
+      throw notFound('Tópico não encontrado.');
+    }
+
+    const categories = await this.wordpressService.getCategoriesForDiscovery();
+    const category = categories.find((c) => c.id === categoryId);
+    const topic: DiscoveryTopicCategory = {
+      id: categoryId,
+      name: category?.name ?? slug,
+      slug: category?.slug ?? slug,
+      newsCount: category?.count ?? 0,
+      latestPostImageUrl: '',
+    };
+
+    const [{ posts: rawPosts, totalPages }, defaultAvatarUrl] = await Promise.all([
+      this.wordpressService.getPostsByCategoryPaged(categoryId, options.page, options.perPage),
+      resolveDefaultAuthorAvatarUrl(),
+    ]);
+
+    const allCategories = await this.wordpressService.getCategories();
+    const categoryById = new Map(allCategories.map((c) => [c.id, c]));
+
+    const posts: FeedItem[] = rawPosts.map((post) => {
+      const item = toFeedItem(post, defaultAvatarUrl);
+      enrichFeedItemCategory(item, categoryById);
+      return item;
+    });
+
+    await this.applyViewedFlags(options.userId, posts);
+    await postViewService.applyViewsCountsToFeedItems(posts);
+
+    return {
+      topic,
+      posts,
+      page: options.page,
+      hasMore: totalPages > options.page,
     };
   }
 
