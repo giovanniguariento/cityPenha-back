@@ -16,7 +16,7 @@ const ogImageQuerySchema = z.object({
   title: z.string().trim().min(1).max(200),
   description: z.string().trim().max(500).default(''),
   date: z.string().trim().max(64).default(''),
-  imageUrl: z.string().url(),
+  imageUrl: z.string().url().optional(),
 });
 
 function cacheKey(params: z.infer<typeof ogImageQuerySchema>): string {
@@ -33,12 +33,14 @@ router.get(
       return;
     }
 
-    try {
-      assertSafeExternalUrl(parsed.data.imageUrl);
-    } catch (err) {
-      const message = err instanceof UnsafeUrlError ? err.message : 'Unsafe image URL';
-      res.status(400).type('text/plain').send(message);
-      return;
+    if (parsed.data.imageUrl) {
+      try {
+        assertSafeExternalUrl(parsed.data.imageUrl);
+      } catch (err) {
+        const message = err instanceof UnsafeUrlError ? err.message : 'Unsafe image URL';
+        res.status(400).type('text/plain').send(message);
+        return;
+      }
     }
 
     const key = cacheKey(parsed.data);

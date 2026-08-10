@@ -53,7 +53,7 @@ export interface OgImageParams {
   title: string;
   description: string;
   date: string;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 // ─── Logo cache ───────────────────────────────────────────────────────────────
@@ -249,7 +249,10 @@ function formatOgDate(dateInput: string): string {
 // ─── Main export ──────────────────────────────────────────────────────────────
 
 export async function generateOgImage(params: OgImageParams): Promise<Buffer> {
-  const [background, logo] = await Promise.all([loadBackground(params.imageUrl), loadLogo()]);
+  const [background, logo] = await Promise.all([
+    params.imageUrl ? loadBackground(params.imageUrl) : Promise.resolve(null),
+    loadLogo(),
+  ]);
 
   const canvas = createCanvas(WIDTH, HEIGHT);
   const ctx = canvas.getContext('2d');
