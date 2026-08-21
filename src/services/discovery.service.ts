@@ -9,6 +9,7 @@ import {
 } from '../config/discovery';
 import { ETypePost } from '../models/post.interface';
 import { enrichFeedItemCategory, fetchPostOrAd, toFeedItem } from '../helpers/post.helper';
+import { buildSearchSnippet } from '../helpers/searchSnippet.helper';
 import { formatPublishedRelativePtBr } from '../helpers/relativeTimePt.helper';
 import { gravatarUrlFromEmail } from '../helpers/gravatar.helper';
 import { getPublishPressAuthorAvatarUrl } from '../helpers/publishPressAuthors.helper';
@@ -114,6 +115,7 @@ export class DiscoveryService {
     const posts: FeedItem[] = wpPosts.slice(0, limit).map((post) => {
       const item = toFeedItem(post, defaultAvatarUrl);
       enrichFeedItemCategory(item, categoryById);
+      item.matchSnippet = buildSearchSnippet(post, q);
       return item;
     });
 
@@ -164,18 +166,21 @@ export class DiscoveryService {
 
     const categories = await this.wordpressService.getCategoriesForDiscovery();
     const category = categories.find((c) => c.id === categoryId);
+
+    const [{ posts: rawPosts, totalPages, total }, defaultAvatarUrl, latestPostImageUrl] =
+      await Promise.all([
+        this.wordpressService.getPostsByCategoryPaged(categoryId, options.page, options.perPage),
+        resolveDefaultAuthorAvatarUrl(),
+        this.wordpressService.getLatestPostFeaturedImageUrlForCategory(categoryId),
+      ]);
+
     const topic: DiscoveryTopicCategory = {
       id: categoryId,
       name: category?.name ?? slug,
       slug: category?.slug ?? slug,
-      newsCount: category?.count ?? 0,
-      latestPostImageUrl: '',
+      newsCount: total > 0 ? total : category?.count ?? 0,
+      latestPostImageUrl: latestPostImageUrl ?? '',
     };
-
-    const [{ posts: rawPosts, totalPages }, defaultAvatarUrl] = await Promise.all([
-      this.wordpressService.getPostsByCategoryPaged(categoryId, options.page, options.perPage),
-      resolveDefaultAuthorAvatarUrl(),
-    ]);
 
     const allCategories = await this.wordpressService.getCategories();
     const categoryById = new Map(allCategories.map((c) => [c.id, c]));
@@ -237,23 +242,24 @@ export class DiscoveryService {
   private async loadTopics(): Promise<DiscoveryTopicCategory[]> {
     const rows = await this.wordpressService.getCategoriesForDiscovery();
     const batchSize = 8;
-    const latestUrls: string[] = [];
+    const infos: { imageUrl: string | null; total: number }[] = [];
     for (let i = 0; i < rows.length; i += batchSize) {
       const slice = rows.slice(i, i + batchSize);
-      const urls = await Promise.all(
-        slice.map((c) =>
-          this.wordpressService.getLatestPostFeaturedImageUrlForCategory(c.id)
-        )
+      const batch = await Promise.all(
+        slice.map((c) => this.wordpressService.getLatestPostInfoForCategory(c.id))
       );
-      latestUrls.push(...urls.map((u) => u ?? ''));
+      infos.push(...batch);
     }
-    return rows.map((c, i) => ({
-      id: c.id,
-      name: c.name,
-      slug: c.slug,
-      newsCount: c.count,
-      latestPostImageUrl: latestUrls[i] ?? '',
-    }));
+    return rows.map((c, i) => {
+      const info = infos[i];
+      return {
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+        newsCount: info && info.total > 0 ? info.total : c.count,
+        latestPostImageUrl: info?.imageUrl ?? '',
+      };
+    });
   }
 
   private async loadWorldNews(

@@ -57,10 +57,14 @@ export class WordpressService {
     tagsById: createTtlCache<ITag[]>(CACHE_TTL_MS.POST),
     ad: createTtlCache<IPost>(CACHE_TTL_MS.POST),
     categoryBySlug: createTtlCache<number | null>(CACHE_TTL_MS.CATEGORIES),
-    /** `latestImg:${categoryId}` → featured media URL of newest post in that category */
-    categoryLatestImage: createTtlCache<string | null>(CACHE_TTL_MS.CATEGORIES),
+    /** `latestInfo:${categoryId}` → newest post featured image URL + total posts (X-WP-Total) */
+    categoryLatestInfo: createTtlCache<{ imageUrl: string | null; total: number }>(
+      CACHE_TTL_MS.CATEGORIES
+    ),
     /** `catPaged:${categoryId}:${page}:${perPage}` → `X-WP-TotalPages` header value */
     categoryPagedTotalPages: createTtlCache<number>(CACHE_TTL_MS.HOME),
+    /** `catPaged:${categoryId}:${page}:${perPage}` → `X-WP-Total` header value */
+    categoryPagedTotal: createTtlCache<number>(CACHE_TTL_MS.HOME),
   };
 
   private baseUrl(): string {
@@ -240,44 +244,50 @@ export class WordpressService {
     categoryId: number,
     page: number,
     perPage: number
-  ): Promise<{ posts: IPost[]; totalPages: number }> {
+  ): Promise<{ posts: IPost[]; totalPages: number; total: number }> {
     if (categoryId <= 0 || page <= 0 || perPage <= 0) {
-      return { posts: [], totalPages: 0 };
+      return { posts: [], totalPages: 0, total: 0 };
     }
     const safePerPage = Math.min(perPage, 100);
     const key = `catPaged:${categoryId}:${page}:${safePerPage}`;
     const cached = this.cache.posts.get(key);
     if (cached) {
       const totalPagesHeader = this.cache.categoryPagedTotalPages.get(key) ?? 0;
-      return { posts: cached as IPost[], totalPages: totalPagesHeader };
+      const totalHeader = this.cache.categoryPagedTotal.get(key) ?? 0;
+      return { posts: cached as IPost[], totalPages: totalPagesHeader, total: totalHeader };
     }
     const response = await fetchWithTimeout(
       `${this.baseUrl()}/posts?categories=${categoryId}&per_page=${safePerPage}&page=${page}&_embed=wp:featuredmedia`
     );
     // WordPress returns 400 when `page` is beyond the last page — treat as empty.
     if (response.status === 400) {
-      return { posts: [], totalPages: 0 };
+      return { posts: [], totalPages: 0, total: 0 };
     }
     if (!response.ok) {
       throw new Error(`Erro ao buscar posts paginados por categoria: ${response.statusText}`);
     }
     const totalPagesRaw = response.headers.get('X-WP-TotalPages');
     const totalPages = totalPagesRaw != null ? Number(totalPagesRaw) || 0 : 0;
+    const totalRaw = response.headers.get('X-WP-Total');
+    const total = totalRaw != null ? Number(totalRaw) || 0 : 0;
     const data = (await response.json()) as IPost[];
     const posts = data.filter((p) => p.type === ETypePost.POST);
     this.cache.posts.set(key, posts);
     this.cache.categoryPagedTotalPages.set(key, totalPages);
-    return { posts, totalPages };
+    this.cache.categoryPagedTotal.set(key, total);
+    return { posts, totalPages, total };
   }
 
   /**
-   * Featured image URL of the most recent post in a category (REST: newest first, `per_page=1`).
+   * Featured image URL + total post count for a category, from a single REST call
+   * (`per_page=1`, newest first). The count comes from the `X-WP-Total` header, so it
+   * reflects the real number of posts in the topic without an extra request.
    */
-  public async getLatestPostFeaturedImageUrlForCategory(
+  public async getLatestPostInfoForCategory(
     categoryId: number
-  ): Promise<string | null> {
-    const key = `latestImg:${categoryId}`;
-    const cached = this.cache.categoryLatestImage.get(key);
+  ): Promise<{ imageUrl: string | null; total: number }> {
+    const key = `latestInfo:${categoryId}`;
+    const cached = this.cache.categoryLatestInfo.get(key);
     if (cached !== undefined) {
       return cached;
     }
@@ -286,19 +296,33 @@ export class WordpressService {
       `${this.baseUrl()}/posts?categories=${categoryId}&per_page=1&orderby=date&order=desc&_embed=wp:featuredmedia`
     );
     if (!response.ok) {
-      this.cache.categoryLatestImage.set(key, null);
-      return null;
+      const fallback = { imageUrl: null, total: 0 };
+      this.cache.categoryLatestInfo.set(key, fallback);
+      return fallback;
     }
+
+    const totalRaw = response.headers.get('X-WP-Total');
+    const total = totalRaw != null ? Number(totalRaw) || 0 : 0;
     const data = (await response.json()) as IPost[];
     if (data.length === 0) {
-      this.cache.categoryLatestImage.set(key, null);
-      return null;
+      const empty = { imageUrl: null, total };
+      this.cache.categoryLatestInfo.set(key, empty);
+      return empty;
     }
     const post = data.find((p) => p.type === ETypePost.POST) ?? data[0];
     const url = getFeaturedImageUrl(post);
-    const result = url || null;
-    this.cache.categoryLatestImage.set(key, result);
+    const result = { imageUrl: url || null, total };
+    this.cache.categoryLatestInfo.set(key, result);
     return result;
+  }
+
+  /**
+   * Featured image URL of the most recent post in a category (REST: newest first, `per_page=1`).
+   */
+  public async getLatestPostFeaturedImageUrlForCategory(
+    categoryId: number
+  ): Promise<string | null> {
+    return (await this.getLatestPostInfoForCategory(categoryId)).imageUrl;
   }
 
   /** Resolves WordPress category term id from slug, or `null` if missing. */

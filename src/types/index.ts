@@ -53,6 +53,8 @@ export interface FeedItem {
   savedFolderIds?: string[];
   /** Present on GET /discovery `trendingTopics` — post publish time, PT-BR relative (e.g. "2 horas atrás"). */
   publishedAtRelative?: string;
+  /** Trecho de contexto (texto puro) onde o termo pesquisado casou. Só em /discovery/search. */
+  matchSnippet?: string;
 }
 
 /** Single post detail API response */
