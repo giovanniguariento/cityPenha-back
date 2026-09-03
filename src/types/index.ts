@@ -57,6 +57,17 @@ export interface FeedItem {
   matchSnippet?: string;
 }
 
+/** Player metadata of a watch page (`onlyVideo`), for VideoObject structured data. */
+export interface PostVideo {
+  /** Direct media file URL, for self-hosted videos. */
+  contentUrl?: string;
+  /** Player URL, for iframe embeds (YouTube, Vimeo, ...). */
+  embedUrl?: string;
+  thumbnailUrl?: string;
+  width?: number;
+  height?: number;
+}
+
 /** Single post detail API response */
 export interface PostDetailResponse {
   id: number;
@@ -74,6 +85,8 @@ export interface PostDetailResponse {
   categoryName: string;
   categorySlug: string;
   onlyVideo: boolean;
+  /** Presente apenas quando `onlyVideo` e o player pôde ser lido do conteúdo. */
+  video?: PostVideo;
   /** Total de curtidas (pasta fixa `curtidas` de todos os usuários). */
   likesCount: number;
   /** Total de views (leituras logadas em read_posts + views anônimas em post_views). */

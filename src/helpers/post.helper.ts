@@ -3,7 +3,7 @@ import type { Author } from '../types';
 import type { FeedItem, PostDetailBase } from '../types';
 import type { ICategory } from '../models/category.interface';
 import type { ITag } from '../models/tag.interface';
-import { isSingleVideoContent } from './content.helper';
+import { extractPostVideo, isSingleVideoContent, prepareWatchPageMedia } from './content.helper';
 import type { WordpressService } from '../services/wordpress.service';
 import { HARDCODED_AUTHOR_AVATAR_FALLBACK } from './wordpressDefaultAvatar.helper';
 
@@ -67,6 +67,15 @@ export function getFeaturedImageUrl(post: IPost): string {
   );
 }
 
+/**
+ * Original (unresized) featured image. Google wants video thumbnails at least
+ * 1200 px wide, so structured data must not use the `large` variant.
+ */
+export function getFeaturedImageOriginalUrl(post: IPost): string {
+  const media = post._embedded?.['wp:featuredmedia'];
+  return media?.[0]?.source_url ?? getFeaturedImageUrl(post);
+}
+
 export function toFeedItem(
   post: IPost,
   defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK
@@ -111,6 +120,11 @@ export function toPostDetail(
     .map((tagId) => tags.find((t) => t.id === tagId)?.name)
     .filter((name): name is string => name != null);
 
+  const onlyVideo = isSingleVideoContent(post.content.rendered);
+  const video = onlyVideo
+    ? extractPostVideo(post.content.rendered, getFeaturedImageOriginalUrl(post) || undefined)
+    : null;
+
   return {
     id: post.id,
     slug: post.slug,
@@ -121,11 +135,14 @@ export function toPostDetail(
     date: String(post.date),
     author: getAuthor(post, defaultAvatarUrl),
     image: getFeaturedImageUrl(post),
-    content: post.content.rendered,
+    content: onlyVideo
+      ? prepareWatchPageMedia(post.content.rendered, video?.thumbnailUrl)
+      : post.content.rendered,
     tags: tagNames,
     categoryName: categories[0]?.name ?? '',
     categorySlug: categories[0]?.slug ?? '',
-    onlyVideo: isSingleVideoContent(post.content.rendered),
+    onlyVideo,
+    ...(video ? { video } : {}),
   };
 }
 
