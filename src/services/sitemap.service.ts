@@ -18,6 +18,7 @@ export interface SitemapPostEntry {
   slug: string;
   categorySlug: string;
   lastmod: string;
+  wordCount: number;
   /** Present only for watch pages whose player and thumbnail could be resolved. */
   video?: SitemapVideoEntry;
 }
@@ -25,6 +26,7 @@ export interface SitemapPostEntry {
 /**
  * Lists published posts for sitemap.xml with primary category slug and lastmod.
  * Uses Prisma against wp_* tables (avoids WP REST pagination limits).
+ * Includes all published posts (thin content stays discoverable in Search).
  */
 export async function listSitemapPosts(limit = 5000): Promise<SitemapPostEntry[]> {
   try {
@@ -51,7 +53,6 @@ export async function listSitemapPosts(limit = 5000): Promise<SitemapPostEntry[]
 
     const postIds = posts.map((p) => p.ID);
 
-    // Primary category per post: first category term by term_order / term_taxonomy_id
     const relationships = await prisma.wp_term_relationships.findMany({
       where: { object_id: { in: postIds } },
       select: {
@@ -100,8 +101,6 @@ export async function listSitemapPosts(limit = 5000): Promise<SitemapPostEntry[]
       if (slug) postIdToCategorySlug.set(objectKey, slug);
     }
 
-    // Parsing every post with cheerio would dominate this request, so only posts
-    // whose markup actually mentions a player are inspected.
     const watchPages = posts.filter(
       (p) =>
         (p.post_content.includes('<video') || p.post_content.includes('<iframe')) &&
@@ -127,10 +126,12 @@ export async function listSitemapPosts(limit = 5000): Promise<SitemapPostEntry[]
             ? modified.toISOString().slice(0, 10)
             : String(modified ?? '').slice(0, 10);
         const video = videoByPostId.get(p.ID.toString());
+        const wordCount = countBodyWords(p.post_content);
         return {
           slug: p.post_name!,
           categorySlug: postIdToCategorySlug.get(p.ID.toString()) ?? 'geral',
           lastmod: lastmod || new Date().toISOString().slice(0, 10),
+          wordCount,
           ...(video ? { video } : {}),
         };
       });
@@ -140,10 +141,90 @@ export async function listSitemapPosts(limit = 5000): Promise<SitemapPostEntry[]
   }
 }
 
+/**
+ * Lightweight slug → category lookup for Express redirects (includes thin posts
+ * so wrong-category URLs still 301 to the real path).
+ */
+export async function listAllPublishedPostSlugs(
+  limit = 5000
+): Promise<{ slug: string; categorySlug: string }[]> {
+  try {
+    const posts = await prisma.wp_posts.findMany({
+      where: {
+        post_status: 'publish',
+        post_type: 'post',
+        post_name: { not: '' },
+      },
+      select: { ID: true, post_name: true },
+      orderBy: { post_modified_gmt: 'desc' },
+      take: limit,
+    });
+    if (posts.length === 0) return [];
+
+    const postIds = posts.map((p) => p.ID);
+    const relationships = await prisma.wp_term_relationships.findMany({
+      where: { object_id: { in: postIds } },
+      select: { object_id: true, term_taxonomy_id: true, term_order: true },
+      orderBy: { term_order: 'asc' },
+    });
+    const taxonomyIds = [...new Set(relationships.map((r) => r.term_taxonomy_id))];
+    const taxonomies =
+      taxonomyIds.length === 0
+        ? []
+        : await prisma.wp_term_taxonomy.findMany({
+            where: { term_taxonomy_id: { in: taxonomyIds }, taxonomy: 'category' },
+            select: { term_taxonomy_id: true, term_id: true },
+          });
+    const categoryTaxonomyIds = new Set(taxonomies.map((t) => t.term_taxonomy_id));
+    const termIds = taxonomies.map((t) => t.term_id);
+    const terms =
+      termIds.length === 0
+        ? []
+        : await prisma.wp_terms.findMany({
+            where: { term_id: { in: termIds } },
+            select: { term_id: true, slug: true },
+          });
+    const termIdToSlug = new Map(terms.map((t) => [t.term_id.toString(), t.slug]));
+    const taxonomyIdToTermId = new Map(
+      taxonomies.map((t) => [t.term_taxonomy_id.toString(), t.term_id.toString()])
+    );
+    const postIdToCategorySlug = new Map<string, string>();
+    for (const rel of relationships) {
+      const objectKey = rel.object_id.toString();
+      if (postIdToCategorySlug.has(objectKey)) continue;
+      if (!categoryTaxonomyIds.has(rel.term_taxonomy_id)) continue;
+      const termId = taxonomyIdToTermId.get(rel.term_taxonomy_id.toString());
+      if (!termId) continue;
+      const slug = termIdToSlug.get(termId);
+      if (slug) postIdToCategorySlug.set(objectKey, slug);
+    }
+
+    return posts
+      .filter((p) => !!p.post_name)
+      .map((p) => ({
+        slug: p.post_name!,
+        categorySlug: postIdToCategorySlug.get(p.ID.toString()) ?? 'geral',
+      }));
+  } catch (err) {
+    logger.error({ err }, 'Failed to list published post slugs');
+    return [];
+  }
+}
+
 interface SitemapPostRow {
   post_title: string;
   post_excerpt: string;
   post_content: string;
+}
+
+function countBodyWords(html: string): number {
+  if (!html) return 0;
+  const $ = cheerio.load(html);
+  $('script, style, iframe, video, audio, noscript').remove();
+  const text = $('body').text().replace(/\s+/g, ' ').trim();
+  if (!text) return 0;
+  const words = text.match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu);
+  return words ? words.length : 0;
 }
 
 function toSitemapVideo(
@@ -166,11 +247,6 @@ function toSitemapVideo(
   };
 }
 
-/**
- * Maps post ID to its featured image URL, built from `_wp_attached_file` so the
- * result follows the live uploads host instead of the possibly stale attachment
- * `guid` left behind by past migrations.
- */
 async function resolveFeaturedImageUrls(
   postIds: bigint[],
   uploadsBaseUrl: string | undefined
@@ -207,7 +283,6 @@ async function resolveFeaturedImageUrls(
   return urlByPostId;
 }
 
-/** Infers `https://host/.../wp-content/uploads/` from any media URL in the corpus. */
 function resolveUploadsBaseUrl(contents: string[]): string | undefined {
   for (const content of contents) {
     const match = content.match(/https?:\/\/[^"'\s]*?\/wp-content\/uploads\//);
