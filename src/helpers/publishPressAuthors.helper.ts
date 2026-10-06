@@ -19,6 +19,9 @@ async function getPublishPressAuthorTermId(
   return linkRows[0]?.term_id ?? null;
 }
 
+/** Exported for PublishPress author name updates. */
+export { getPublishPressAuthorTermId };
+
 /** True when PublishPress has a mapped author term for this WP user ID. */
 export async function hasPublishPressAuthorProfile(wordpressUserId: number): Promise<boolean> {
   return (await getPublishPressAuthorTermId(wordpressUserId)) != null;

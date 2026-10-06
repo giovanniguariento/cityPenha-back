@@ -21,6 +21,11 @@ function resolveEncryptionKey(): Buffer {
   throw new Error('WORDPRESS_CREDENTIALS_ENCRYPTION_KEY must be 32 bytes (hex or base64)');
 }
 
+/** Fail fast before creating a WordPress user if the encryption key is missing/invalid. */
+export function assertWordpressCredentialsKey(): void {
+  resolveEncryptionKey();
+}
+
 export function generateWordpressPassword(): string {
   return randomBytes(16).toString('base64url');
 }

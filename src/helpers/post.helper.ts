@@ -6,6 +6,7 @@ import type { ITag } from '../models/tag.interface';
 import { extractPostVideo, isSingleVideoContent, prepareWatchPageMedia } from './content.helper';
 import type { WordpressService } from '../services/wordpress.service';
 import { HARDCODED_AUTHOR_AVATAR_FALLBACK } from './wordpressDefaultAvatar.helper';
+import { prisma } from '../lib/prisma';
 
 function firstNonEmpty(...values: (string | null | undefined)[]): string | undefined {
   for (const v of values) {
@@ -23,11 +24,22 @@ function extractPublishPressAvatarUrl(
   return firstNonEmpty(avatarUrl.url);
 }
 
-function resolveContentAuthor(post: IPost, defaultAvatarUrl: string): Author {
+/** App profile fields keyed by WordPress user id (bylines prefer these over WP/PP). */
+export type AppAuthorProfile = {
+  name?: string;
+  photoUrl?: string;
+};
+
+function resolveContentAuthor(
+  post: IPost,
+  defaultAvatarUrl: string,
+  appPhotoUrl?: string
+): Author {
   const ppAuthor = post.authors?.[0];
   if (ppAuthor) {
     const avatarUrl =
       firstNonEmpty(
+        appPhotoUrl,
         extractPublishPressAvatarUrl(ppAuthor.avatar_url),
         post._embedded?.author?.[0]?.avatar_urls?.['96']
       ) ?? defaultAvatarUrl;
@@ -41,19 +53,108 @@ function resolveContentAuthor(post: IPost, defaultAvatarUrl: string): Author {
   if (wpAuthor) {
     return {
       name: wpAuthor.name ?? '',
-      avatarUrl: firstNonEmpty(wpAuthor.avatar_urls?.['96']) ?? defaultAvatarUrl,
+      avatarUrl:
+        firstNonEmpty(appPhotoUrl, wpAuthor.avatar_urls?.['96']) ?? defaultAvatarUrl,
     };
   }
 
-  return { name: '', avatarUrl: defaultAvatarUrl };
+  return {
+    name: '',
+    avatarUrl: firstNonEmpty(appPhotoUrl) ?? defaultAvatarUrl,
+  };
 }
 
-export function getAuthor(
+/** WordPress user id for the primary content author, when available. */
+export function getWordpressAuthorUserId(post: IPost): number | null {
+  const fromPp = post.authors?.[0]?.user_id;
+  if (typeof fromPp === 'number' && Number.isFinite(fromPp) && fromPp > 0) {
+    return fromPp;
+  }
+  if (typeof post.author === 'number' && Number.isFinite(post.author) && post.author > 0) {
+    return post.author;
+  }
+  const fromEmbedded = post._embedded?.author?.[0]?.id;
+  if (typeof fromEmbedded === 'number' && Number.isFinite(fromEmbedded) && fromEmbedded > 0) {
+    return fromEmbedded;
+  }
+  return null;
+}
+
+/**
+ * App profile name + photoUrl keyed by WordPress user id.
+ * Prefer these over WordPress / PublishPress when rendering bylines.
+ */
+export async function loadAppAuthorProfilesByWordpressId(
+  wordpressUserIds: Array<number | null | undefined>
+): Promise<Map<number, AppAuthorProfile>> {
+  const ids = [
+    ...new Set(
+      wordpressUserIds.filter(
+        (id): id is number => typeof id === 'number' && Number.isFinite(id) && id > 0
+      )
+    ),
+  ];
+  if (ids.length === 0) {
+    return new Map();
+  }
+
+  const users = await prisma.user.findMany({
+    where: { wordpressId: { in: ids } },
+    select: { wordpressId: true, name: true, photoUrl: true },
+  });
+
+  const map = new Map<number, AppAuthorProfile>();
+  for (const u of users) {
+    if (u.wordpressId == null) continue;
+    const name = u.name?.trim();
+    const photoUrl = u.photoUrl?.trim();
+    if (!name && !photoUrl) continue;
+    map.set(u.wordpressId, {
+      ...(name ? { name } : {}),
+      ...(photoUrl ? { photoUrl } : {}),
+    });
+  }
+  return map;
+}
+
+function applyAppAuthorProfile(
+  author: Author,
   post: IPost,
-  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK
+  appProfiles?: Map<number, AppAuthorProfile>
+): Author {
+  if (!appProfiles || appProfiles.size === 0) {
+    return author;
+  }
+  const wpId = getWordpressAuthorUserId(post);
+  if (wpId == null) {
+    return author;
+  }
+  const profile = appProfiles.get(wpId);
+  if (!profile) {
+    return author;
+  }
+  const appName = profile.name?.trim();
+  // Photo is applied in resolveContentAuthor; here only override name if present.
+  if (!appName) {
+    return author;
+  }
+  return { ...author, name: appName };
+}
+
+function getAuthor(
+  post: IPost,
+  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK,
+  appProfiles?: Map<number, AppAuthorProfile>
 ): Author {
   if (post.type === ETypePost.POST) {
-    return resolveContentAuthor(post, defaultAvatarUrl);
+    const wpId = getWordpressAuthorUserId(post);
+    const appPhotoUrl =
+      wpId != null ? appProfiles?.get(wpId)?.photoUrl : undefined;
+    return applyAppAuthorProfile(
+      resolveContentAuthor(post, defaultAvatarUrl, appPhotoUrl),
+      post,
+      appProfiles
+    );
   }
   return { name: 'Patrocinado', avatarUrl: defaultAvatarUrl };
 }
@@ -78,14 +179,15 @@ export function getFeaturedImageOriginalUrl(post: IPost): string {
 
 export function toFeedItem(
   post: IPost,
-  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK
+  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK,
+  appProfiles?: Map<number, AppAuthorProfile>
 ): FeedItem {
   return {
     slug: post.slug,
     id: post.id,
     title: post.title.rendered,
     type: post.type,
-    author: getAuthor(post, defaultAvatarUrl),
+    author: getAuthor(post, defaultAvatarUrl, appProfiles),
     tags: post.tags,
     readingTime: post.acf.reading_time,
     image: getFeaturedImageUrl(post),
@@ -94,6 +196,17 @@ export function toFeedItem(
     categorySlug: '',
     onlyVideo: isSingleVideoContent(post.content.rendered),
   } as FeedItem;
+}
+
+/** Batch-convert posts to feed items, preferring app profile name + photo for bylines. */
+export async function toFeedItems(
+  posts: IPost[],
+  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK
+): Promise<FeedItem[]> {
+  const appProfiles = await loadAppAuthorProfilesByWordpressId(
+    posts.map(getWordpressAuthorUserId)
+  );
+  return posts.map((post) => toFeedItem(post, defaultAvatarUrl, appProfiles));
 }
 
 export function enrichFeedItemCategory(
@@ -114,7 +227,8 @@ export function toPostDetail(
   post: IPost,
   categories: ICategory[],
   tags: ITag[],
-  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK
+  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK,
+  appProfiles?: Map<number, AppAuthorProfile>
 ): PostDetailBase {
   const tagNames = post.tags
     .map((tagId) => tags.find((t) => t.id === tagId)?.name)
@@ -133,7 +247,7 @@ export function toPostDetail(
     resume: post.excerpt.rendered,
     readingTime: post.acf.reading_time,
     date: String(post.date),
-    author: getAuthor(post, defaultAvatarUrl),
+    author: getAuthor(post, defaultAvatarUrl, appProfiles),
     image: getFeaturedImageUrl(post),
     content: onlyVideo
       ? prepareWatchPageMedia(post.content.rendered, video?.thumbnailUrl)
@@ -144,6 +258,18 @@ export function toPostDetail(
     onlyVideo,
     ...(video ? { video } : {}),
   };
+}
+
+export async function toPostDetailWithAppAuthor(
+  post: IPost,
+  categories: ICategory[],
+  tags: ITag[],
+  defaultAvatarUrl: string = HARDCODED_AUTHOR_AVATAR_FALLBACK
+): Promise<PostDetailBase> {
+  const appProfiles = await loadAppAuthorProfilesByWordpressId([
+    getWordpressAuthorUserId(post),
+  ]);
+  return toPostDetail(post, categories, tags, defaultAvatarUrl, appProfiles);
 }
 
 /** Busca post de conteúdo ou anúncio por ID; `null` se não existir. */

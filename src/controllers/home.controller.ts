@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { ETypePost, type IPost } from '../models/post.interface';
 import { WordpressService } from '../services/wordpress.service';
 import type { FeedItem } from '../types';
-import { enrichFeedItemCategory, toFeedItem } from '../helpers/post.helper';
+import { enrichFeedItemCategory, toFeedItems } from '../helpers/post.helper';
 import { resolveDefaultAuthorAvatarUrl } from '../helpers/wordpressDefaultAvatar.helper';
 import { insertAdsIntoPosts } from '../helpers/ad.helper';
 import { prisma } from '../lib/prisma';
@@ -41,32 +41,32 @@ export class HomeController {
       intervalMin,
       intervalMax
     );
-    const carousel: FeedItem[] = carouselWithAds.map((post) =>
-      toFeedItem(post, defaultAvatarUrl)
-    );
+    const carousel: FeedItem[] = await toFeedItems(carouselWithAds, defaultAvatarUrl);
 
     for (const item of carousel) {
       enrichFeedItemCategory(item, categoryById);
     }
 
-    const categoriesWithPosts = categories.map((category) => {
-      const relatedContentPosts = (postsByCategory[category.id] || []).filter(
-        (p) => p.type === ETypePost.POST
-      );
-      const listWithAds = insertAdsIntoPosts(
-        relatedContentPosts,
-        ads,
-        intervalMin,
-        intervalMax,
-        category.id
-      );
-      const feedItems = listWithAds.map((p) => toFeedItem(p, defaultAvatarUrl));
-      for (const item of feedItems) {
-        item.categoryName = category.name;
-        item.categorySlug = category.slug;
-      }
-      return { id: category.id, name: category.name, slug: category.slug, posts: feedItems };
-    });
+    const categoriesWithPosts = await Promise.all(
+      categories.map(async (category) => {
+        const relatedContentPosts = (postsByCategory[category.id] || []).filter(
+          (p) => p.type === ETypePost.POST
+        );
+        const listWithAds = insertAdsIntoPosts(
+          relatedContentPosts,
+          ads,
+          intervalMin,
+          intervalMax,
+          category.id
+        );
+        const feedItems = await toFeedItems(listWithAds, defaultAvatarUrl);
+        for (const item of feedItems) {
+          item.categoryName = category.name;
+          item.categorySlug = category.slug;
+        }
+        return { id: category.id, name: category.name, slug: category.slug, posts: feedItems };
+      })
+    );
 
     const userId = req.appUser?.id;
     if (userId) {

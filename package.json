@@ -9,7 +9,9 @@
     "db:status": "prisma migrate status",
     "db:resolve": "prisma migrate resolve",
     "db:baseline": "tsx --env-file=.env scripts/baseline-migrations.ts",
-    "db:new": "tsx --env-file=.env scripts/new-migration.ts"
+    "db:new": "tsx --env-file=.env scripts/new-migration.ts",
+    "db:sync-author-names": "tsx --env-file=.env scripts/sync-author-names.ts",
+    "db:backfill-author-avatars": "tsx --env-file=.env scripts/backfill-author-avatars.ts"
   },
   "type": "module",
   "main": "./dist/server.js",

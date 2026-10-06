@@ -21,6 +21,7 @@ export type AdminWordpressAccessItem = {
   wordpressPassword: string | null;
   wordpressLoginUrl: string;
   credentialsStatus: WordpressCredentialsStatus;
+  canCreatePosts: boolean;
 };
 
 function getWordpressLoginUrl(): string {
@@ -42,6 +43,7 @@ function toAdminWordpressAccess(user: User): AdminWordpressAccessItem {
     wordpressPassword: password,
     wordpressLoginUrl: getWordpressLoginUrl(),
     credentialsStatus,
+    canCreatePosts: user.canCreatePosts,
   };
 }
 
@@ -154,6 +156,18 @@ export class WordpressAccessAdminService {
       },
     });
 
+    return toAdminWordpressAccess(updated);
+  }
+
+  async setCanCreatePosts(userId: string, enabled: boolean): Promise<AdminWordpressAccessItem> {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new Error('USER_NOT_FOUND');
+    }
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: { canCreatePosts: enabled },
+    });
     return toAdminWordpressAccess(updated);
   }
 }

@@ -9,6 +9,7 @@ export type ApiErrorCode =
   | 'NOT_FOUND'
   | 'ROUTE_NOT_FOUND'
   | 'VALIDATION_ERROR'
+  | 'CONFLICT'
   | 'INTERNAL_ERROR';
 
 export interface ApiSuccessBody<T> {

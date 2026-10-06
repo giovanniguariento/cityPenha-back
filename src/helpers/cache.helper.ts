@@ -11,6 +11,7 @@ export interface TtlCache<T> {
   get(key: string): T | undefined;
   set(key: string, data: T): void;
   delete(key: string): boolean;
+  clear(): void;
 }
 
 export function createTtlCache<T>(ttlMs: number): TtlCache<T> {
@@ -30,6 +31,9 @@ export function createTtlCache<T>(ttlMs: number): TtlCache<T> {
     },
     delete(key: string): boolean {
       return store.delete(key);
+    },
+    clear(): void {
+      store.clear();
     },
   };
 }

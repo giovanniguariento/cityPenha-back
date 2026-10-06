@@ -51,6 +51,10 @@ export function notFound(message: string, details: unknown | null = null): HttpE
   return new HttpError(404, 'NOT_FOUND', message, details);
 }
 
+export function conflict(message: string, details: unknown | null = null): HttpError {
+  return new HttpError(409, 'CONFLICT', message, details);
+}
+
 export function routeNotFound(message = 'Route not found'): HttpError {
   return new HttpError(404, 'ROUTE_NOT_FOUND', message, null);
 }

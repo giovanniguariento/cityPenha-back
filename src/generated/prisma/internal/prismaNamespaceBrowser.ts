@@ -311,6 +311,7 @@ export const UserScalarFieldEnum = {
   wordpressId: 'wordpressId',
   wordpressUsername: 'wordpressUsername',
   wordpressPasswordEnc: 'wordpressPasswordEnc',
+  canCreatePosts: 'canCreatePosts',
   xp: 'xp',
   coins: 'coins',
   createdAt: 'createdAt',

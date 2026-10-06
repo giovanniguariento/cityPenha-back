@@ -654,10 +654,6 @@ export type MissionScalarRelationFilter = {
   isNot?: Prisma.MissionWhereInput
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }

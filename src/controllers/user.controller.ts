@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { WordpressService } from '../services/wordpress.service';
+import { WordpressService, WordpressExistingUserError } from '../services/wordpress.service';
 import { UserService } from '../services/user.service';
 import { prisma } from '../lib/prisma';
 import type { PostFolderService } from '../services/postFolder.service';
@@ -18,9 +18,13 @@ import {
 import { brazilTodayYyyyMmDd } from '../lib/brTime';
 import { sendJsonSuccess } from '../lib/apiResponse';
 import { toPublicUser } from '../helpers/userResponse.helper';
-import { encryptWordpressPassword } from '../helpers/wordpressCredentials.helper';
+import {
+  assertWordpressCredentialsKey,
+  encryptWordpressPassword,
+} from '../helpers/wordpressCredentials.helper';
 import {
   badRequest,
+  conflict,
   forbidden,
   isHttpError,
   notFound,
@@ -29,6 +33,22 @@ import {
 } from '../lib/httpErrors';
 import { resolveSignupProfilePhoto } from '../helpers/wordpressDefaultAvatar.helper';
 import { isSafeExternalUrl } from '../helpers/safeUrl.helper';
+import { Prisma } from '../generated/prisma/client';
+import { logger } from '../lib/logger';
+
+function isPrismaUniqueOn(err: unknown, field: string): boolean {
+  if (!(err instanceof Prisma.PrismaClientKnownRequestError) || err.code !== 'P2002') {
+    return false;
+  }
+  const target = err.meta?.target;
+  if (Array.isArray(target)) {
+    return target.includes(field);
+  }
+  if (typeof target === 'string') {
+    return target.includes(field);
+  }
+  return false;
+}
 
 export class UserController {
   constructor(
@@ -79,22 +99,123 @@ export class UserController {
       return;
     }
 
-    const wpUser = await this.wordpressService.createUser({
-      email,
-      displayName: name,
-      defaultAvatarAttachmentId,
-    });
-    const user = await this.userService.create({
-      email,
-      firebaseUid,
-      wordpressId: wpUser.id,
-      wordpressUsername: wpUser.username,
-      wordpressPasswordEnc: encryptWordpressPassword(wpUser.password),
-      name,
-      photoUrl,
-    });
+    // Fail before touching WordPress if we cannot persist credentials afterwards.
+    assertWordpressCredentialsKey();
 
-    await this.postFolderService.ensureSystemFoldersForUser(user.id);
+    const emailOwner = await this.userService.findByEmail(email);
+    if (emailOwner && emailOwner.firebaseUid !== firebaseUid) {
+      throw conflict('email already registered');
+    }
+
+    let wpUser: { id: number; username: string; password: string };
+    let createdNow = false;
+
+    const existingWp = await this.wordpressService.findUserByEmail(email);
+    if (existingWp) {
+      const linked = await this.userService.findByWordpressId(existingWp.id);
+      if (linked && linked.firebaseUid !== firebaseUid) {
+        throw conflict('email already registered');
+      }
+      // Orphan (or linked to this uid — shouldn't happen after findByFirebaseUid): adopt.
+      const adopted = await this.wordpressService.adoptUser({
+        wordpressUserId: existingWp.id,
+        username: existingWp.username,
+        email,
+        name,
+      });
+      wpUser = {
+        id: adopted.id,
+        username: adopted.username,
+        password: adopted.password,
+      };
+      createdNow = adopted.createdNow;
+    } else {
+      try {
+        wpUser = await this.wordpressService.createUser({ email, name });
+        createdNow = true;
+      } catch (err) {
+        if (!(err instanceof WordpressExistingUserError)) {
+          throw err;
+        }
+        // Race / timeout: WP created the user but we missed it — adopt.
+        const racedWp =
+          (await this.wordpressService.findUserByEmail(email)) ??
+          (await this.wordpressService.findUserByEmailViaRest(email));
+        if (!racedWp) {
+          throw err;
+        }
+        const linked = await this.userService.findByWordpressId(racedWp.id);
+        if (linked && linked.firebaseUid !== firebaseUid) {
+          throw conflict('email already registered');
+        }
+        const adopted = await this.wordpressService.adoptUser({
+          wordpressUserId: racedWp.id,
+          username: racedWp.username,
+          email,
+          name,
+        });
+        wpUser = {
+          id: adopted.id,
+          username: adopted.username,
+          password: adopted.password,
+        };
+        createdNow = adopted.createdNow;
+      }
+    }
+
+    let user;
+    try {
+      await this.wordpressService.provisionAuthor({
+        wordpressUserId: wpUser.id,
+        displayName: name,
+        email,
+        defaultAvatarAttachmentId,
+      });
+
+      user = await this.userService.create({
+        email,
+        firebaseUid,
+        wordpressId: wpUser.id,
+        wordpressUsername: wpUser.username,
+        wordpressPasswordEnc: encryptWordpressPassword(wpUser.password),
+        name,
+        photoUrl,
+      });
+
+      await this.postFolderService.ensureSystemFoldersForUser(user.id);
+    } catch (err) {
+      if (isPrismaUniqueOn(err, 'firebaseUid')) {
+        const raced = await this.userService.findByFirebaseUid(firebaseUid);
+        if (raced) {
+          sendJsonSuccess(res, toPublicUser(raced));
+          return;
+        }
+      }
+
+      if (isPrismaUniqueOn(err, 'email')) {
+        // Another identity claimed this email between our pre-check and create.
+        if (createdNow) {
+          const stillOrphan = !(await this.userService.findByWordpressId(wpUser.id));
+          if (stillOrphan) {
+            await this.wordpressService.deleteUser(wpUser.id);
+          }
+        }
+        throw conflict('email already registered');
+      }
+
+      if (createdNow) {
+        const stillOrphan = !(await this.userService.findByWordpressId(wpUser.id));
+        if (stillOrphan) {
+          await this.wordpressService.deleteUser(wpUser.id);
+        } else {
+          logger.warn(
+            { wordpressId: wpUser.id },
+            'Signup failed but WordPress user is already linked; skipping delete'
+          );
+        }
+      }
+      throw err;
+    }
 
     let responseUser = user;
     if (photoFromClient) {
@@ -152,9 +273,12 @@ export class UserController {
       if (typeof body.name !== 'string') {
         throw validationError('name must be a string');
       }
-      const trimmed = body.name.trim();
+      const trimmed = body.name.trim().replace(/\s+/g, ' ');
       if (trimmed.length === 0) {
         throw validationError('name cannot be empty');
+      }
+      if (trimmed.length < 2) {
+        throw validationError('name must be at least 2 characters');
       }
       if (trimmed.length > 120) {
         throw validationError('name must be at most 120 characters');
@@ -195,6 +319,21 @@ export class UserController {
     }
 
     const updated = await this.userService.updateProfile(user.id, data);
+
+    // Always push current name to WP/PP when the user has a linked account.
+    // Existing accounts often already have a nice app `name` while WP still
+    // shows the auto-generated login — any profile save must reconcile.
+    if (updated.wordpressId != null) {
+      try {
+        await this.userService.syncAuthorDisplayName(updated);
+      } catch (err) {
+        logger.warn(
+          { err, userId: updated.id, wordpressId: updated.wordpressId },
+          'Failed to sync author display name to WordPress; app profile was saved'
+        );
+      }
+    }
+
     sendJsonSuccess(res, toPublicUser(updated));
   };
 

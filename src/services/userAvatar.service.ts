@@ -70,14 +70,31 @@ export class UserAvatarService {
       assertSafeExternalUrl(imageUrl);
       const response = await fetchWithTimeout(imageUrl, {}, EXTERNAL_PHOTO_TIMEOUT_MS);
       if (!response.ok) {
+        logger.warn(
+          { wordpressId, status: response.status, imageUrl: imageUrl.slice(0, 120) },
+          'syncExternalPhoto: image download failed'
+        );
         return null;
       }
       const contentType = response.headers.get('content-type') ?? '';
       if (!contentType.startsWith('image/')) {
+        logger.warn(
+          { wordpressId, contentType, imageUrl: imageUrl.slice(0, 120) },
+          'syncExternalPhoto: response is not an image'
+        );
         return null;
       }
       const downloaded = Buffer.from(await response.arrayBuffer());
       if (downloaded.byteLength === 0 || downloaded.byteLength > MAX_DOWNLOAD_BYTES) {
+        logger.warn(
+          {
+            wordpressId,
+            byteLength: downloaded.byteLength,
+            maxBytes: MAX_DOWNLOAD_BYTES,
+            imageUrl: imageUrl.slice(0, 120),
+          },
+          'syncExternalPhoto: image size out of bounds'
+        );
         return null;
       }
       return await this.updateUserAvatar({ userId, wordpressId, buffer: downloaded });
@@ -85,6 +102,28 @@ export class UserAvatarService {
       logger.warn({ err, wordpressId }, 'Failed to sync external signup photo to WordPress');
       return null;
     }
+  }
+
+  /**
+   * If the user has an app `photoUrl` but PublishPress has no custom avatar,
+   * best-effort sync into WordPress (fire-and-forget safe to call without await).
+   */
+  async syncAppPhotoIfMissingPublishPressAvatar(input: {
+    userId: string;
+    wordpressId: number;
+    photoUrl: string | null | undefined;
+  }): Promise<void> {
+    const photoUrl = input.photoUrl?.trim();
+    if (!photoUrl) return;
+
+    const existing = await getPublishPressAuthorAvatarAttachmentId(input.wordpressId);
+    if (existing != null) return;
+
+    await this.syncExternalPhoto({
+      userId: input.userId,
+      wordpressId: input.wordpressId,
+      imageUrl: photoUrl,
+    });
   }
 
   /**

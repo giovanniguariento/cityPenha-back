@@ -234,6 +234,9 @@ model User {
   // Relacionamentos
   postFolders PostFolder[]
 
+  // Creator permission (admin-gated in-app short posts)
+  canCreatePosts Boolean @default(false)
+
   // Gamification
   xp    Int @default(0)
   coins Int @default(0)

@@ -1,6 +1,9 @@
 import { Prisma } from '../generated/prisma/client';
 import { fetchWithTimeout } from '../helpers/fetch.helper';
-import { hasPublishPressAuthorProfile } from '../helpers/publishPressAuthors.helper';
+import {
+  getPublishPressAuthorTermId,
+  hasPublishPressAuthorProfile,
+} from '../helpers/publishPressAuthors.helper';
 import {
   PPMA_EDIT_OWN_PROFILE,
   addCapability,
@@ -141,7 +144,8 @@ export class PublishPressAuthorsService {
 
   /**
    * Sets PublishPress author avatar (`wp_termmeta.avatar` = attachment post ID).
-   * No-op if author term is missing or attachment id is invalid.
+   * If the author term is missing, creates the PublishPress profile from `wp_users`
+   * and retries once. No-op if attachment id is invalid.
    */
   async setAuthorAvatarAttachment(
     wordpressUserId: number,
@@ -151,23 +155,21 @@ export class PublishPressAuthorsService {
       return;
     }
 
-    const metaKey = `user_id_${wordpressUserId}`;
-    const linkRows = await prisma.$queryRaw<Array<{ term_id: bigint }>>(
-      Prisma.sql`
-        SELECT te.term_id AS term_id
-        FROM wp_termmeta te
-        INNER JOIN wp_term_taxonomy tt
-          ON tt.term_id = te.term_id
-          AND tt.taxonomy = 'author'
-        WHERE te.meta_key = ${metaKey}
-        LIMIT 1
-      `
-    );
-
-    const termId = linkRows[0]?.term_id;
+    let termId = await getPublishPressAuthorTermId(wordpressUserId);
     if (termId == null) {
-      logger.warn({ wordpressUserId }, 'PublishPress author term not found; skipping avatar');
-      return;
+      const ensured = await this.ensureAuthorProfileFromWpUser(wordpressUserId);
+      if (!ensured) {
+        logger.warn({ wordpressUserId }, 'PublishPress author term not found; skipping avatar');
+        return;
+      }
+      termId = await getPublishPressAuthorTermId(wordpressUserId);
+      if (termId == null) {
+        logger.warn(
+          { wordpressUserId },
+          'PublishPress author term still missing after ensure; skipping avatar'
+        );
+        return;
+      }
     }
 
     const existing = await prisma.wp_termmeta.findFirst({
@@ -191,6 +193,172 @@ export class PublishPressAuthorsService {
         meta_value: metaValue,
       },
     });
+  }
+
+  /** Creates PublishPress author from `wp_users` when the term is missing. */
+  private async ensureAuthorProfileFromWpUser(wordpressUserId: number): Promise<boolean> {
+    const wpUser = await prisma.wp_users.findUnique({
+      where: { ID: BigInt(wordpressUserId) },
+      select: { display_name: true, user_email: true, user_login: true },
+    });
+    if (!wpUser) {
+      logger.warn({ wordpressUserId }, 'wp_users row missing; cannot ensure PublishPress author');
+      return false;
+    }
+
+    const displayName =
+      wpUser.display_name?.trim() || wpUser.user_login?.trim() || `User ${wordpressUserId}`;
+    const email = wpUser.user_email?.trim() || '';
+    if (!email) {
+      logger.warn({ wordpressUserId }, 'wp_users email missing; cannot ensure PublishPress author');
+      return false;
+    }
+
+    try {
+      await this.ensureAuthorProfile({
+        wordpressUserId,
+        displayName,
+        email,
+      });
+      return true;
+    } catch (err) {
+      logger.warn(
+        { err, wordpressUserId },
+        'Failed to ensure PublishPress author profile before setting avatar'
+      );
+      return false;
+    }
+  }
+
+  /**
+   * Updates the PublishPress author display name used in post `authors[].display_name`.
+   * Prefer the PublishPress REST API (updates term + termmeta correctly); also
+   * writes `wp_terms.name` and refreshes denormalized `ppma_authors_name` postmeta.
+   * Slug is left unchanged so author URLs stay stable.
+   * No-op (with warning) when the author term is missing.
+   */
+  async updateAuthorDisplayName(wordpressUserId: number, name: string): Promise<void> {
+    const trimmed = name.trim().slice(0, 200);
+    if (!trimmed) {
+      return;
+    }
+
+    const termId = await getPublishPressAuthorTermId(wordpressUserId);
+    if (termId == null) {
+      logger.warn(
+        { wordpressUserId },
+        'PublishPress author term not found; skipping display name update'
+      );
+      return;
+    }
+
+    const previous = await prisma.wp_terms.findUnique({
+      where: { term_id: termId },
+      select: { name: true },
+    });
+    const previousName = previous?.name?.trim() ?? '';
+
+    const baseUrl = ppAuthorsBaseUrl();
+    if (baseUrl) {
+      const response = await fetchWithTimeout(`${baseUrl}/authors/${termId.toString()}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${credentials}`,
+        },
+        body: JSON.stringify({ display_name: trimmed }),
+      });
+      if (!response.ok) {
+        const body = await response.text();
+        logger.warn(
+          { wordpressUserId, termId: termId.toString(), status: response.status, body: body.slice(0, 300) },
+          'PublishPress REST display name update failed; falling back to DB write'
+        );
+      }
+    } else {
+      logger.warn('PublishPress Authors API URL is not configured; updating term name in DB only');
+    }
+
+    // Ensure term name matches even if REST failed or ignored the field.
+    await prisma.wp_terms.update({
+      where: { term_id: termId },
+      data: { name: trimmed },
+    });
+
+    await this.refreshDenormalizedAuthorNamesOnPosts(termId, previousName, trimmed);
+  }
+
+  /**
+   * PublishPress stores comma-separated author names on each post as
+   * `ppma_authors_name`. Replace the previous display name when present.
+   */
+  private async refreshDenormalizedAuthorNamesOnPosts(
+    termId: bigint,
+    previousName: string,
+    newName: string
+  ): Promise<void> {
+    if (!previousName || previousName === newName) {
+      // Still set single-author posts that only have this term.
+      const postIds = await prisma.$queryRaw<Array<{ object_id: bigint }>>(
+        Prisma.sql`
+          SELECT tr.object_id AS object_id
+          FROM wp_term_relationships tr
+          INNER JOIN wp_term_taxonomy tt
+            ON tt.term_taxonomy_id = tr.term_taxonomy_id
+            AND tt.taxonomy = 'author'
+          WHERE tt.term_id = ${termId}
+        `
+      );
+      for (const row of postIds) {
+        const existing = await prisma.wp_postmeta.findFirst({
+          where: { post_id: row.object_id, meta_key: 'ppma_authors_name' },
+          select: { meta_id: true, meta_value: true },
+        });
+        if (!existing) {
+          await prisma.wp_postmeta.create({
+            data: {
+              post_id: row.object_id,
+              meta_key: 'ppma_authors_name',
+              meta_value: newName,
+            },
+          });
+          continue;
+        }
+        const current = (existing.meta_value ?? '').trim();
+        // Only overwrite when this post lists a single author (no comma list).
+        if (!current.includes(',')) {
+          await prisma.wp_postmeta.update({
+            where: { meta_id: existing.meta_id },
+            data: { meta_value: newName },
+          });
+        }
+      }
+      return;
+    }
+
+    const metas = await prisma.wp_postmeta.findMany({
+      where: {
+        meta_key: 'ppma_authors_name',
+        meta_value: { contains: previousName },
+      },
+      select: { meta_id: true, meta_value: true },
+    });
+
+    for (const meta of metas) {
+      const current = meta.meta_value ?? '';
+      if (!current.includes(previousName)) continue;
+      const updated = current
+        .split(',')
+        .map((part) => (part.trim() === previousName ? newName : part.trim()))
+        .filter(Boolean)
+        .join(', ');
+      if (updated !== current) {
+        await prisma.wp_postmeta.update({
+          where: { meta_id: meta.meta_id },
+          data: { meta_value: updated },
+        });
+      }
+    }
   }
 }
 

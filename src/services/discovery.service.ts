@@ -7,8 +7,14 @@ import {
   DISCOVERY_LIMIT_WORLD_NEWS,
   WORLD_NEWS_CATEGORY_IDS,
 } from '../config/discovery';
-import { ETypePost } from '../models/post.interface';
-import { enrichFeedItemCategory, fetchPostOrAd, toFeedItem } from '../helpers/post.helper';
+import { ETypePost, type IPost } from '../models/post.interface';
+import {
+  enrichFeedItemCategory,
+  fetchPostOrAd,
+  loadAppAuthorProfilesByWordpressId,
+  getWordpressAuthorUserId,
+  toFeedItem,
+} from '../helpers/post.helper';
 import { buildSearchSnippet } from '../helpers/searchSnippet.helper';
 import { formatPublishedRelativePtBr } from '../helpers/relativeTimePt.helper';
 import { gravatarUrlFromEmail } from '../helpers/gravatar.helper';
@@ -112,8 +118,12 @@ export class DiscoveryService {
       (await this.wordpressService.getCategories()).map((c) => [c.id, c])
     );
 
+    const appProfiles = await loadAppAuthorProfilesByWordpressId(
+      wpPosts.slice(0, limit).map(getWordpressAuthorUserId)
+    );
+
     const posts: FeedItem[] = wpPosts.slice(0, limit).map((post) => {
-      const item = toFeedItem(post, defaultAvatarUrl);
+      const item = toFeedItem(post, defaultAvatarUrl, appProfiles);
       enrichFeedItemCategory(item, categoryById);
       item.matchSnippet = buildSearchSnippet(post, q);
       return item;
@@ -185,8 +195,12 @@ export class DiscoveryService {
     const allCategories = await this.wordpressService.getCategories();
     const categoryById = new Map(allCategories.map((c) => [c.id, c]));
 
+    const appProfiles = await loadAppAuthorProfilesByWordpressId(
+      rawPosts.map(getWordpressAuthorUserId)
+    );
+
     const posts: FeedItem[] = rawPosts.map((post) => {
-      const item = toFeedItem(post, defaultAvatarUrl);
+      const item = toFeedItem(post, defaultAvatarUrl, appProfiles);
       enrichFeedItemCategory(item, categoryById);
       return item;
     });
@@ -223,6 +237,7 @@ export class DiscoveryService {
 
     if (rows.length === 0) return [];
 
+    const appProfiles = await loadAppAuthorProfilesByWordpressId(rows.map((r) => Number(r.ID)));
     const ppmaAvatars = await Promise.all(
       rows.map((r) => getPublishPressAuthorAvatarUrl(Number(r.ID)))
     );
@@ -230,10 +245,12 @@ export class DiscoveryService {
     return rows.map((r, i) => {
       const email = r.user_email ?? '';
       const fromPpma = ppmaAvatars[i];
+      const id = Number(r.ID);
+      const profile = appProfiles.get(id);
       return {
-        wordpressUserId: Number(r.ID),
-        name: r.display_name ?? '',
-        avatarUrl: fromPpma ?? gravatarUrlFromEmail(email),
+        wordpressUserId: id,
+        name: profile?.name ?? r.display_name ?? '',
+        avatarUrl: profile?.photoUrl ?? fromPpma ?? gravatarUrlFromEmail(email),
         totalLikes: 0,
       };
     });
@@ -274,9 +291,12 @@ export class DiscoveryService {
     const contentPosts = posts.filter((p) => p.type === ETypePost.POST);
     const allCategories = await this.wordpressService.getCategories();
     const categoryById = new Map(allCategories.map((c) => [c.id, c]));
+    const appProfiles = await loadAppAuthorProfilesByWordpressId(
+      contentPosts.map(getWordpressAuthorUserId)
+    );
 
     return contentPosts.map((post) => {
-      const item = toFeedItem(post, defaultAvatarUrl);
+      const item = toFeedItem(post, defaultAvatarUrl, appProfiles);
       enrichFeedItemCategory(item, categoryById);
       return item;
     });
@@ -396,11 +416,18 @@ export class DiscoveryService {
     const allCategories = await this.wordpressService.getCategories();
     const categoryById = new Map(allCategories.map((c) => [c.id, c]));
 
+    const loaded: IPost[] = [];
     for (const id of wordpressPostIds) {
       const post = await fetchPostOrAd(this.wordpressService, id);
-      if (!post) continue;
+      if (post) loaded.push(post);
+    }
 
-      const item = toFeedItem(post, defaultAvatarUrl);
+    const appProfiles = await loadAppAuthorProfilesByWordpressId(
+      loaded.map(getWordpressAuthorUserId)
+    );
+
+    for (const post of loaded) {
+      const item = toFeedItem(post, defaultAvatarUrl, appProfiles);
       item.publishedAtRelative = formatPublishedRelativePtBr(post.date);
       enrichFeedItemCategory(item, categoryById);
       items.push(item);
@@ -449,6 +476,9 @@ export class DiscoveryService {
     });
     const nameById = new Map(users.map((u) => [u.ID, u.display_name ?? '']));
     const emailById = new Map(users.map((u) => [u.ID, u.user_email ?? '']));
+    const appProfiles = await loadAppAuthorProfilesByWordpressId(
+      rows.map((r) => Number(r.post_author))
+    );
 
     const ppmaAvatars = await Promise.all(
       rows.map((r) => getPublishPressAuthorAvatarUrl(Number(r.post_author)))
@@ -458,10 +488,11 @@ export class DiscoveryService {
       const id = Number(r.post_author);
       const email = emailById.get(r.post_author) ?? '';
       const fromPpma = ppmaAvatars[i];
+      const profile = appProfiles.get(id);
       return {
         wordpressUserId: id,
-        name: nameById.get(r.post_author) ?? '',
-        avatarUrl: fromPpma ?? gravatarUrlFromEmail(email),
+        name: profile?.name ?? nameById.get(r.post_author) ?? '',
+        avatarUrl: profile?.photoUrl ?? fromPpma ?? gravatarUrlFromEmail(email),
         totalLikes: Number(r.totalLikes),
       };
     });

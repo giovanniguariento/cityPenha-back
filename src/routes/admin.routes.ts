@@ -46,6 +46,7 @@ router.post('/recompute/:userId', asyncHandler(c.recomputeUser));
 router.get('/users/wordpress-access', asyncHandler(c.listWordpressAccess));
 router.get('/users/:userId/wordpress-access', asyncHandler(c.getWordpressAccess));
 router.post('/users/:userId/wordpress-access/provision', asyncHandler(c.provisionWordpressAccess));
+router.patch('/users/:userId/can-create-posts', asyncHandler(c.setCanCreatePosts));
 
 // Auditoria do reward ledger (analytics / suporte)
 router.get('/users/:userId/ledger', asyncHandler(c.getUserLedger));
