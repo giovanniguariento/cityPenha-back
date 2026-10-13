@@ -23,10 +23,43 @@ const ARTICLE_ALLOWED_TAGS = new Set([
   'hr',
   'img',
   'figure',
+  'video',
+  'iframe',
 ]);
 
 const DESCRIPTION_MAX_PLAIN_LENGTH = 2000;
 const ARTICLE_MAX_PLAIN_LENGTH = 50_000;
+
+const IMG_ATTRS = new Set(['src', 'alt', 'loading', 'class']);
+const VIDEO_ATTRS = new Set([
+  'src',
+  'controls',
+  'poster',
+  'preload',
+  'width',
+  'height',
+  'class',
+]);
+const IFRAME_ATTRS = new Set([
+  'src',
+  'width',
+  'height',
+  'title',
+  'allow',
+  'allowfullscreen',
+  'referrerpolicy',
+  'loading',
+  'class',
+  'frameborder',
+]);
+
+const EMBED_HOSTS = new Set([
+  'www.youtube.com',
+  'youtube.com',
+  'www.youtube-nocookie.com',
+  'youtube-nocookie.com',
+  'player.vimeo.com',
+]);
 
 function isSafeHref(href: string): boolean {
   const trimmed = href.trim();
@@ -37,9 +70,25 @@ function isSafeHref(href: string): boolean {
   );
 }
 
-function isSafeImgSrc(src: string): boolean {
+function isSafeMediaSrc(src: string): boolean {
   const trimmed = src.trim();
-  return trimmed.startsWith('https://') || trimmed.startsWith('/');
+  // Allow http for local WP media (e.g. http://localhost/wp-content/...).
+  return (
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('/')
+  );
+}
+
+function isSafeEmbedSrc(src: string): boolean {
+  const trimmed = src.trim();
+  if (!trimmed.startsWith('https://')) return false;
+  try {
+    const url = new URL(trimmed);
+    return EMBED_HOSTS.has(url.hostname.toLowerCase());
+  } catch {
+    return false;
+  }
 }
 
 function sanitizeWithAllowlist(
@@ -72,10 +121,28 @@ function sanitizeWithAllowlist(
         }
         continue;
       }
-      if (tag === 'img' && (name === 'src' || name === 'alt' || name === 'loading' || name === 'class')) {
+      if (tag === 'img' && IMG_ATTRS.has(name)) {
         if (name === 'src') {
           const src = attribs[name] ?? '';
-          if (!isSafeImgSrc(src)) {
+          if (!isSafeMediaSrc(src)) {
+            $(el).removeAttr(name);
+          }
+        }
+        continue;
+      }
+      if (tag === 'video' && VIDEO_ATTRS.has(name)) {
+        if (name === 'src' || name === 'poster') {
+          const src = attribs[name] ?? '';
+          if (!isSafeMediaSrc(src)) {
+            $(el).removeAttr(name);
+          }
+        }
+        continue;
+      }
+      if (tag === 'iframe' && IFRAME_ATTRS.has(name)) {
+        if (name === 'src') {
+          const src = attribs[name] ?? '';
+          if (!isSafeEmbedSrc(src)) {
             $(el).removeAttr(name);
           }
         }
@@ -91,10 +158,24 @@ function sanitizeWithAllowlist(
     }
   });
 
-  // Drop images without a safe src.
+  // Drop media without a safe src.
   $('img').each((_, el) => {
     const src = $(el).attr('src');
-    if (!src || !isSafeImgSrc(src)) {
+    if (!src || !isSafeMediaSrc(src)) {
+      $(el).remove();
+    }
+  });
+  $('video').each((_, el) => {
+    const src = $(el).attr('src');
+    if (!src || !isSafeMediaSrc(src)) {
+      $(el).remove();
+    } else if (!('controls' in (el.attribs ?? {}))) {
+      $(el).attr('controls', '');
+    }
+  });
+  $('iframe').each((_, el) => {
+    const src = $(el).attr('src');
+    if (!src || !isSafeEmbedSrc(src)) {
       $(el).remove();
     }
   });
@@ -139,4 +220,14 @@ export function sanitizePostArticleHtml(html: string): string {
 export function plainTextFromHtml(html: string): string {
   if (!html) return '';
   return cheerio.load(html)('body').text().replace(/\s+/g, ' ').trim();
+}
+
+/** True when article HTML has plain text or at least one safe media element. */
+export function articleHtmlHasContent(html: string): boolean {
+  if (!html?.trim()) return false;
+  const $ = cheerio.load(html, { xml: false });
+  const plain = $('body').text().replace(/\s+/g, ' ').trim();
+  if (plain) return true;
+  if ($('img[src], video[src], iframe[src]').length > 0) return true;
+  return false;
 }

@@ -60,9 +60,17 @@ export function wrapHtmlAsGutenbergBlocks(html: string): string {
           `<!-- wp:separator -->\n<hr class="wp-block-separator"/>\n<!-- /wp:separator -->`
         );
         break;
-      case 'figure':
-        parts.push(`<!-- wp:image -->\n${outer}\n<!-- /wp:image -->`);
+      case 'figure': {
+        const $figure = $(node as never);
+        if ($figure.find('video').length > 0) {
+          parts.push(`<!-- wp:video -->\n${outer}\n<!-- /wp:video -->`);
+        } else if ($figure.find('iframe').length > 0) {
+          parts.push(`<!-- wp:html -->\n${outer}\n<!-- /wp:html -->`);
+        } else {
+          parts.push(`<!-- wp:image -->\n${outer}\n<!-- /wp:image -->`);
+        }
         break;
+      }
       case 'img': {
         const src = $(node as never).attr('src') ?? '';
         const alt = $(node as never).attr('alt') ?? '';
@@ -70,6 +78,14 @@ export function wrapHtmlAsGutenbergBlocks(html: string): string {
         parts.push(`<!-- wp:image -->\n${img}\n<!-- /wp:image -->`);
         break;
       }
+      case 'video': {
+        const videoOuter = `<figure class="wp-block-video">${outer}</figure>`;
+        parts.push(`<!-- wp:video -->\n${videoOuter}\n<!-- /wp:video -->`);
+        break;
+      }
+      case 'iframe':
+        parts.push(`<!-- wp:html -->\n${outer}\n<!-- /wp:html -->`);
+        break;
       case 'br':
         break;
       default:

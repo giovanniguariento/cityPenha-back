@@ -7,6 +7,7 @@ import {
 } from '../services/wordpress.service';
 import { extractPostVideo, isSingleVideoContent } from '../helpers/content.helper';
 import {
+  articleHtmlHasContent,
   plainTextFromHtml,
   sanitizePostArticleHtml,
   sanitizePostDescriptionHtml,
@@ -372,7 +373,7 @@ export class MyPostsController {
 
     const articleHtml = sanitizePostArticleHtml(rawContentHtml);
     const plain = plainTextFromHtml(articleHtml);
-    if (!plain) {
+    if (!articleHtmlHasContent(articleHtml)) {
       throw validationError('O conteúdo do artigo é obrigatório');
     }
 

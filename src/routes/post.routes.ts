@@ -8,6 +8,8 @@ import { postViewRateLimit } from '../middleware/viewRateLimit';
 import { writeRateLimit } from '../middleware/writeRateLimit';
 import { shortPostRateLimit } from '../middleware/shortPostRateLimit';
 import { uploadShortVideo } from '../middleware/uploadShortVideo';
+import { uploadArticleMedia } from '../middleware/uploadArticleMedia';
+import { articleMediaUploadRateLimit } from '../middleware/articleMediaUploadRateLimit';
 import { requireCanCreatePosts } from '../middleware/requireCanCreatePosts';
 import { asyncHandler } from '../middleware/asyncHandler';
 
@@ -23,6 +25,22 @@ router.post(
   shortPostRateLimit,
   uploadShortVideo,
   asyncHandler(postController.create)
+);
+
+router.post(
+  '/media',
+  requireAuth,
+  requireCanCreatePosts,
+  articleMediaUploadRateLimit,
+  uploadArticleMedia,
+  asyncHandler(postController.uploadMedia)
+);
+
+router.get(
+  '/categories',
+  requireAuth,
+  requireCanCreatePosts,
+  asyncHandler(postController.listCategories)
 );
 
 router.get(

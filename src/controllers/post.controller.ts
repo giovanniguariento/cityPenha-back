@@ -7,6 +7,7 @@ import { fetchPostOrAd, toPostDetailWithAppAuthor, verifyWordpressPostExists } f
 import { resolveDefaultAuthorAvatarUrl } from '../helpers/wordpressDefaultAvatar.helper';
 import { isSingleVideoContent } from '../helpers/content.helper';
 import {
+  articleHtmlHasContent,
   plainTextFromHtml,
   sanitizePostArticleHtml,
   sanitizePostDescriptionHtml,
@@ -75,6 +76,82 @@ export class PostController {
     private readonly wordpressService: WordpressService,
     private readonly postFolderService: PostFolderService
   ) {}
+
+  /**
+   * GET /post/categories — full WordPress category list for create/edit pickers.
+   * Ordered A–Z (pt-BR). Uses paginated discovery fetch + cache.
+   */
+  listCategories = async (_req: Request, res: Response): Promise<void> => {
+    const rows = await this.wordpressService.getCategoriesForDiscovery();
+    const categories = rows
+      .map((c) => ({ id: c.id, name: c.name, slug: c.slug }))
+      .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
+    sendJsonSuccess(res, { categories });
+  };
+
+  /**
+   * POST /post/media — multipart `file` (image or video) for inline article media.
+   * Uploads to WordPress Media Library and returns `sourceUrl`.
+   */
+  uploadMedia = async (req: Request, res: Response): Promise<void> => {
+    const user = req.appUser;
+    if (!user) {
+      throw unauthorized('Unauthorized');
+    }
+    if (user.wordpressId == null) {
+      throw unauthorized('User has no WordPress author account');
+    }
+
+    const file = req.file;
+    if (!file?.buffer?.length) {
+      throw validationError('Missing media file');
+    }
+
+    const resolvedAuth = resolveShortPostWordpressAuth(user);
+    if (!resolvedAuth) {
+      throw forbidden(
+        'WordPress credentials unavailable. Ask an admin to provision WordPress access, or configure ENV_API_WORDPRESS_ADMIN_USER/PASSWORD.'
+      );
+    }
+
+    const { auth: wpAuth, isAuthorAuth } = resolvedAuth;
+    const authorId = user.wordpressId;
+    const isImage = file.mimetype.startsWith('image/');
+    const ext =
+      file.mimetype === 'image/png'
+        ? 'png'
+        : file.mimetype === 'image/webp'
+          ? 'webp'
+          : file.mimetype === 'image/jpeg'
+            ? 'jpg'
+            : file.mimetype === 'video/webm'
+              ? 'webm'
+              : file.mimetype === 'video/quicktime'
+                ? 'mov'
+                : isImage
+                  ? 'jpg'
+                  : 'mp4';
+    const filename =
+      file.originalname?.replace(/[^\w.\-]+/g, '_') ||
+      `article-${isImage ? 'image' : 'video'}-${Date.now()}.${ext}`;
+
+    try {
+      const media = await this.wordpressService.uploadMedia({
+        buffer: file.buffer,
+        filename,
+        mimeType: file.mimetype,
+        authorId: isAuthorAuth ? undefined : authorId,
+        auth: wpAuth,
+      });
+      sendJsonSuccess(res, {
+        id: media.id,
+        sourceUrl: media.sourceUrl,
+        mimeType: file.mimetype,
+      });
+    } catch (e) {
+      this.rethrowCreateError(e, user.id);
+    }
+  };
 
   /**
    * POST /post/create — multipart:
@@ -397,14 +474,14 @@ export class PostController {
 
     let articleHtml = sanitizePostArticleHtml(rawContentHtml);
     let plain = plainTextFromHtml(articleHtml);
-    if (!plain && rawDescriptionText.trim()) {
+    if (!articleHtmlHasContent(articleHtml) && rawDescriptionText.trim()) {
       articleHtml = sanitizePostArticleHtml(
         `<p>${escapeHtmlAttr(rawDescriptionText.trim())}</p>`
       );
       plain = plainTextFromHtml(articleHtml);
     }
 
-    if (!plain) {
+    if (!articleHtmlHasContent(articleHtml)) {
       throw validationError('O conteúdo do artigo é obrigatório');
     }
 
