@@ -3,7 +3,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { validationError } from '../lib/httpErrors';
 
 export const shortVideoMaxBytes =
-  Number(process.env.SHORT_VIDEO_MAX_BYTES) || 80 * 1024 * 1024;
+  Number(process.env.SHORT_VIDEO_MAX_BYTES) || 100 * 1024 * 1024;
 
 /** Optional JPEG/PNG/WebP poster for feed featured image (captured client-side). */
 export const shortThumbnailMaxBytes = 5 * 1024 * 1024;
