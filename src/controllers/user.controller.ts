@@ -32,7 +32,11 @@ import {
   validationError,
 } from '../lib/httpErrors';
 import { resolveSignupProfilePhoto } from '../helpers/wordpressDefaultAvatar.helper';
-import { isSafeExternalUrl } from '../helpers/safeUrl.helper';
+import {
+  isAllowedProfilePhotoUrl,
+  isSafeExternalUrl,
+  isWordpressMediaUrl,
+} from '../helpers/safeUrl.helper';
 import { Prisma } from '../generated/prisma/client';
 import { logger } from '../lib/logger';
 
@@ -69,12 +73,17 @@ export class UserController {
       throw validationError('Missing required fields');
     }
 
-    const photoFromClient =
+    let photoFromClient =
       typeof body.photoUrl === 'string' ? body.photoUrl.trim() : '';
 
-    // Reject unsafe external URLs (SSRF); empty photo falls back to Gravatar/default
-    if (photoFromClient && !isSafeExternalUrl(photoFromClient)) {
-      throw validationError('Invalid photoUrl');
+    // Allow safe external + our WP media URLs; ignore anything else and fall back
+    // (do not block signup — local WP avatars use http://localhost/wp-content/...).
+    if (photoFromClient && !isAllowedProfilePhotoUrl(photoFromClient)) {
+      logger.warn(
+        { photoUrl: photoFromClient.slice(0, 120) },
+        'Ignoring disallowed signup photoUrl; falling back to default'
+      );
+      photoFromClient = '';
     }
 
     let photoUrl = photoFromClient;
@@ -218,7 +227,8 @@ export class UserController {
     }
 
     let responseUser = user;
-    if (photoFromClient) {
+    // Mirror external photos (Google/Gravatar) into WP; skip URLs already on our media library.
+    if (photoFromClient && isSafeExternalUrl(photoFromClient) && !isWordpressMediaUrl(photoFromClient)) {
       const synced = await userAvatarService.syncExternalPhoto({
         userId: user.id,
         wordpressId: wpUser.id,

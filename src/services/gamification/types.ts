@@ -38,6 +38,11 @@ export type DomainEventType =
   | 'save.removed'
   | 'comment.added'
   | 'comment.removed'
+  | 'experience.like.added'
+  | 'experience.like.removed'
+  | 'experience.share.added'
+  | 'experience.comment.added'
+  | 'experience.comment.removed'
   | 'manual_recompute';
 
 export interface DomainEventPayload {
@@ -47,6 +52,10 @@ export interface DomainEventPayload {
   categoryIds?: number[];
   /** ID do comentário criado/removido (necessário para evento comment.*). */
   commentId?: string;
+  /** ID da experiência (Agenda). */
+  experienceId?: string;
+  /** ID do comentário de experiência. */
+  experienceCommentId?: string;
   /** Hint para o ledger sobre quem disparou (auditoria). */
   source?: string;
 }

@@ -9,6 +9,8 @@ import userRoutes from './routes/user.routes';
 import discoveryRoutes from './routes/discovery.routes';
 import adminRoutes from './routes/admin.routes';
 import commentRoutes from './routes/comment.routes';
+import experienceRoutes from './routes/experience.routes';
+import experienceCommentRoutes from './routes/experienceComment.routes';
 import ogRoutes from './routes/og.routes';
 import sitemapRoutes from './routes/sitemap.routes';
 import { notFoundHandler } from './middleware/notFound';
@@ -65,6 +67,8 @@ app.use('/user', userRoutes);
 app.use('/discovery', discoveryRoutes);
 app.use('/admin', adminRoutes);
 app.use('/comment', commentRoutes);
+app.use('/experiences', experienceRoutes);
+app.use('/experience-comments', experienceCommentRoutes);
 app.use('/og-image', ogRoutes);
 app.use('/sitemap', sitemapRoutes);
 

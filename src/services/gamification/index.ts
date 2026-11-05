@@ -19,7 +19,7 @@ import { MetricCache } from './metrics/registry';
 import { evaluateMissions, viewMissionsForUser } from './engine/missionEngine';
 import { evaluateBadges } from './engine/badgeEngine';
 import { evaluateLevel } from './engine/levelEngine';
-import { applyReward } from './engine/rewardLedger';
+import { applyReward, getNetLedgerForSource } from './engine/rewardLedger';
 import { emitDomainEvent } from './events/bus';
 import type {
   BadgeView,
@@ -34,8 +34,16 @@ import type {
   Tx,
 } from './types';
 
-const XP_PER_READ = 10;
-const XP_PER_COMMENT = 1;
+function envXp(name: string, fallback: number): number {
+  const n = Number(process.env[name]);
+  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : fallback;
+}
+
+const XP_PER_READ = envXp('XP_PER_READ', 10);
+const XP_PER_COMMENT = envXp('XP_PER_COMMENT', 1);
+const XP_PER_EXPERIENCE_LIKE = envXp('XP_PER_EXPERIENCE_LIKE', 5);
+const XP_PER_EXPERIENCE_SHARE = envXp('XP_PER_EXPERIENCE_SHARE', 5);
+const XP_PER_EXPERIENCE_COMMENT = envXp('XP_PER_EXPERIENCE_COMMENT', XP_PER_COMMENT);
 
 registerBuiltInMetrics();
 
@@ -109,6 +117,77 @@ async function applyCommentSideEffect(tx: Tx, userId: string, commentId: string)
   return reward ? [reward] : [];
 }
 
+async function applyExperienceLikeSideEffect(
+  tx: Tx,
+  userId: string,
+  experienceId: string,
+  added: boolean
+): Promise<RewardView[]> {
+  const source = `EXPERIENCE_LIKE_XP:${experienceId}`;
+  const net = await getNetLedgerForSource(tx, userId, source);
+  if (added) {
+    if (net.xp > 0) return [];
+    const reward = await applyReward({
+      tx,
+      userId,
+      source,
+      reason: 'granted',
+      coinsDelta: 0,
+      xpDelta: XP_PER_EXPERIENCE_LIKE,
+      meta: { experienceId },
+    });
+    return reward ? [reward] : [];
+  }
+  if (net.xp <= 0) return [];
+  const reward = await applyReward({
+    tx,
+    userId,
+    source,
+    reason: 'revoked',
+    coinsDelta: 0,
+    xpDelta: -Math.min(net.xp, XP_PER_EXPERIENCE_LIKE),
+    meta: { experienceId },
+  });
+  return reward ? [reward] : [];
+}
+
+async function applyExperienceShareSideEffect(
+  tx: Tx,
+  userId: string,
+  experienceId: string
+): Promise<RewardView[]> {
+  const source = `EXPERIENCE_SHARE_XP:${experienceId}`;
+  const net = await getNetLedgerForSource(tx, userId, source);
+  if (net.xp > 0) return [];
+  const reward = await applyReward({
+    tx,
+    userId,
+    source,
+    reason: 'granted',
+    coinsDelta: 0,
+    xpDelta: XP_PER_EXPERIENCE_SHARE,
+    meta: { experienceId },
+  });
+  return reward ? [reward] : [];
+}
+
+async function applyExperienceCommentSideEffect(
+  tx: Tx,
+  userId: string,
+  experienceCommentId: string
+): Promise<RewardView[]> {
+  const reward = await applyReward({
+    tx,
+    userId,
+    source: `EXPERIENCE_COMMENT_XP:${experienceCommentId}`,
+    reason: 'granted',
+    coinsDelta: 0,
+    xpDelta: XP_PER_EXPERIENCE_COMMENT,
+    meta: { experienceCommentId },
+  });
+  return reward ? [reward] : [];
+}
+
 export class GamificationFacade {
   /**
    * Publica um evento de domínio e devolve o snapshot atualizado.
@@ -128,6 +207,31 @@ export class GamificationFacade {
 
         if (eventType === 'comment.added' && payload.commentId) {
           rewards.push(...(await applyCommentSideEffect(tx, userId, payload.commentId)));
+        }
+
+        if (eventType === 'experience.like.added' && payload.experienceId) {
+          rewards.push(
+            ...(await applyExperienceLikeSideEffect(tx, userId, payload.experienceId, true))
+          );
+        }
+        if (eventType === 'experience.like.removed' && payload.experienceId) {
+          rewards.push(
+            ...(await applyExperienceLikeSideEffect(tx, userId, payload.experienceId, false))
+          );
+        }
+        if (eventType === 'experience.share.added' && payload.experienceId) {
+          rewards.push(
+            ...(await applyExperienceShareSideEffect(tx, userId, payload.experienceId))
+          );
+        }
+        if (eventType === 'experience.comment.added' && payload.experienceCommentId) {
+          rewards.push(
+            ...(await applyExperienceCommentSideEffect(
+              tx,
+              userId,
+              payload.experienceCommentId
+            ))
+          );
         }
 
         const [missions, badges, levels] = await Promise.all([

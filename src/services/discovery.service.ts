@@ -83,8 +83,13 @@ export class DiscoveryService {
     await this.applyViewedFlags(options.userId, allFeedItems);
     await postViewService.applyViewsCountsToFeedItems(allFeedItems);
 
+    const { experienceService } = await import('./experience.service');
+    const newExperiences = await experienceService.listNewForDiscovery(
+      Number(process.env.DISCOVERY_LIMIT_NEW_EXPERIENCES) || 5
+    );
+
     return {
-      newExperiences: [],
+      newExperiences,
       editorsChoice: [],
       topics,
       worldNews: worldPosts,

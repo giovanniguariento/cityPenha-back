@@ -412,7 +412,12 @@ export const ModelName = {
   Level: 'Level',
   RewardLedger: 'RewardLedger',
   Comment: 'Comment',
-  CommentLike: 'CommentLike'
+  CommentLike: 'CommentLike',
+  Experience: 'Experience',
+  ExperienceLike: 'ExperienceLike',
+  ExperienceShare: 'ExperienceShare',
+  ExperienceComment: 'ExperienceComment',
+  ExperienceCommentLike: 'ExperienceCommentLike'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -428,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "postFolder" | "favorite" | "readPost" | "postView" | "likedPost" | "mission" | "badge" | "userBadge" | "userMission" | "level" | "rewardLedger" | "comment" | "commentLike"
+    modelProps: "wp_commentmeta" | "wp_comments" | "wp_links" | "wp_options" | "wp_postmeta" | "wp_posts" | "wp_ppma_author_categories" | "wp_ppma_author_categories_meta" | "wp_ppma_author_relationships" | "wp_term_relationships" | "wp_term_taxonomy" | "wp_termmeta" | "wp_terms" | "wp_usermeta" | "wp_users" | "user" | "postFolder" | "favorite" | "readPost" | "postView" | "likedPost" | "mission" | "badge" | "userBadge" | "userMission" | "level" | "rewardLedger" | "comment" | "commentLike" | "experience" | "experienceLike" | "experienceShare" | "experienceComment" | "experienceCommentLike"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2346,6 +2351,336 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Experience: {
+      payload: Prisma.$ExperiencePayload<ExtArgs>
+      fields: Prisma.ExperienceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExperienceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExperienceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
+        }
+        findFirst: {
+          args: Prisma.ExperienceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExperienceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
+        }
+        findMany: {
+          args: Prisma.ExperienceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>[]
+        }
+        create: {
+          args: Prisma.ExperienceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
+        }
+        createMany: {
+          args: Prisma.ExperienceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ExperienceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
+        }
+        update: {
+          args: Prisma.ExperienceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
+        }
+        deleteMany: {
+          args: Prisma.ExperienceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExperienceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ExperienceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperiencePayload>
+        }
+        aggregate: {
+          args: Prisma.ExperienceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExperience>
+        }
+        groupBy: {
+          args: Prisma.ExperienceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExperienceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExperienceLike: {
+      payload: Prisma.$ExperienceLikePayload<ExtArgs>
+      fields: Prisma.ExperienceLikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExperienceLikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceLikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExperienceLikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceLikePayload>
+        }
+        findFirst: {
+          args: Prisma.ExperienceLikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceLikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExperienceLikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceLikePayload>
+        }
+        findMany: {
+          args: Prisma.ExperienceLikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceLikePayload>[]
+        }
+        create: {
+          args: Prisma.ExperienceLikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceLikePayload>
+        }
+        createMany: {
+          args: Prisma.ExperienceLikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ExperienceLikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceLikePayload>
+        }
+        update: {
+          args: Prisma.ExperienceLikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceLikePayload>
+        }
+        deleteMany: {
+          args: Prisma.ExperienceLikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExperienceLikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ExperienceLikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceLikePayload>
+        }
+        aggregate: {
+          args: Prisma.ExperienceLikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExperienceLike>
+        }
+        groupBy: {
+          args: Prisma.ExperienceLikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceLikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExperienceLikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceLikeCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExperienceShare: {
+      payload: Prisma.$ExperienceSharePayload<ExtArgs>
+      fields: Prisma.ExperienceShareFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExperienceShareFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceSharePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExperienceShareFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceSharePayload>
+        }
+        findFirst: {
+          args: Prisma.ExperienceShareFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceSharePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExperienceShareFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceSharePayload>
+        }
+        findMany: {
+          args: Prisma.ExperienceShareFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceSharePayload>[]
+        }
+        create: {
+          args: Prisma.ExperienceShareCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceSharePayload>
+        }
+        createMany: {
+          args: Prisma.ExperienceShareCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ExperienceShareDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceSharePayload>
+        }
+        update: {
+          args: Prisma.ExperienceShareUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceSharePayload>
+        }
+        deleteMany: {
+          args: Prisma.ExperienceShareDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExperienceShareUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ExperienceShareUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceSharePayload>
+        }
+        aggregate: {
+          args: Prisma.ExperienceShareAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExperienceShare>
+        }
+        groupBy: {
+          args: Prisma.ExperienceShareGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceShareGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExperienceShareCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceShareCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExperienceComment: {
+      payload: Prisma.$ExperienceCommentPayload<ExtArgs>
+      fields: Prisma.ExperienceCommentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExperienceCommentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExperienceCommentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentPayload>
+        }
+        findFirst: {
+          args: Prisma.ExperienceCommentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExperienceCommentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentPayload>
+        }
+        findMany: {
+          args: Prisma.ExperienceCommentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentPayload>[]
+        }
+        create: {
+          args: Prisma.ExperienceCommentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentPayload>
+        }
+        createMany: {
+          args: Prisma.ExperienceCommentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ExperienceCommentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentPayload>
+        }
+        update: {
+          args: Prisma.ExperienceCommentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExperienceCommentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExperienceCommentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ExperienceCommentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentPayload>
+        }
+        aggregate: {
+          args: Prisma.ExperienceCommentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExperienceComment>
+        }
+        groupBy: {
+          args: Prisma.ExperienceCommentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceCommentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExperienceCommentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceCommentCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExperienceCommentLike: {
+      payload: Prisma.$ExperienceCommentLikePayload<ExtArgs>
+      fields: Prisma.ExperienceCommentLikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExperienceCommentLikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentLikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExperienceCommentLikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentLikePayload>
+        }
+        findFirst: {
+          args: Prisma.ExperienceCommentLikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentLikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExperienceCommentLikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentLikePayload>
+        }
+        findMany: {
+          args: Prisma.ExperienceCommentLikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentLikePayload>[]
+        }
+        create: {
+          args: Prisma.ExperienceCommentLikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentLikePayload>
+        }
+        createMany: {
+          args: Prisma.ExperienceCommentLikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ExperienceCommentLikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentLikePayload>
+        }
+        update: {
+          args: Prisma.ExperienceCommentLikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentLikePayload>
+        }
+        deleteMany: {
+          args: Prisma.ExperienceCommentLikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExperienceCommentLikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ExperienceCommentLikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExperienceCommentLikePayload>
+        }
+        aggregate: {
+          args: Prisma.ExperienceCommentLikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExperienceCommentLike>
+        }
+        groupBy: {
+          args: Prisma.ExperienceCommentLikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceCommentLikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExperienceCommentLikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExperienceCommentLikeCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2599,6 +2934,7 @@ export const UserScalarFieldEnum = {
   wordpressUsername: 'wordpressUsername',
   wordpressPasswordEnc: 'wordpressPasswordEnc',
   canCreatePosts: 'canCreatePosts',
+  canCreateExperiences: 'canCreateExperiences',
   xp: 'xp',
   coins: 'coins',
   createdAt: 'createdAt',
@@ -2776,6 +3112,77 @@ export const CommentLikeScalarFieldEnum = {
 export type CommentLikeScalarFieldEnum = (typeof CommentLikeScalarFieldEnum)[keyof typeof CommentLikeScalarFieldEnum]
 
 
+export const ExperienceScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  coverUrl: 'coverUrl',
+  xpReward: 'xpReward',
+  featured: 'featured',
+  isAd: 'isAd',
+  venue: 'venue',
+  address: 'address',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  timeLabel: 'timeLabel',
+  conditionLabel: 'conditionLabel',
+  tags: 'tags',
+  status: 'status',
+  createdByUserId: 'createdByUserId',
+  likeCount: 'likeCount',
+  commentCount: 'commentCount',
+  shareCount: 'shareCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof typeof ExperienceScalarFieldEnum]
+
+
+export const ExperienceLikeScalarFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ExperienceLikeScalarFieldEnum = (typeof ExperienceLikeScalarFieldEnum)[keyof typeof ExperienceLikeScalarFieldEnum]
+
+
+export const ExperienceShareScalarFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ExperienceShareScalarFieldEnum = (typeof ExperienceShareScalarFieldEnum)[keyof typeof ExperienceShareScalarFieldEnum]
+
+
+export const ExperienceCommentScalarFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  content: 'content',
+  userId: 'userId',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExperienceCommentScalarFieldEnum = (typeof ExperienceCommentScalarFieldEnum)[keyof typeof ExperienceCommentScalarFieldEnum]
+
+
+export const ExperienceCommentLikeScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ExperienceCommentLikeScalarFieldEnum = (typeof ExperienceCommentLikeScalarFieldEnum)[keyof typeof ExperienceCommentLikeScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2790,6 +3197,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullsOrder = {
@@ -3100,6 +3514,61 @@ export const CommentLikeOrderByRelevanceFieldEnum = {
 export type CommentLikeOrderByRelevanceFieldEnum = (typeof CommentLikeOrderByRelevanceFieldEnum)[keyof typeof CommentLikeOrderByRelevanceFieldEnum]
 
 
+export const ExperienceOrderByRelevanceFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  coverUrl: 'coverUrl',
+  venue: 'venue',
+  address: 'address',
+  timeLabel: 'timeLabel',
+  conditionLabel: 'conditionLabel',
+  status: 'status',
+  createdByUserId: 'createdByUserId'
+} as const
+
+export type ExperienceOrderByRelevanceFieldEnum = (typeof ExperienceOrderByRelevanceFieldEnum)[keyof typeof ExperienceOrderByRelevanceFieldEnum]
+
+
+export const ExperienceLikeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  userId: 'userId'
+} as const
+
+export type ExperienceLikeOrderByRelevanceFieldEnum = (typeof ExperienceLikeOrderByRelevanceFieldEnum)[keyof typeof ExperienceLikeOrderByRelevanceFieldEnum]
+
+
+export const ExperienceShareOrderByRelevanceFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  userId: 'userId'
+} as const
+
+export type ExperienceShareOrderByRelevanceFieldEnum = (typeof ExperienceShareOrderByRelevanceFieldEnum)[keyof typeof ExperienceShareOrderByRelevanceFieldEnum]
+
+
+export const ExperienceCommentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  content: 'content',
+  userId: 'userId',
+  parentId: 'parentId'
+} as const
+
+export type ExperienceCommentOrderByRelevanceFieldEnum = (typeof ExperienceCommentOrderByRelevanceFieldEnum)[keyof typeof ExperienceCommentOrderByRelevanceFieldEnum]
+
+
+export const ExperienceCommentLikeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId'
+} as const
+
+export type ExperienceCommentLikeOrderByRelevanceFieldEnum = (typeof ExperienceCommentLikeOrderByRelevanceFieldEnum)[keyof typeof ExperienceCommentLikeOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -3285,6 +3754,11 @@ export type GlobalOmitConfig = {
   rewardLedger?: Prisma.RewardLedgerOmit
   comment?: Prisma.CommentOmit
   commentLike?: Prisma.CommentLikeOmit
+  experience?: Prisma.ExperienceOmit
+  experienceLike?: Prisma.ExperienceLikeOmit
+  experienceShare?: Prisma.ExperienceShareOmit
+  experienceComment?: Prisma.ExperienceCommentOmit
+  experienceCommentLike?: Prisma.ExperienceCommentLikeOmit
 }
 
 /* Types for Logging */

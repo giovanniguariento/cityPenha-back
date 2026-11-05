@@ -11,6 +11,7 @@ import { uploadShortVideo } from '../middleware/uploadShortVideo';
 import { uploadArticleMedia } from '../middleware/uploadArticleMedia';
 import { articleMediaUploadRateLimit } from '../middleware/articleMediaUploadRateLimit';
 import { requireCanCreatePosts } from '../middleware/requireCanCreatePosts';
+import { requireCanCreatePostsOrExperiences } from '../middleware/requireCanCreatePostsOrExperiences';
 import { asyncHandler } from '../middleware/asyncHandler';
 
 const router = Router();
@@ -39,7 +40,7 @@ router.post(
 router.get(
   '/categories',
   requireAuth,
-  requireCanCreatePosts,
+  requireCanCreatePostsOrExperiences,
   asyncHandler(postController.listCategories)
 );
 

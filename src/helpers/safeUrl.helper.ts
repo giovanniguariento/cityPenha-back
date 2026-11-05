@@ -128,3 +128,50 @@ export function isSafeExternalUrl(rawUrl: string): boolean {
     return false;
   }
 }
+
+/**
+ * Hostnames of our WordPress site (from ENV_API_WORDPRESS).
+ * Treats localhost ↔ 127.0.0.1 as the same local site.
+ */
+function wordpressSiteHostnames(): Set<string> {
+  const hosts = new Set<string>();
+  const raw = process.env.ENV_API_WORDPRESS?.trim();
+  if (!raw) return hosts;
+  try {
+    const host = new URL(raw).hostname.toLowerCase();
+    if (!host) return hosts;
+    hosts.add(host);
+    if (host === 'localhost' || host === '127.0.0.1') {
+      hosts.add('localhost');
+      hosts.add('127.0.0.1');
+    }
+  } catch {
+    // ignore invalid ENV_API_WORDPRESS
+  }
+  return hosts;
+}
+
+/**
+ * True when the URL points at our WordPress media library (or any path on the
+ * configured WP host). Used so local/dev avatars like
+ * `http://localhost/wp-content/uploads/...` can be stored without opening SSRF.
+ */
+export function isWordpressMediaUrl(rawUrl: string): boolean {
+  try {
+    const url = new URL(rawUrl);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return false;
+    const hostname = url.hostname.toLowerCase();
+    if (!wordpressSiteHostnames().has(hostname)) return false;
+    return url.pathname.includes('/wp-content/');
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * True if the URL may be stored as a profile photo: safe external URLs
+ * (Gravatar, Google, …) or our own WordPress media URLs.
+ */
+export function isAllowedProfilePhotoUrl(rawUrl: string): boolean {
+  return isSafeExternalUrl(rawUrl) || isWordpressMediaUrl(rawUrl);
+}

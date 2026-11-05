@@ -237,6 +237,9 @@ model User {
   // Creator permission (admin-gated in-app short posts)
   canCreatePosts Boolean @default(false)
 
+  // Agenda / Experiences permission (admin-gated; independent of WordPress)
+  canCreateExperiences Boolean @default(false)
+
   // Gamification
   xp    Int @default(0)
   coins Int @default(0)
@@ -250,6 +253,12 @@ model User {
   rewardLedger  RewardLedger[]
   comments      Comment[]
   commentLikes  CommentLike[]
+
+  experiencesCreated       Experience[]            @relation("ExperienceCreator")
+  experienceLikes          ExperienceLike[]
+  experienceShares         ExperienceShare[]
+  experienceComments       ExperienceComment[]
+  experienceCommentLikes   ExperienceCommentLike[]
 
   @@map("users")
 }
@@ -479,4 +488,120 @@ model CommentLike {
 
   @@unique([commentId, userId])
   @@map("comment_likes")
+}
+
+/// Evento da Agenda (Experiências). Autor interno nunca é exposto na API pública.
+model Experience {
+  id          String @id @default(uuid())
+  slug        String @unique @db.VarChar(200)
+  title       String @db.VarChar(300)
+  description String @db.Text
+  coverUrl    String @db.VarChar(1000)
+
+  /// Badge de XP exibido no evento (check-in futuro); independente do XP de interações.
+  xpReward Int @default(0)
+
+  featured Boolean @default(false)
+  isAd     Boolean @default(false)
+
+  venue          String  @db.VarChar(300)
+  address        String? @db.VarChar(500)
+  startsAt       DateTime
+  endsAt         DateTime?
+  timeLabel      String  @db.VarChar(100)
+  conditionLabel String? @db.VarChar(200)
+  tags           Json
+
+  /// draft | published | archived
+  status String @default("published") @db.VarChar(20)
+
+  createdByUserId String
+  createdBy       User   @relation("ExperienceCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  likeCount    Int @default(0)
+  commentCount Int @default(0)
+  shareCount   Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  likes    ExperienceLike[]
+  shares   ExperienceShare[]
+  comments ExperienceComment[]
+
+  @@index([status, startsAt])
+  @@index([status, featured, startsAt])
+  @@index([createdByUserId])
+  @@map("experiences")
+}
+
+model ExperienceLike {
+  id String @id @default(uuid())
+
+  experienceId String
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([experienceId, userId])
+  @@index([userId])
+  @@map("experience_likes")
+}
+
+model ExperienceShare {
+  id String @id @default(uuid())
+
+  experienceId String
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([experienceId, userId])
+  @@index([userId])
+  @@map("experience_shares")
+}
+
+model ExperienceComment {
+  id String @id @default(uuid())
+
+  experienceId String
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  content String @db.Text
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   ExperienceComment?  @relation("ExperienceCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  ExperienceComment[] @relation("ExperienceCommentReplies")
+
+  likes ExperienceCommentLike[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([experienceId, parentId, createdAt])
+  @@map("experience_comments")
+}
+
+model ExperienceCommentLike {
+  id String @id @default(uuid())
+
+  commentId String
+  comment   ExperienceComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userId])
+  @@map("experience_comment_likes")
 }

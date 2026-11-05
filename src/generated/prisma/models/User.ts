@@ -50,6 +50,7 @@ export type UserMinAggregateOutputType = {
   wordpressUsername: string | null
   wordpressPasswordEnc: string | null
   canCreatePosts: boolean | null
+  canCreateExperiences: boolean | null
   xp: number | null
   coins: number | null
   createdAt: Date | null
@@ -68,6 +69,7 @@ export type UserMaxAggregateOutputType = {
   wordpressUsername: string | null
   wordpressPasswordEnc: string | null
   canCreatePosts: boolean | null
+  canCreateExperiences: boolean | null
   xp: number | null
   coins: number | null
   createdAt: Date | null
@@ -86,6 +88,7 @@ export type UserCountAggregateOutputType = {
   wordpressUsername: number
   wordpressPasswordEnc: number
   canCreatePosts: number
+  canCreateExperiences: number
   xp: number
   coins: number
   createdAt: number
@@ -118,6 +121,7 @@ export type UserMinAggregateInputType = {
   wordpressUsername?: true
   wordpressPasswordEnc?: true
   canCreatePosts?: true
+  canCreateExperiences?: true
   xp?: true
   coins?: true
   createdAt?: true
@@ -136,6 +140,7 @@ export type UserMaxAggregateInputType = {
   wordpressUsername?: true
   wordpressPasswordEnc?: true
   canCreatePosts?: true
+  canCreateExperiences?: true
   xp?: true
   coins?: true
   createdAt?: true
@@ -154,6 +159,7 @@ export type UserCountAggregateInputType = {
   wordpressUsername?: true
   wordpressPasswordEnc?: true
   canCreatePosts?: true
+  canCreateExperiences?: true
   xp?: true
   coins?: true
   createdAt?: true
@@ -259,6 +265,7 @@ export type UserGroupByOutputType = {
   wordpressUsername: string | null
   wordpressPasswordEnc: string | null
   canCreatePosts: boolean
+  canCreateExperiences: boolean
   xp: number
   coins: number
   createdAt: Date
@@ -300,6 +307,7 @@ export type UserWhereInput = {
   wordpressUsername?: Prisma.StringNullableFilter<"User"> | string | null
   wordpressPasswordEnc?: Prisma.StringNullableFilter<"User"> | string | null
   canCreatePosts?: Prisma.BoolFilter<"User"> | boolean
+  canCreateExperiences?: Prisma.BoolFilter<"User"> | boolean
   xp?: Prisma.IntFilter<"User"> | number
   coins?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -312,6 +320,11 @@ export type UserWhereInput = {
   rewardLedger?: Prisma.RewardLedgerListRelationFilter
   comments?: Prisma.CommentListRelationFilter
   commentLikes?: Prisma.CommentLikeListRelationFilter
+  experiencesCreated?: Prisma.ExperienceListRelationFilter
+  experienceLikes?: Prisma.ExperienceLikeListRelationFilter
+  experienceShares?: Prisma.ExperienceShareListRelationFilter
+  experienceComments?: Prisma.ExperienceCommentListRelationFilter
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -326,6 +339,7 @@ export type UserOrderByWithRelationInput = {
   wordpressUsername?: Prisma.SortOrderInput | Prisma.SortOrder
   wordpressPasswordEnc?: Prisma.SortOrderInput | Prisma.SortOrder
   canCreatePosts?: Prisma.SortOrder
+  canCreateExperiences?: Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -338,6 +352,11 @@ export type UserOrderByWithRelationInput = {
   rewardLedger?: Prisma.RewardLedgerOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
   commentLikes?: Prisma.CommentLikeOrderByRelationAggregateInput
+  experiencesCreated?: Prisma.ExperienceOrderByRelationAggregateInput
+  experienceLikes?: Prisma.ExperienceLikeOrderByRelationAggregateInput
+  experienceShares?: Prisma.ExperienceShareOrderByRelationAggregateInput
+  experienceComments?: Prisma.ExperienceCommentOrderByRelationAggregateInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
 
@@ -356,6 +375,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   wordpressUsername?: Prisma.StringNullableFilter<"User"> | string | null
   wordpressPasswordEnc?: Prisma.StringNullableFilter<"User"> | string | null
   canCreatePosts?: Prisma.BoolFilter<"User"> | boolean
+  canCreateExperiences?: Prisma.BoolFilter<"User"> | boolean
   xp?: Prisma.IntFilter<"User"> | number
   coins?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -368,6 +388,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   rewardLedger?: Prisma.RewardLedgerListRelationFilter
   comments?: Prisma.CommentListRelationFilter
   commentLikes?: Prisma.CommentLikeListRelationFilter
+  experiencesCreated?: Prisma.ExperienceListRelationFilter
+  experienceLikes?: Prisma.ExperienceLikeListRelationFilter
+  experienceShares?: Prisma.ExperienceShareListRelationFilter
+  experienceComments?: Prisma.ExperienceCommentListRelationFilter
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeListRelationFilter
 }, "id" | "email" | "firebaseUid" | "wordpressId">
 
 export type UserOrderByWithAggregationInput = {
@@ -382,6 +407,7 @@ export type UserOrderByWithAggregationInput = {
   wordpressUsername?: Prisma.SortOrderInput | Prisma.SortOrder
   wordpressPasswordEnc?: Prisma.SortOrderInput | Prisma.SortOrder
   canCreatePosts?: Prisma.SortOrder
+  canCreateExperiences?: Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -408,6 +434,7 @@ export type UserScalarWhereWithAggregatesInput = {
   wordpressUsername?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   wordpressPasswordEnc?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   canCreatePosts?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  canCreateExperiences?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   xp?: Prisma.IntWithAggregatesFilter<"User"> | number
   coins?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -426,6 +453,7 @@ export type UserCreateInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -438,6 +466,11 @@ export type UserCreateInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -452,6 +485,7 @@ export type UserUncheckedCreateInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -464,6 +498,11 @@ export type UserUncheckedCreateInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -478,6 +517,7 @@ export type UserUpdateInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -490,6 +530,11 @@ export type UserUpdateInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -504,6 +549,7 @@ export type UserUncheckedUpdateInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -516,6 +562,11 @@ export type UserUncheckedUpdateInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -530,6 +581,7 @@ export type UserCreateManyInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -548,6 +600,7 @@ export type UserUpdateManyMutationInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -566,6 +619,7 @@ export type UserUncheckedUpdateManyInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -590,6 +644,7 @@ export type UserCountOrderByAggregateInput = {
   wordpressUsername?: Prisma.SortOrder
   wordpressPasswordEnc?: Prisma.SortOrder
   canCreatePosts?: Prisma.SortOrder
+  canCreateExperiences?: Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -614,6 +669,7 @@ export type UserMaxOrderByAggregateInput = {
   wordpressUsername?: Prisma.SortOrder
   wordpressPasswordEnc?: Prisma.SortOrder
   canCreatePosts?: Prisma.SortOrder
+  canCreateExperiences?: Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -632,6 +688,7 @@ export type UserMinOrderByAggregateInput = {
   wordpressUsername?: Prisma.SortOrder
   wordpressPasswordEnc?: Prisma.SortOrder
   canCreatePosts?: Prisma.SortOrder
+  canCreateExperiences?: Prisma.SortOrder
   xp?: Prisma.SortOrder
   coins?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -773,6 +830,76 @@ export type UserUpdateOneRequiredWithoutCommentLikesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentLikesInput, Prisma.UserUpdateWithoutCommentLikesInput>, Prisma.UserUncheckedUpdateWithoutCommentLikesInput>
 }
 
+export type UserCreateNestedOneWithoutExperiencesCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperiencesCreatedInput, Prisma.UserUncheckedCreateWithoutExperiencesCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperiencesCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutExperiencesCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperiencesCreatedInput, Prisma.UserUncheckedCreateWithoutExperiencesCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperiencesCreatedInput
+  upsert?: Prisma.UserUpsertWithoutExperiencesCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExperiencesCreatedInput, Prisma.UserUpdateWithoutExperiencesCreatedInput>, Prisma.UserUncheckedUpdateWithoutExperiencesCreatedInput>
+}
+
+export type UserCreateNestedOneWithoutExperienceLikesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperienceLikesInput, Prisma.UserUncheckedCreateWithoutExperienceLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperienceLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutExperienceLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperienceLikesInput, Prisma.UserUncheckedCreateWithoutExperienceLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperienceLikesInput
+  upsert?: Prisma.UserUpsertWithoutExperienceLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExperienceLikesInput, Prisma.UserUpdateWithoutExperienceLikesInput>, Prisma.UserUncheckedUpdateWithoutExperienceLikesInput>
+}
+
+export type UserCreateNestedOneWithoutExperienceSharesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperienceSharesInput, Prisma.UserUncheckedCreateWithoutExperienceSharesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperienceSharesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutExperienceSharesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperienceSharesInput, Prisma.UserUncheckedCreateWithoutExperienceSharesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperienceSharesInput
+  upsert?: Prisma.UserUpsertWithoutExperienceSharesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExperienceSharesInput, Prisma.UserUpdateWithoutExperienceSharesInput>, Prisma.UserUncheckedUpdateWithoutExperienceSharesInput>
+}
+
+export type UserCreateNestedOneWithoutExperienceCommentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperienceCommentsInput, Prisma.UserUncheckedCreateWithoutExperienceCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperienceCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutExperienceCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperienceCommentsInput, Prisma.UserUncheckedCreateWithoutExperienceCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperienceCommentsInput
+  upsert?: Prisma.UserUpsertWithoutExperienceCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExperienceCommentsInput, Prisma.UserUpdateWithoutExperienceCommentsInput>, Prisma.UserUncheckedUpdateWithoutExperienceCommentsInput>
+}
+
+export type UserCreateNestedOneWithoutExperienceCommentLikesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperienceCommentLikesInput, Prisma.UserUncheckedCreateWithoutExperienceCommentLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperienceCommentLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutExperienceCommentLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExperienceCommentLikesInput, Prisma.UserUncheckedCreateWithoutExperienceCommentLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExperienceCommentLikesInput
+  upsert?: Prisma.UserUpsertWithoutExperienceCommentLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExperienceCommentLikesInput, Prisma.UserUpdateWithoutExperienceCommentLikesInput>, Prisma.UserUncheckedUpdateWithoutExperienceCommentLikesInput>
+}
+
 export type UserCreateWithoutPostFoldersInput = {
   id?: string
   email: string
@@ -785,6 +912,7 @@ export type UserCreateWithoutPostFoldersInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -796,6 +924,11 @@ export type UserCreateWithoutPostFoldersInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPostFoldersInput = {
@@ -810,6 +943,7 @@ export type UserUncheckedCreateWithoutPostFoldersInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -821,6 +955,11 @@ export type UserUncheckedCreateWithoutPostFoldersInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPostFoldersInput = {
@@ -851,6 +990,7 @@ export type UserUpdateWithoutPostFoldersInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -862,6 +1002,11 @@ export type UserUpdateWithoutPostFoldersInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostFoldersInput = {
@@ -876,6 +1021,7 @@ export type UserUncheckedUpdateWithoutPostFoldersInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -887,6 +1033,11 @@ export type UserUncheckedUpdateWithoutPostFoldersInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReadPostsInput = {
@@ -901,6 +1052,7 @@ export type UserCreateWithoutReadPostsInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -912,6 +1064,11 @@ export type UserCreateWithoutReadPostsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReadPostsInput = {
@@ -926,6 +1083,7 @@ export type UserUncheckedCreateWithoutReadPostsInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -937,6 +1095,11 @@ export type UserUncheckedCreateWithoutReadPostsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReadPostsInput = {
@@ -967,6 +1130,7 @@ export type UserUpdateWithoutReadPostsInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -978,6 +1142,11 @@ export type UserUpdateWithoutReadPostsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReadPostsInput = {
@@ -992,6 +1161,7 @@ export type UserUncheckedUpdateWithoutReadPostsInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1003,6 +1173,11 @@ export type UserUncheckedUpdateWithoutReadPostsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLikedPostsInput = {
@@ -1017,6 +1192,7 @@ export type UserCreateWithoutLikedPostsInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1028,6 +1204,11 @@ export type UserCreateWithoutLikedPostsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLikedPostsInput = {
@@ -1042,6 +1223,7 @@ export type UserUncheckedCreateWithoutLikedPostsInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1053,6 +1235,11 @@ export type UserUncheckedCreateWithoutLikedPostsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLikedPostsInput = {
@@ -1083,6 +1270,7 @@ export type UserUpdateWithoutLikedPostsInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1094,6 +1282,11 @@ export type UserUpdateWithoutLikedPostsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLikedPostsInput = {
@@ -1108,6 +1301,7 @@ export type UserUncheckedUpdateWithoutLikedPostsInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1119,6 +1313,11 @@ export type UserUncheckedUpdateWithoutLikedPostsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUserBadgesInput = {
@@ -1133,6 +1332,7 @@ export type UserCreateWithoutUserBadgesInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1144,6 +1344,11 @@ export type UserCreateWithoutUserBadgesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserBadgesInput = {
@@ -1158,6 +1363,7 @@ export type UserUncheckedCreateWithoutUserBadgesInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1169,6 +1375,11 @@ export type UserUncheckedCreateWithoutUserBadgesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserBadgesInput = {
@@ -1199,6 +1410,7 @@ export type UserUpdateWithoutUserBadgesInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1210,6 +1422,11 @@ export type UserUpdateWithoutUserBadgesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserBadgesInput = {
@@ -1224,6 +1441,7 @@ export type UserUncheckedUpdateWithoutUserBadgesInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1235,6 +1453,11 @@ export type UserUncheckedUpdateWithoutUserBadgesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUserMissionsInput = {
@@ -1249,6 +1472,7 @@ export type UserCreateWithoutUserMissionsInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1260,6 +1484,11 @@ export type UserCreateWithoutUserMissionsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserMissionsInput = {
@@ -1274,6 +1503,7 @@ export type UserUncheckedCreateWithoutUserMissionsInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1285,6 +1515,11 @@ export type UserUncheckedCreateWithoutUserMissionsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserMissionsInput = {
@@ -1315,6 +1550,7 @@ export type UserUpdateWithoutUserMissionsInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1326,6 +1562,11 @@ export type UserUpdateWithoutUserMissionsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserMissionsInput = {
@@ -1340,6 +1581,7 @@ export type UserUncheckedUpdateWithoutUserMissionsInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1351,6 +1593,11 @@ export type UserUncheckedUpdateWithoutUserMissionsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRewardLedgerInput = {
@@ -1365,6 +1612,7 @@ export type UserCreateWithoutRewardLedgerInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1376,6 +1624,11 @@ export type UserCreateWithoutRewardLedgerInput = {
   userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRewardLedgerInput = {
@@ -1390,6 +1643,7 @@ export type UserUncheckedCreateWithoutRewardLedgerInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1401,6 +1655,11 @@ export type UserUncheckedCreateWithoutRewardLedgerInput = {
   userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRewardLedgerInput = {
@@ -1431,6 +1690,7 @@ export type UserUpdateWithoutRewardLedgerInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1442,6 +1702,11 @@ export type UserUpdateWithoutRewardLedgerInput = {
   userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRewardLedgerInput = {
@@ -1456,6 +1721,7 @@ export type UserUncheckedUpdateWithoutRewardLedgerInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1467,6 +1733,11 @@ export type UserUncheckedUpdateWithoutRewardLedgerInput = {
   userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1481,6 +1752,7 @@ export type UserCreateWithoutCommentsInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1492,6 +1764,11 @@ export type UserCreateWithoutCommentsInput = {
   userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1506,6 +1783,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1517,6 +1795,11 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1547,6 +1830,7 @@ export type UserUpdateWithoutCommentsInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1558,6 +1842,11 @@ export type UserUpdateWithoutCommentsInput = {
   userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1572,6 +1861,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1583,6 +1873,11 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentLikesInput = {
@@ -1597,6 +1892,7 @@ export type UserCreateWithoutCommentLikesInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1608,6 +1904,11 @@ export type UserCreateWithoutCommentLikesInput = {
   userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentLikesInput = {
@@ -1622,6 +1923,7 @@ export type UserUncheckedCreateWithoutCommentLikesInput = {
   wordpressUsername?: string | null
   wordpressPasswordEnc?: string | null
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: number
   coins?: number
   createdAt?: Date | string
@@ -1633,6 +1935,11 @@ export type UserUncheckedCreateWithoutCommentLikesInput = {
   userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentLikesInput = {
@@ -1663,6 +1970,7 @@ export type UserUpdateWithoutCommentLikesInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1674,6 +1982,11 @@ export type UserUpdateWithoutCommentLikesInput = {
   userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentLikesInput = {
@@ -1688,6 +2001,7 @@ export type UserUncheckedUpdateWithoutCommentLikesInput = {
   wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
   xp?: Prisma.IntFieldUpdateOperationsInput | number
   coins?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1699,6 +2013,711 @@ export type UserUncheckedUpdateWithoutCommentLikesInput = {
   userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutExperiencesCreatedInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutExperiencesCreatedInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutExperiencesCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperiencesCreatedInput, Prisma.UserUncheckedCreateWithoutExperiencesCreatedInput>
+}
+
+export type UserUpsertWithoutExperiencesCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutExperiencesCreatedInput, Prisma.UserUncheckedUpdateWithoutExperiencesCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperiencesCreatedInput, Prisma.UserUncheckedCreateWithoutExperiencesCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutExperiencesCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutExperiencesCreatedInput, Prisma.UserUncheckedUpdateWithoutExperiencesCreatedInput>
+}
+
+export type UserUpdateWithoutExperiencesCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutExperiencesCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutExperienceLikesInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutExperienceLikesInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutExperienceLikesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperienceLikesInput, Prisma.UserUncheckedCreateWithoutExperienceLikesInput>
+}
+
+export type UserUpsertWithoutExperienceLikesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutExperienceLikesInput, Prisma.UserUncheckedUpdateWithoutExperienceLikesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperienceLikesInput, Prisma.UserUncheckedCreateWithoutExperienceLikesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutExperienceLikesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutExperienceLikesInput, Prisma.UserUncheckedUpdateWithoutExperienceLikesInput>
+}
+
+export type UserUpdateWithoutExperienceLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutExperienceLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutExperienceSharesInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutExperienceSharesInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutExperienceSharesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperienceSharesInput, Prisma.UserUncheckedCreateWithoutExperienceSharesInput>
+}
+
+export type UserUpsertWithoutExperienceSharesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutExperienceSharesInput, Prisma.UserUncheckedUpdateWithoutExperienceSharesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperienceSharesInput, Prisma.UserUncheckedCreateWithoutExperienceSharesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutExperienceSharesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutExperienceSharesInput, Prisma.UserUncheckedUpdateWithoutExperienceSharesInput>
+}
+
+export type UserUpdateWithoutExperienceSharesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutExperienceSharesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutExperienceCommentsInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutExperienceCommentsInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutExperienceCommentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperienceCommentsInput, Prisma.UserUncheckedCreateWithoutExperienceCommentsInput>
+}
+
+export type UserUpsertWithoutExperienceCommentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutExperienceCommentsInput, Prisma.UserUncheckedUpdateWithoutExperienceCommentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperienceCommentsInput, Prisma.UserUncheckedCreateWithoutExperienceCommentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutExperienceCommentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutExperienceCommentsInput, Prisma.UserUncheckedUpdateWithoutExperienceCommentsInput>
+}
+
+export type UserUpdateWithoutExperienceCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutExperienceCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceCommentLikes?: Prisma.ExperienceCommentLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutExperienceCommentLikesInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutExperienceCommentLikesInput = {
+  id?: string
+  email: string
+  name: string
+  photoUrl?: string | null
+  nickname?: string | null
+  about?: string | null
+  firebaseUid: string
+  wordpressId?: number | null
+  wordpressUsername?: string | null
+  wordpressPasswordEnc?: string | null
+  canCreatePosts?: boolean
+  canCreateExperiences?: boolean
+  xp?: number
+  coins?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  postFolders?: Prisma.PostFolderUncheckedCreateNestedManyWithoutUserInput
+  readPosts?: Prisma.ReadPostUncheckedCreateNestedManyWithoutUserInput
+  likedPosts?: Prisma.LikedPostUncheckedCreateNestedManyWithoutUserInput
+  userMissions?: Prisma.UserMissionUncheckedCreateNestedManyWithoutUserInput
+  userBadges?: Prisma.UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  experiencesCreated?: Prisma.ExperienceUncheckedCreateNestedManyWithoutCreatedByInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedCreateNestedManyWithoutUserInput
+  experienceShares?: Prisma.ExperienceShareUncheckedCreateNestedManyWithoutUserInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutExperienceCommentLikesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperienceCommentLikesInput, Prisma.UserUncheckedCreateWithoutExperienceCommentLikesInput>
+}
+
+export type UserUpsertWithoutExperienceCommentLikesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutExperienceCommentLikesInput, Prisma.UserUncheckedUpdateWithoutExperienceCommentLikesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutExperienceCommentLikesInput, Prisma.UserUncheckedCreateWithoutExperienceCommentLikesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutExperienceCommentLikesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutExperienceCommentLikesInput, Prisma.UserUncheckedUpdateWithoutExperienceCommentLikesInput>
+}
+
+export type UserUpdateWithoutExperienceCommentLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutExperienceCommentLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  about?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firebaseUid?: Prisma.StringFieldUpdateOperationsInput | string
+  wordpressId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  wordpressUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressPasswordEnc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  canCreatePosts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canCreateExperiences?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  coins?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  postFolders?: Prisma.PostFolderUncheckedUpdateManyWithoutUserNestedInput
+  readPosts?: Prisma.ReadPostUncheckedUpdateManyWithoutUserNestedInput
+  likedPosts?: Prisma.LikedPostUncheckedUpdateManyWithoutUserNestedInput
+  userMissions?: Prisma.UserMissionUncheckedUpdateManyWithoutUserNestedInput
+  userBadges?: Prisma.UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  experiencesCreated?: Prisma.ExperienceUncheckedUpdateManyWithoutCreatedByNestedInput
+  experienceLikes?: Prisma.ExperienceLikeUncheckedUpdateManyWithoutUserNestedInput
+  experienceShares?: Prisma.ExperienceShareUncheckedUpdateManyWithoutUserNestedInput
+  experienceComments?: Prisma.ExperienceCommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1715,6 +2734,11 @@ export type UserCountOutputType = {
   rewardLedger: number
   comments: number
   commentLikes: number
+  experiencesCreated: number
+  experienceLikes: number
+  experienceShares: number
+  experienceComments: number
+  experienceCommentLikes: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1726,6 +2750,11 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   rewardLedger?: boolean | UserCountOutputTypeCountRewardLedgerArgs
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
   commentLikes?: boolean | UserCountOutputTypeCountCommentLikesArgs
+  experiencesCreated?: boolean | UserCountOutputTypeCountExperiencesCreatedArgs
+  experienceLikes?: boolean | UserCountOutputTypeCountExperienceLikesArgs
+  experienceShares?: boolean | UserCountOutputTypeCountExperienceSharesArgs
+  experienceComments?: boolean | UserCountOutputTypeCountExperienceCommentsArgs
+  experienceCommentLikes?: boolean | UserCountOutputTypeCountExperienceCommentLikesArgs
 }
 
 /**
@@ -1794,6 +2823,41 @@ export type UserCountOutputTypeCountCommentLikesArgs<ExtArgs extends runtime.Typ
   where?: Prisma.CommentLikeWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountExperiencesCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExperienceWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountExperienceLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExperienceLikeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountExperienceSharesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExperienceShareWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountExperienceCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExperienceCommentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountExperienceCommentLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExperienceCommentLikeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1807,6 +2871,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   wordpressUsername?: boolean
   wordpressPasswordEnc?: boolean
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: boolean
   coins?: boolean
   createdAt?: boolean
@@ -1819,6 +2884,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   rewardLedger?: boolean | Prisma.User$rewardLedgerArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   commentLikes?: boolean | Prisma.User$commentLikesArgs<ExtArgs>
+  experiencesCreated?: boolean | Prisma.User$experiencesCreatedArgs<ExtArgs>
+  experienceLikes?: boolean | Prisma.User$experienceLikesArgs<ExtArgs>
+  experienceShares?: boolean | Prisma.User$experienceSharesArgs<ExtArgs>
+  experienceComments?: boolean | Prisma.User$experienceCommentsArgs<ExtArgs>
+  experienceCommentLikes?: boolean | Prisma.User$experienceCommentLikesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1836,13 +2906,14 @@ export type UserSelectScalar = {
   wordpressUsername?: boolean
   wordpressPasswordEnc?: boolean
   canCreatePosts?: boolean
+  canCreateExperiences?: boolean
   xp?: boolean
   coins?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "photoUrl" | "nickname" | "about" | "firebaseUid" | "wordpressId" | "wordpressUsername" | "wordpressPasswordEnc" | "canCreatePosts" | "xp" | "coins" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "photoUrl" | "nickname" | "about" | "firebaseUid" | "wordpressId" | "wordpressUsername" | "wordpressPasswordEnc" | "canCreatePosts" | "canCreateExperiences" | "xp" | "coins" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   postFolders?: boolean | Prisma.User$postFoldersArgs<ExtArgs>
   readPosts?: boolean | Prisma.User$readPostsArgs<ExtArgs>
@@ -1852,6 +2923,11 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   rewardLedger?: boolean | Prisma.User$rewardLedgerArgs<ExtArgs>
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   commentLikes?: boolean | Prisma.User$commentLikesArgs<ExtArgs>
+  experiencesCreated?: boolean | Prisma.User$experiencesCreatedArgs<ExtArgs>
+  experienceLikes?: boolean | Prisma.User$experienceLikesArgs<ExtArgs>
+  experienceShares?: boolean | Prisma.User$experienceSharesArgs<ExtArgs>
+  experienceComments?: boolean | Prisma.User$experienceCommentsArgs<ExtArgs>
+  experienceCommentLikes?: boolean | Prisma.User$experienceCommentLikesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1866,6 +2942,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     rewardLedger: Prisma.$RewardLedgerPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
     commentLikes: Prisma.$CommentLikePayload<ExtArgs>[]
+    experiencesCreated: Prisma.$ExperiencePayload<ExtArgs>[]
+    experienceLikes: Prisma.$ExperienceLikePayload<ExtArgs>[]
+    experienceShares: Prisma.$ExperienceSharePayload<ExtArgs>[]
+    experienceComments: Prisma.$ExperienceCommentPayload<ExtArgs>[]
+    experienceCommentLikes: Prisma.$ExperienceCommentLikePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1879,6 +2960,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     wordpressUsername: string | null
     wordpressPasswordEnc: string | null
     canCreatePosts: boolean
+    canCreateExperiences: boolean
     xp: number
     coins: number
     createdAt: Date
@@ -2231,6 +3313,11 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   rewardLedger<T extends Prisma.User$rewardLedgerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rewardLedgerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RewardLedgerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   commentLikes<T extends Prisma.User$commentLikesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentLikesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  experiencesCreated<T extends Prisma.User$experiencesCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$experiencesCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExperiencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  experienceLikes<T extends Prisma.User$experienceLikesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$experienceLikesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExperienceLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  experienceShares<T extends Prisma.User$experienceSharesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$experienceSharesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExperienceSharePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  experienceComments<T extends Prisma.User$experienceCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$experienceCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExperienceCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  experienceCommentLikes<T extends Prisma.User$experienceCommentLikesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$experienceCommentLikesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExperienceCommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2271,6 +3358,7 @@ export interface UserFieldRefs {
   readonly wordpressUsername: Prisma.FieldRef<"User", 'String'>
   readonly wordpressPasswordEnc: Prisma.FieldRef<"User", 'String'>
   readonly canCreatePosts: Prisma.FieldRef<"User", 'Boolean'>
+  readonly canCreateExperiences: Prisma.FieldRef<"User", 'Boolean'>
   readonly xp: Prisma.FieldRef<"User", 'Int'>
   readonly coins: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
@@ -2807,6 +3895,126 @@ export type User$commentLikesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.CommentLikeScalarFieldEnum | Prisma.CommentLikeScalarFieldEnum[]
+}
+
+/**
+ * User.experiencesCreated
+ */
+export type User$experiencesCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Experience
+   */
+  select?: Prisma.ExperienceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Experience
+   */
+  omit?: Prisma.ExperienceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExperienceInclude<ExtArgs> | null
+  where?: Prisma.ExperienceWhereInput
+  orderBy?: Prisma.ExperienceOrderByWithRelationInput | Prisma.ExperienceOrderByWithRelationInput[]
+  cursor?: Prisma.ExperienceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExperienceScalarFieldEnum | Prisma.ExperienceScalarFieldEnum[]
+}
+
+/**
+ * User.experienceLikes
+ */
+export type User$experienceLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExperienceLike
+   */
+  select?: Prisma.ExperienceLikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExperienceLike
+   */
+  omit?: Prisma.ExperienceLikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExperienceLikeInclude<ExtArgs> | null
+  where?: Prisma.ExperienceLikeWhereInput
+  orderBy?: Prisma.ExperienceLikeOrderByWithRelationInput | Prisma.ExperienceLikeOrderByWithRelationInput[]
+  cursor?: Prisma.ExperienceLikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExperienceLikeScalarFieldEnum | Prisma.ExperienceLikeScalarFieldEnum[]
+}
+
+/**
+ * User.experienceShares
+ */
+export type User$experienceSharesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExperienceShare
+   */
+  select?: Prisma.ExperienceShareSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExperienceShare
+   */
+  omit?: Prisma.ExperienceShareOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExperienceShareInclude<ExtArgs> | null
+  where?: Prisma.ExperienceShareWhereInput
+  orderBy?: Prisma.ExperienceShareOrderByWithRelationInput | Prisma.ExperienceShareOrderByWithRelationInput[]
+  cursor?: Prisma.ExperienceShareWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExperienceShareScalarFieldEnum | Prisma.ExperienceShareScalarFieldEnum[]
+}
+
+/**
+ * User.experienceComments
+ */
+export type User$experienceCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExperienceComment
+   */
+  select?: Prisma.ExperienceCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExperienceComment
+   */
+  omit?: Prisma.ExperienceCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExperienceCommentInclude<ExtArgs> | null
+  where?: Prisma.ExperienceCommentWhereInput
+  orderBy?: Prisma.ExperienceCommentOrderByWithRelationInput | Prisma.ExperienceCommentOrderByWithRelationInput[]
+  cursor?: Prisma.ExperienceCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExperienceCommentScalarFieldEnum | Prisma.ExperienceCommentScalarFieldEnum[]
+}
+
+/**
+ * User.experienceCommentLikes
+ */
+export type User$experienceCommentLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ExperienceCommentLike
+   */
+  select?: Prisma.ExperienceCommentLikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ExperienceCommentLike
+   */
+  omit?: Prisma.ExperienceCommentLikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExperienceCommentLikeInclude<ExtArgs> | null
+  where?: Prisma.ExperienceCommentLikeWhereInput
+  orderBy?: Prisma.ExperienceCommentLikeOrderByWithRelationInput | Prisma.ExperienceCommentLikeOrderByWithRelationInput[]
+  cursor?: Prisma.ExperienceCommentLikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExperienceCommentLikeScalarFieldEnum | Prisma.ExperienceCommentLikeScalarFieldEnum[]
 }
 
 /**

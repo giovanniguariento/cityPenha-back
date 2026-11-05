@@ -1,4 +1,4 @@
-import type { User } from '../generated/prisma/client';
+import type { User } from '../../generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import {
   encryptWordpressPassword,
@@ -22,6 +22,7 @@ export type AdminWordpressAccessItem = {
   wordpressLoginUrl: string;
   credentialsStatus: WordpressCredentialsStatus;
   canCreatePosts: boolean;
+  canCreateExperiences: boolean;
 };
 
 function getWordpressLoginUrl(): string {
@@ -44,6 +45,7 @@ function toAdminWordpressAccess(user: User): AdminWordpressAccessItem {
     wordpressLoginUrl: getWordpressLoginUrl(),
     credentialsStatus,
     canCreatePosts: user.canCreatePosts,
+    canCreateExperiences: user.canCreateExperiences,
   };
 }
 
@@ -167,6 +169,21 @@ export class WordpressAccessAdminService {
     const updated = await prisma.user.update({
       where: { id: userId },
       data: { canCreatePosts: enabled },
+    });
+    return toAdminWordpressAccess(updated);
+  }
+
+  async setCanCreateExperiences(
+    userId: string,
+    enabled: boolean
+  ): Promise<AdminWordpressAccessItem> {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new Error('USER_NOT_FOUND');
+    }
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: { canCreateExperiences: enabled },
     });
     return toAdminWordpressAccess(updated);
   }

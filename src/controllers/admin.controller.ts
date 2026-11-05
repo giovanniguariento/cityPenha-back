@@ -252,4 +252,24 @@ export class AdminController {
       throw badRequest(message);
     }
   };
+
+  setCanCreateExperiences = async (req: Request, res: Response): Promise<void> => {
+    const { userId } = req.params;
+    if (!userId) throw validationError('Missing userId');
+    const body = req.body as { enabled?: unknown } | undefined;
+    if (typeof body?.enabled !== 'boolean') {
+      throw validationError('Body must include enabled: boolean');
+    }
+    try {
+      const item = await wordpressAccessAdminService.setCanCreateExperiences(
+        userId,
+        body.enabled
+      );
+      sendJsonSuccess(res, item);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Failed to update canCreateExperiences';
+      if (message === 'USER_NOT_FOUND') throw notFound('User not found');
+      throw badRequest(message);
+    }
+  };
 }

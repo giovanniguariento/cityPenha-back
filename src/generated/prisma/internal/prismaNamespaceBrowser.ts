@@ -79,7 +79,12 @@ export const ModelName = {
   Level: 'Level',
   RewardLedger: 'RewardLedger',
   Comment: 'Comment',
-  CommentLike: 'CommentLike'
+  CommentLike: 'CommentLike',
+  Experience: 'Experience',
+  ExperienceLike: 'ExperienceLike',
+  ExperienceShare: 'ExperienceShare',
+  ExperienceComment: 'ExperienceComment',
+  ExperienceCommentLike: 'ExperienceCommentLike'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -312,6 +317,7 @@ export const UserScalarFieldEnum = {
   wordpressUsername: 'wordpressUsername',
   wordpressPasswordEnc: 'wordpressPasswordEnc',
   canCreatePosts: 'canCreatePosts',
+  canCreateExperiences: 'canCreateExperiences',
   xp: 'xp',
   coins: 'coins',
   createdAt: 'createdAt',
@@ -489,6 +495,77 @@ export const CommentLikeScalarFieldEnum = {
 export type CommentLikeScalarFieldEnum = (typeof CommentLikeScalarFieldEnum)[keyof typeof CommentLikeScalarFieldEnum]
 
 
+export const ExperienceScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  coverUrl: 'coverUrl',
+  xpReward: 'xpReward',
+  featured: 'featured',
+  isAd: 'isAd',
+  venue: 'venue',
+  address: 'address',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  timeLabel: 'timeLabel',
+  conditionLabel: 'conditionLabel',
+  tags: 'tags',
+  status: 'status',
+  createdByUserId: 'createdByUserId',
+  likeCount: 'likeCount',
+  commentCount: 'commentCount',
+  shareCount: 'shareCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof typeof ExperienceScalarFieldEnum]
+
+
+export const ExperienceLikeScalarFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ExperienceLikeScalarFieldEnum = (typeof ExperienceLikeScalarFieldEnum)[keyof typeof ExperienceLikeScalarFieldEnum]
+
+
+export const ExperienceShareScalarFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ExperienceShareScalarFieldEnum = (typeof ExperienceShareScalarFieldEnum)[keyof typeof ExperienceShareScalarFieldEnum]
+
+
+export const ExperienceCommentScalarFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  content: 'content',
+  userId: 'userId',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExperienceCommentScalarFieldEnum = (typeof ExperienceCommentScalarFieldEnum)[keyof typeof ExperienceCommentScalarFieldEnum]
+
+
+export const ExperienceCommentLikeScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ExperienceCommentLikeScalarFieldEnum = (typeof ExperienceCommentLikeScalarFieldEnum)[keyof typeof ExperienceCommentLikeScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -503,6 +580,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: 'JsonNull'
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullsOrder = {
@@ -811,4 +895,59 @@ export const CommentLikeOrderByRelevanceFieldEnum = {
 } as const
 
 export type CommentLikeOrderByRelevanceFieldEnum = (typeof CommentLikeOrderByRelevanceFieldEnum)[keyof typeof CommentLikeOrderByRelevanceFieldEnum]
+
+
+export const ExperienceOrderByRelevanceFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  coverUrl: 'coverUrl',
+  venue: 'venue',
+  address: 'address',
+  timeLabel: 'timeLabel',
+  conditionLabel: 'conditionLabel',
+  status: 'status',
+  createdByUserId: 'createdByUserId'
+} as const
+
+export type ExperienceOrderByRelevanceFieldEnum = (typeof ExperienceOrderByRelevanceFieldEnum)[keyof typeof ExperienceOrderByRelevanceFieldEnum]
+
+
+export const ExperienceLikeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  userId: 'userId'
+} as const
+
+export type ExperienceLikeOrderByRelevanceFieldEnum = (typeof ExperienceLikeOrderByRelevanceFieldEnum)[keyof typeof ExperienceLikeOrderByRelevanceFieldEnum]
+
+
+export const ExperienceShareOrderByRelevanceFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  userId: 'userId'
+} as const
+
+export type ExperienceShareOrderByRelevanceFieldEnum = (typeof ExperienceShareOrderByRelevanceFieldEnum)[keyof typeof ExperienceShareOrderByRelevanceFieldEnum]
+
+
+export const ExperienceCommentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  experienceId: 'experienceId',
+  content: 'content',
+  userId: 'userId',
+  parentId: 'parentId'
+} as const
+
+export type ExperienceCommentOrderByRelevanceFieldEnum = (typeof ExperienceCommentOrderByRelevanceFieldEnum)[keyof typeof ExperienceCommentOrderByRelevanceFieldEnum]
+
+
+export const ExperienceCommentLikeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId'
+} as const
+
+export type ExperienceCommentLikeOrderByRelevanceFieldEnum = (typeof ExperienceCommentLikeOrderByRelevanceFieldEnum)[keyof typeof ExperienceCommentLikeOrderByRelevanceFieldEnum]
 

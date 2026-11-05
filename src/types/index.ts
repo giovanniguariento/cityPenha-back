@@ -219,9 +219,32 @@ export interface DiscoveryPopularAuthor {
   totalLikes: number;
 }
 
+/** Compact experience card for discovery / list APIs (author never exposed). */
+export interface DiscoveryExperienceItem {
+  id: string;
+  slug: string;
+  title: string;
+  coverUrl: string;
+  xpReward: number;
+  featured: boolean;
+  isAd: boolean;
+  meta: {
+    venue: string;
+    address?: string;
+    dateLabel: string;
+    timeLabel: string;
+    conditionLabel?: string;
+  };
+  likeCount: number;
+  commentCount: number;
+  shareCount: number;
+  startsAt: string;
+  endsAt: string | null;
+}
+
 /** Payload of GET /discovery `data`. */
 export interface DiscoveryResponse {
-  newExperiences: unknown[];
+  newExperiences: DiscoveryExperienceItem[];
   editorsChoice: unknown[];
   topics: DiscoveryTopicCategory[];
   worldNews: FeedItem[];

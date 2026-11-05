@@ -184,3 +184,28 @@ export type Comment = Prisma.CommentModel
  * Curtida de usuário em um comentário.
  */
 export type CommentLike = Prisma.CommentLikeModel
+/**
+ * Model Experience
+ * Evento da Agenda (Experiências). Autor interno nunca é exposto na API pública.
+ */
+export type Experience = Prisma.ExperienceModel
+/**
+ * Model ExperienceLike
+ * 
+ */
+export type ExperienceLike = Prisma.ExperienceLikeModel
+/**
+ * Model ExperienceShare
+ * 
+ */
+export type ExperienceShare = Prisma.ExperienceShareModel
+/**
+ * Model ExperienceComment
+ * 
+ */
+export type ExperienceComment = Prisma.ExperienceCommentModel
+/**
+ * Model ExperienceCommentLike
+ * 
+ */
+export type ExperienceCommentLike = Prisma.ExperienceCommentLikeModel

@@ -14,3 +14,5 @@ export { postFolderService };
 export { discoveryService };
 export { postViewService } from './postView.service';
 export { commentService } from './comment.service';
+export { experienceService } from './experience.service';
+export { experienceCommentService } from './experienceComment.service';
